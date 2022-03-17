@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ViewModelLocator
+    public static class ViewModelRegistrator
     {
-        public MainViewModel MainViewModel=> App.Services.GetRequiredService<MainViewModel>();
+        public static IServiceCollection AddViewModels(this IServiceCollection services) => services
+            .AddSingleton<MainViewModel>()
+            ;
     }
 }

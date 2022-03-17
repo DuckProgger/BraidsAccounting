@@ -1,5 +1,4 @@
 ﻿using BraidsAccounting.Models;
-using BraidsAccounting.Repos;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -15,10 +14,10 @@ namespace BraidsAccounting.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
-        public ObservableCollection<Item>? Items { get; set; }
-        public Item? Item { get; set; } = new();
+        //public ObservableCollection<Item>? Items { get; set; }
+        //public Item? Item { get; set; } = new();
 
-
+        public string Title { get; set; } = "Моё окно";
         public MainViewModel()
         {
         }
