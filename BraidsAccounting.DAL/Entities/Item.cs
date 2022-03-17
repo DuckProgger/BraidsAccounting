@@ -1,13 +1,12 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
 
-namespace BraidsAccounting.Models
+namespace BraidsAccounting.DAL.Entities
 {
-    public class Item : EntityBase
+    public class Item : Entity
     {
         public string Manufacturer { get; set; } = null!;
         public string Article { get; set; } = null!;
         public string Color { get; set; } = null!;
-        public int Price { get; set; }
-        public WarehouseItem WarehouseItem { get; set; } = null!;
+        public Supply Supply { get; set; } = null!;
     }
 }
