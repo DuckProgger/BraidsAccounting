@@ -1,4 +1,4 @@
-﻿using BraidsAccounting.Models;
+﻿using BraidsAccounting.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.DAL.Context
 {
-    internal class ApplicationContext : DbContext
+    public class ApplicationContext : DbContext
     {
         DbSet<Item> Items { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)

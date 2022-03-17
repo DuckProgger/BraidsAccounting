@@ -1,4 +1,5 @@
-﻿using BraidsAccounting.Services;
+﻿using BraidsAccounting.Data;
+using BraidsAccounting.Services;
 using BraidsAccounting.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,7 +24,9 @@ namespace BraidsAccounting
 
         internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
             .AddServices()
-            .AddViewModels();
+            .AddViewModels()
+            .AddDatabase()
+            ;
 
         protected override async void OnStartup(StartupEventArgs e)
         {
