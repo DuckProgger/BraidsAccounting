@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Interfaces;
+using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -15,33 +16,58 @@ namespace BraidsAccounting.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
+        private readonly IStoreService storeService;
+
         //public ObservableCollection<Item>? Items { get; set; }
         //public Item? Item { get; set; } = new();
 
-        private readonly IRepository<Item> itemsRep;
-        private readonly IRepository<StoreItem> storeRep;
-        private readonly IRepository<Service> servicesRep;
-        private readonly IRepository<WastedItem> wastedItemsRep;
-        private readonly IRepository<ItemPrice> itemPricesRep;
+        //private readonly IRepository<Item> itemsRep;
+        //private readonly IRepository<StoreItem> storeRep;
+        //private readonly IRepository<Service> servicesRep;
+        //private readonly IRepository<WastedItem> wastedItemsRep;
+        //private readonly IRepository<ItemPrice> itemPricesRep;
 
         public string Title { get; set; } = "Моё окно";
-        public MainViewModel(IRepository<Item> itemsRep,
-            IRepository<StoreItem> storeRep,
-            IRepository<Service> servicesRep,
-            IRepository<WastedItem> wastedItemsRep,
-            IRepository<ItemPrice> itemPricesRep)
+        public MainViewModel(
+            IStoreService storeService
+            //IRepository<Item> itemsRep,
+            //IRepository<StoreItem> storeRep,
+            //IRepository<Service> servicesRep,
+            //IRepository<WastedItem> wastedItemsRep,
+            //IRepository<ItemPrice> itemPricesRep
+            )
         {
-            this.itemsRep = itemsRep;
-            this.storeRep = storeRep;
-            this.servicesRep = servicesRep;
-            this.wastedItemsRep = wastedItemsRep;
-            this.itemPricesRep = itemPricesRep;
+            this.storeService = storeService;
 
-            var items = itemsRep.Items.ToArray();
-            var storeItems = storeRep.Items.ToArray();
-            var services = servicesRep.Items.ToArray();
-            var wastedItems = wastedItemsRep.Items.ToArray();
-            var itemPrices = itemPricesRep.Items.ToArray();
+            StoreItem storeItem = new()
+            {
+                Item = new()
+                {
+                    ItemPrice = new()
+                    {
+                        Manufacturer = "easy"
+                    },
+                    Article = "Ф3",
+                    Color = "филолетовый"
+                },
+                Count = 15,
+
+            };
+
+            storeService.AddItem(storeItem);
+
+
+            //this.itemsRep = itemsRep;
+            //this.storeRep = storeRep;
+            //this.servicesRep = servicesRep;
+            //this.wastedItemsRep = wastedItemsRep;
+            //this.itemPricesRep = itemPricesRep;
+
+            //var items = itemsRep.Items.ToArray();
+            //var storeItems = storeRep.Items.ToArray();
+            //var services = servicesRep.Items.ToArray();
+            //var wastedItems = wastedItemsRep.Items.ToArray();
+            //var itemPrices = itemPricesRep.Items.ToArray();
 
 
             //Service service = new()
@@ -91,33 +117,7 @@ namespace BraidsAccounting.ViewModels
 
         }
 
-        //private void AddStoreItem(StoreItems storeItem)
-        //{
-        //    var existingItem = itemsRep.Items
-        //        .AsEnumerable()
-        //        .FirstOrDefault(i => i.Equals(storeItem.EnumerableItem.Item));
-        //    // Продукта в каталоге нет - надо добавить
-        //    if (existingItem is null)
-        //    {
-        //        var item = itemsRep.Create(storeItem.EnumerableItem.Item);
-        //        storeItem.EnumerableItem.Item = item;
-        //        storeRep.Create(storeItem);
-        //        return;
-        //    }
-        //    var existingStoreItem = storeRep.Items
-        //        .AsEnumerable()
-        //        .FirstOrDefault(si => si.EnumerableItem.Equals(storeItem.EnumerableItem));
-        //    // Продукт в каталоге есть, но нет на складе - добавить на склад
-        //    if (existingStoreItem is null)
-        //    {
-        //        storeItem.EnumerableItem.Item = existingItem;
-        //        storeRep.Create(storeItem);
-        //        return;
-        //    }
-        //    // Продукт есть в каталоге и на складе - изменить количество на складе
-        //    existingStoreItem.EnumerableItem.Count += storeItem.EnumerableItem.Count;
-        //    storeRep.Edit(existingStoreItem);
-        //}
+       
 
         //private ICommand? _CreateItemCommand;
         //public ICommand? CreateItemCommand => _CreateItemCommand ??= new DelegateCommand<Item>(async (item) => Item = await ItemRepo.Create(item));
