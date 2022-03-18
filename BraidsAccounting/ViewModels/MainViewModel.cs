@@ -24,24 +24,36 @@ namespace BraidsAccounting.ViewModels
             //var items = itemsRep.Items.Take(1).ToArray();
             //var storeItems = storeRep.Items.Take(1).ToArray();
             //var services = servicesRep.Items.Take(1).ToArray();
-            Service service = new()
-            {
-                Items = new() { new() { Item = itemsRep.Get(1) }, },
-                Profit = 1000,
-                NetProfit = 800
-            };
-            servicesRep.Create(service);
+            //Service service = new()
+            //{
+            //    Items = new()
+            //    {
+            //        new() { Item = itemsRep.Get(1), Count = 2, Price = 100 },
+            //        new() { Item = itemsRep.Get(3), Count = 2, Price = 100 }
+            //    },
+            //    Profit = 1000,
+            //    NetProfit = 800
+            //};
+            //servicesRep.Create(service);
 
-            var i = storeRep.Get(1);
-            i.Items.Count -= service.Items[0].Count;
-            if (i.Items.Count == 0)
+            Service service = servicesRep.Get(6);
+            foreach (var wastedItem in service.WastedItems)
             {
-                storeRep.Delete(1);
+                var i = storeRep.Items.First(si => si.EnumerableItem.Item.Id == wastedItem.Item.Id);
+
+                i.EnumerableItem.Count -= wastedItem.Count;
+                if (i.EnumerableItem.Count > 0)
+                    storeRep.Edit(i);
+                else if (i.EnumerableItem.Count == 0)
+                    storeRep.Delete(1);
+                else
+                    throw new Exception("Отсутсвует требуемое количество материала на складе.");
+
+
+
+
             }
-            else
-            {
-                storeRep.Edit(i);
-            }
+
         }
 
         //private ICommand? _CreateItemCommand;

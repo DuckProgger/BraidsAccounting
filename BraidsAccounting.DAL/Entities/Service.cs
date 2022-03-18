@@ -10,7 +10,7 @@ namespace BraidsAccounting.DAL.Entities
         public decimal Profit { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal NetProfit { get; set; }
-        public List<EnumerableItems> Items { get; set; } = null!;
+        public List<EnumerableItem> WastedItems { get; set; } = null!;
 
     }
 }

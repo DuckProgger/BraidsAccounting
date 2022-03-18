@@ -30,7 +30,8 @@ namespace BraidsAccounting.DAL.Repositories
         public T Create(T item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            context.Entry(item).State = EntityState.Added;
+            //context.Entry(item).State = EntityState.Added;
+            context.Add(item);
             context.SaveChanges();
             return item;
         }

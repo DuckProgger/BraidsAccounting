@@ -6,7 +6,7 @@ namespace BraidsAccounting.DAL.Entities
     public class StoreItem : Entity
     {
         //public int ItemId { get; set; }
-        public EnumerableItems Items { get; set; } = null!;
+        public EnumerableItem EnumerableItem { get; set; } = null!;
 
         //public List<Service> Services { get; set; }
     }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BraidsAccounting.DAL.Entities
 {
     [Owned]
-    public class EnumerableItems 
+    public class EnumerableItem
     {
         public Item Item { get; set; } = null!;
         public int Count { get; set; }
