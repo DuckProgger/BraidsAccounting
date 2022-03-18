@@ -2,11 +2,19 @@
 
 namespace BraidsAccounting.DAL.Entities
 {
-    public class Item : Entity
+    public class Item : Entity, IEquatable<Item>
     {
         public string Manufacturer { get; set; } = null!;
         public string Article { get; set; } = null!;
         public string Color { get; set; } = null!;
-        //public Store Supply { get; set; } = null!;
+
+        public bool Equals(Item? other)
+        {
+            if (other is null) return false;
+            return Article.ToUpper() == other.Article.ToUpper()
+              && Manufacturer.ToUpper() == other.Manufacturer.ToUpper()
+              && Color.ToUpper() == other.Color.ToUpper();
+        }
+
     }
 }

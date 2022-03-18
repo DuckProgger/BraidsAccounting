@@ -5,9 +5,11 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BraidsAccounting", "BraidsAccounting\BraidsAccounting.csproj", "{B0C32F18-A7DF-4DC0-ADF8-B0856D0855E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BraidsAccounting.DAL", "BraidsAccounting.DAL\BraidsAccounting.DAL.csproj", "{65814E2C-EEF4-4183-BB5E-81F4BAD5A15F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BraidsAccounting.DAL", "BraidsAccounting.DAL\BraidsAccounting.DAL.csproj", "{65814E2C-EEF4-4183-BB5E-81F4BAD5A15F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BraidsAccounting.Interfaces", "BraidsAccounting.Interfaces\BraidsAccounting.Interfaces.csproj", "{6201ACFB-BEC5-4E58-9EA4-1BB311ECB276}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BraidsAccounting.Interfaces", "BraidsAccounting.Interfaces\BraidsAccounting.Interfaces.csproj", "{6201ACFB-BEC5-4E58-9EA4-1BB311ECB276}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BraidsAccounting.ConsoleTesting", "BraidsAccounting.ConsoleTesting\BraidsAccounting.ConsoleTesting.csproj", "{12D0C19C-4CC5-42EA-9B20-BAB445DE0CBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{6201ACFB-BEC5-4E58-9EA4-1BB311ECB276}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6201ACFB-BEC5-4E58-9EA4-1BB311ECB276}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6201ACFB-BEC5-4E58-9EA4-1BB311ECB276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12D0C19C-4CC5-42EA-9B20-BAB445DE0CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12D0C19C-4CC5-42EA-9B20-BAB445DE0CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12D0C19C-4CC5-42EA-9B20-BAB445DE0CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12D0C19C-4CC5-42EA-9B20-BAB445DE0CBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
