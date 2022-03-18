@@ -3,6 +3,7 @@ using BraidsAccounting.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BraidsAccounting.DAL.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220318115118_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,6 +40,9 @@ namespace BraidsAccounting.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ItemPriceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PriceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -90,7 +95,7 @@ namespace BraidsAccounting.DAL.Migrations
                     b.ToTable("Services");
                 });
 
-            modelBuilder.Entity("BraidsAccounting.DAL.Entities.StoreItem", b =>
+            modelBuilder.Entity("BraidsAccounting.DAL.Entities.StoreItems", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,7 +116,7 @@ namespace BraidsAccounting.DAL.Migrations
                     b.ToTable("Store");
                 });
 
-            modelBuilder.Entity("BraidsAccounting.DAL.Entities.WastedItem", b =>
+            modelBuilder.Entity("BraidsAccounting.DAL.Entities.WastedItems", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +153,7 @@ namespace BraidsAccounting.DAL.Migrations
                     b.Navigation("ItemPrice");
                 });
 
-            modelBuilder.Entity("BraidsAccounting.DAL.Entities.StoreItem", b =>
+            modelBuilder.Entity("BraidsAccounting.DAL.Entities.StoreItems", b =>
                 {
                     b.HasOne("BraidsAccounting.DAL.Entities.Item", "Item")
                         .WithMany()
@@ -159,9 +164,9 @@ namespace BraidsAccounting.DAL.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("BraidsAccounting.DAL.Entities.WastedItem", b =>
+            modelBuilder.Entity("BraidsAccounting.DAL.Entities.WastedItems", b =>
                 {
-                    b.HasOne("BraidsAccounting.DAL.Entities.Item", "Item")
+                    b.HasOne("BraidsAccounting.DAL.Entities.Item", "Items")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -173,7 +178,7 @@ namespace BraidsAccounting.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
+                    b.Navigation("Items");
 
                     b.Navigation("Service");
                 });

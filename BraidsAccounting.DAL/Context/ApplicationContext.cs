@@ -13,6 +13,9 @@ namespace BraidsAccounting.DAL.Context
         DbSet<Item> Items { get; set; }
         DbSet<Service> Services { get; set; }
         DbSet<StoreItem> Store { get; set; }
+        DbSet<WastedItem> WastedItems { get; set; }
+        DbSet<ItemPrice> ItemPrices { get; set; }
+
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {

@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BraidsAccounting.DAL.Repositories
 {
-    internal class StoreRepository : DbRepository<StoreItem>
+    internal class WastedItemRepository : DbRepository<WastedItem>
     {
-        public override IQueryable<StoreItem> Items => base.Items
-            .Include(si => si.Item)
+        public override IQueryable<WastedItem> Items => base.Items
+            .Include(wi => wi.Item)
             .ThenInclude(item => item.ItemPrice)
             ;
 
-        public StoreRepository(ApplicationContext context) : base(context)
+        public WastedItemRepository(ApplicationContext context) : base(context)
         {
         }
     }

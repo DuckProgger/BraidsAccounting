@@ -7,9 +7,12 @@ namespace BraidsAccounting.DAL.Repositories
     public static class RepositoryRegistrator
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services) => services
-            .AddTransient<IRepository<Item>, DbRepository<Item>>()
+            .AddTransient<IRepository<Item>, ItemRepository>()
             .AddTransient<IRepository<Service>, ServiceRepository>()
             .AddTransient<IRepository<StoreItem>, StoreRepository>()
+            .AddTransient<IRepository<WastedItem>, WastedItemRepository>()
+            .AddTransient<IRepository<ItemPrice>, DbRepository<ItemPrice>>()
+
             ;
     }
 }
