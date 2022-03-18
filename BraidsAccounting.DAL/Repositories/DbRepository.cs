@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BraidsAccounting.DAL
+namespace BraidsAccounting.DAL.Repositories
 {
     internal class DbRepository<T> : IRepository<T> where T : class, IEntity, new()
     {

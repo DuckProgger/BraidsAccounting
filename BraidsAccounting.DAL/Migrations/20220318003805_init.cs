@@ -4,7 +4,7 @@
 
 namespace BraidsAccounting.DAL.Migrations
 {
-    public partial class _1 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,7 +24,7 @@ namespace BraidsAccounting.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Service",
+                name: "Services",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,13 +34,35 @@ namespace BraidsAccounting.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Service", x => x.Id);
+                    table.PrimaryKey("PK_Services", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Supply",
+                name: "Store",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Items_ItemId = table.Column<int>(type: "int", nullable: false),
+                    Items_Count = table.Column<int>(type: "int", nullable: false),
+                    Items_Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Store", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Store_Items_Items_ItemId",
+                        column: x => x.Items_ItemId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Services_Items",
+                columns: table => new
+                {
+                    ServiceId = table.Column<int>(type: "int", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ItemId = table.Column<int>(type: "int", nullable: false),
@@ -49,61 +71,42 @@ namespace BraidsAccounting.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Supply", x => x.Id);
+                    table.PrimaryKey("PK_Services_Items", x => new { x.ServiceId, x.Id });
                     table.ForeignKey(
-                        name: "FK_Supply_Items_ItemId",
+                        name: "FK_Services_Items_Items_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Items",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServiceSupply",
-                columns: table => new
-                {
-                    ServicesId = table.Column<int>(type: "int", nullable: false),
-                    SuppliesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServiceSupply", x => new { x.ServicesId, x.SuppliesId });
                     table.ForeignKey(
-                        name: "FK_ServiceSupply_Service_ServicesId",
-                        column: x => x.ServicesId,
-                        principalTable: "Service",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ServiceSupply_Supply_SuppliesId",
-                        column: x => x.SuppliesId,
-                        principalTable: "Supply",
+                        name: "FK_Services_Items_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceSupply_SuppliesId",
-                table: "ServiceSupply",
-                column: "SuppliesId");
+                name: "IX_Services_Items_ItemId",
+                table: "Services_Items",
+                column: "ItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Supply_ItemId",
-                table: "Supply",
-                column: "ItemId",
-                unique: true);
+                name: "IX_Store_Items_ItemId",
+                table: "Store",
+                column: "Items_ItemId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ServiceSupply");
+                name: "Services_Items");
 
             migrationBuilder.DropTable(
-                name: "Service");
+                name: "Store");
 
             migrationBuilder.DropTable(
-                name: "Supply");
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Items");

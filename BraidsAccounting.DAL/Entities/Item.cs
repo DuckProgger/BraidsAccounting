@@ -7,6 +7,6 @@ namespace BraidsAccounting.DAL.Entities
         public string Manufacturer { get; set; } = null!;
         public string Article { get; set; } = null!;
         public string Color { get; set; } = null!;
-        public Supply Supply { get; set; } = null!;
+        //public Store Supply { get; set; } = null!;
     }
 }
