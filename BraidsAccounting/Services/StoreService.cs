@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,24 @@ namespace BraidsAccounting.Services
             // Продукт есть в каталоге и на складе - изменить количество на складе
             existingStoreItem.Count += storeItem.Count;
             store.Edit(existingStoreItem);
+        }
+
+        public IEnumerable<StoreItem> GetItems() => throw new NotImplementedException();
+        public void RemoveItems(IEnumerable<WastedItem> wastedItems)
+        {
+            //var storeItems = store.Items.Select(si => si).Where(si => wastedItems.Any(wi => wi.Item.Id == si.Item.Id));
+            //foreach (var storeItem in storeItems)
+            //    storeItem.Count -=
+
+            List<StoreItem> storeItems = new();
+            foreach (var wastedItem in wastedItems)
+            {
+                var existingStoreItem = store.Get(wastedItem.ItemId);
+                if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
+                existingStoreItem.Count -= wastedItem.Count;
+                storeItems.Add(existingStoreItem);
+            }
+            store.EditRange(storeItems);
         }
 
         //private void AddStoreItem(StoreItems storeItem)

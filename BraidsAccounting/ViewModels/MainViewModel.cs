@@ -29,8 +29,9 @@ namespace BraidsAccounting.ViewModels
 
         public string Title { get; set; } = "Моё окно";
         public MainViewModel(
-            IStoreService storeService
-            //IRepository<Item> itemsRep,
+            IStoreService storeService,
+            Services.Interfaces.IServiceProvider serviceProvider
+            //, <Item> itemsRep,
             //IRepository<StoreItem> storeRep,
             //IRepository<Service> servicesRep,
             //IRepository<WastedItem> wastedItemsRep,
@@ -39,22 +40,20 @@ namespace BraidsAccounting.ViewModels
         {
             this.storeService = storeService;
 
-            StoreItem storeItem = new()
-            {
-                Item = new()
-                {
-                    ItemPrice = new()
-                    {
-                        Manufacturer = "easy"
-                    },
-                    Article = "Ф3",
-                    Color = "филолетовый"
-                },
-                Count = 15,
+            //Service service = new()
+            //{
+            //    Name = "Наташа",
+            //    Profit = 2000,
+            //    NetProfit = 1500,
+            //    WastedItems = new()
+            //    {
+            //        new()
+            //        {
+            //            Item = storeService.
+            //        }
+            //    }
+            //}
 
-            };
-
-            storeService.AddItem(storeItem);
 
 
             //this.itemsRep = itemsRep;
@@ -70,54 +69,9 @@ namespace BraidsAccounting.ViewModels
             //var itemPrices = itemPricesRep.Items.ToArray();
 
 
-            //Service service = new()
-            //{
-            //    Items = new()
-            //    {
-            //        new() { Item = itemsRep.Get(1), Count = 2, Price = 100 },
-            //        new() { Item = itemsRep.Get(3), Count = 2, Price = 100 }
-            //    },
-            //    Profit = 1000,
-            //    NetProfit = 800
-            //};
-            //servicesRep.Create(service);
-
-            //Service service = servicesRep.Get(6);
-            //foreach (var wastedItem in service.WastedItems)
-            //{
-            //    var i = storeRep.Items.First(si => si.EnumerableItem.Item.Id == wastedItem.Item.Id);
-            //    i.EnumerableItem.Count -= wastedItem.Count;
-            //    if (i.EnumerableItem.Count > 0)
-            //        storeRep.Edit(i);
-            //    else if (i.EnumerableItem.Count == 0)
-            //        storeRep.Delete(1);
-            //    else
-            //        throw new Exception("Отсутсвует требуемое количество материала на складе.");
-            //}
-
-            //var dfg = storeRep.Items.ToArray();
-
-
-            //StoreItems si = new()
-            //{
-            //    EnumerableItem = new()
-            //    {
-            //        Item = new()
-            //        {
-            //            Manufacturer = "easy",
-            //            Article = "model 6",
-            //            Color = "purple"
-            //        },
-            //        Count = 10,
-            //        Price = 150
-            //    }
-            //};
-
-            //    //AddStoreItem(si);
-
         }
 
-       
+
 
         //private ICommand? _CreateItemCommand;
         //public ICommand? CreateItemCommand => _CreateItemCommand ??= new DelegateCommand<Item>(async (item) => Item = await ItemRepo.Create(item));
@@ -140,6 +94,6 @@ namespace BraidsAccounting.ViewModels
 
 
     }
-    
+
 }
 
