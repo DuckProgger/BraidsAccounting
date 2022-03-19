@@ -12,66 +12,66 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using IServiceProvider = BraidsAccounting.Services.Interfaces.IServiceProvider;
 
 namespace BraidsAccounting.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
-        private readonly IStoreService storeService;
 
         //public ObservableCollection<Item>? Items { get; set; }
         //public Item? Item { get; set; } = new();
 
-        //private readonly IRepository<Item> itemsRep;
-        //private readonly IRepository<StoreItem> storeRep;
-        //private readonly IRepository<Service> servicesRep;
-        //private readonly IRepository<WastedItem> wastedItemsRep;
-        //private readonly IRepository<ItemPrice> itemPricesRep;
+        private readonly IRepository<Item> itemsRep;
+        private readonly IStoreService store;
+        private readonly IServiceProvider servicesRep;
+        private readonly IRepository<WastedItem> wastedItemsRep;
+        private readonly IRepository<ItemPrice> itemPricesRep;
 
         public string Title { get; set; } = "Моё окно";
+        //public MainViewModel(
+        //    IStoreService storeService,
+        //    Services.Interfaces.IServiceProvider serviceProvider
+        //   // , IRepository<Service> servicesRep
+        //   //, IRepository<WastedItem> wastedItemsRep
+        //   //, IRepository<ItemPrice> itemPricesRep
+        //    )
+        //{
+
+
+        //}
+
+        public ViewModel CurrentModel { get; set; }
+
+        #region Command LoadStoreView - Команда загрузить StoreView
+
+        private ICommand? _LoadStoreViewCommand;
+
         public MainViewModel(
-            IStoreService storeService,
-            Services.Interfaces.IServiceProvider serviceProvider
-           // , IRepository<Service> servicesRep
-           //, IRepository<WastedItem> wastedItemsRep
-           //, IRepository<ItemPrice> itemPricesRep
+            IRepository<Item> itemsRep
+            , IStoreService store
+            , IServiceProvider servicesRep
+            , IRepository<WastedItem> wastedItemsRep
+            , IRepository<ItemPrice> itemPricesRep
             )
         {
-            this.storeService = storeService;
-
-            var storeItems = storeService.GetItems().ToArray();
-
-            List <ServiceFormItem> serviceFormItems = new();
-            ServiceFormItem item1 = new()
-            {
-                Count = 8,
-                StoreItem = storeItems[0]
-            };
-            //ServiceFormItem item2 = new()
-            //{
-            //    Count = 1,
-            //    StoreItem = storeItems[1]
-            //};
-            serviceFormItems.Add(item1);
-            //serviceFormItems.Add(item2);   
-
-            serviceProvider.ProvideService(serviceFormItems, "Наташа", 2000);
-
-            //this.itemsRep = itemsRep;
-            //this.storeRep = storeRep;
-            //this.servicesRep = servicesRep;
-            //this.wastedItemsRep = wastedItemsRep;
-            //this.itemPricesRep = itemPricesRep;
-
-            //var items = itemsRep.Items.ToArray();
-            //var storeItems = storeRep.Items.ToArray();
-            //var services = servicesRep.Items.ToArray();
-            //var wastedItems = wastedItemsRep.Items.ToArray();
-            //var itemPrices = itemPricesRep.Items.ToArray();
-
-
+            this.itemsRep = itemsRep;
+            this.store = store;
+            this.servicesRep = servicesRep;
+            this.wastedItemsRep = wastedItemsRep;
+            this.itemPricesRep = itemPricesRep;
         }
 
+        /// <summary>Команда - загрузить StoreViewModel</summary>
+        public ICommand LoadStoreViewCommand => _LoadStoreViewCommand
+            ??= new DelegateCommand(OnLoadStoreViewModelCommandExecuted, CanLoadStoreViewModelCommandExecute);
+        private bool CanLoadStoreViewModelCommandExecute() => true;
+        private async void OnLoadStoreViewModelCommandExecuted()
+        {
+            CurrentModel = new StoreViewModel(store);
+        }
+
+        #endregion
 
 
         //private ICommand? _CreateItemCommand;

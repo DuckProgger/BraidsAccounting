@@ -3,11 +3,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BraidsAccounting"        
+        xmlns:local="clr-namespace:BraidsAccounting"   
+        xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"  
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"        
         mc:Ignorable="d"
         DataContext ="{Binding MainViewModel, Source={StaticResource Locator}}"
         Title="{Binding Title}" Height="450" Width="800">
+    <!--<Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>-->
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadStoreViewCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Grid>
-
+        <ContentControl Content="{Binding CurrentModel}"/>
     </Grid>
 </Window>

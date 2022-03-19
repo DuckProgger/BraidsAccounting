@@ -26,8 +26,9 @@ namespace BraidsAccounting.Services
             this.itemPrices = itemPrices;
         }
 
-        public void AddItem(StoreItem storeItem)
+        public void AddItem(StoreItem? storeItem)
         {
+            if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
             if (!itemPrices.Items.AsEnumerable().Any(ip => ip.Equals(storeItem.Item.ItemPrice)))
                 throw new Exception("Такого производителя нет в базе.");
             var existingItem = items.Items
@@ -54,18 +55,13 @@ namespace BraidsAccounting.Services
             store.Edit(existingStoreItem);
         }
 
-        public IEnumerable<StoreItem> GetItems() => store.Items;
-        public void RemoveItems(IEnumerable<WastedItem> wastedItems)
+        public IEnumerable<StoreItem?> GetItems() => store.Items;
+        public void RemoveItems(IEnumerable<WastedItem?> wastedItems)
         {
-            //var storeItems = store.Items.Select(si => si).Where(si => wastedItems.Any(wi => wi.Item.Id == si.Item.Id));
-            //foreach (var storeItem in storeItems)
-            //    storeItem.Count -=
-
-            //List<StoreItem> storeItems = new();
-            foreach (var wastedItem in wastedItems)
-            {
-                //var existingStoreItem = store.Get(wastedItem.ItemId);
-                var existingStoreItem = store.Items/*.AsNoTracking()*/.First(si => si.ItemId == wastedItem.ItemId);
+            if (wastedItems == null) throw new ArgumentNullException(nameof(wastedItems));
+            foreach (var wastedItem in wastedItems)            {
+                if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
+                var existingStoreItem = store.Items.First(si => si.ItemId == wastedItem.ItemId);
                 if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
                 existingStoreItem.Count -= wastedItem.Count;
                 switch (existingStoreItem.Count)
@@ -79,37 +75,18 @@ namespace BraidsAccounting.Services
                     default:
                         throw new Exception("Указанного количества товара нет на складе");
                 }
-                //storeItems.Add(existingStoreItem);
             }
-            //store.EditRange(storeItems);
         }
 
-        //private void AddStoreItem(StoreItems storeItem)
-        //{
-        //    var existingItem = itemsRep.Items
-        //        .AsEnumerable()
-        //        .FirstOrDefault(i => i.Equals(storeItem.EnumerableItem.Item));
-        //    // Продукта в каталоге нет - надо добавить
-        //    if (existingItem is null)
-        //    {
-        //        var item = itemsRep.Create(storeItem.EnumerableItem.Item);
-        //        storeItem.EnumerableItem.Item = item;
-        //        storeRep.Create(storeItem);
-        //        return;
-        //    }
-        //    var existingStoreItem = storeRep.Items
-        //        .AsEnumerable()
-        //        .FirstOrDefault(si => si.EnumerableItem.Equals(storeItem.EnumerableItem));
-        //    // Продукт в каталоге есть, но нет на складе - добавить на склад
-        //    if (existingStoreItem is null)
-        //    {
-        //        storeItem.EnumerableItem.Item = existingItem;
-        //        storeRep.Create(storeItem);
-        //        return;
-        //    }
-        //    // Продукт есть в каталоге и на складе - изменить количество на складе
-        //    existingStoreItem.EnumerableItem.Count += storeItem.EnumerableItem.Count;
-        //    storeRep.Edit(existingStoreItem);
-        //}
+        public void EditItem(StoreItem? storeItem)
+        {
+            if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
+            store.Edit(storeItem);
+        }
+
+        public void RemoveItem(int id)
+        {
+            store.Remove(id);
+        }
     }
 }

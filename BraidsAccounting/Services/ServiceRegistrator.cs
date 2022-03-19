@@ -12,7 +12,7 @@ namespace BraidsAccounting.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services) => services
             .AddTransient<Interfaces.IServiceProvider, ServiceProvider>()
-            .AddTransient<IStoreService, StoreService>()
+            .AddScoped<IStoreService, StoreService>()
             ;
     }
 }
