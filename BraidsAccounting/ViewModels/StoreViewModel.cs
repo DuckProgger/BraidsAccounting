@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,12 +14,12 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class StoreViewModel : ViewModel
+    internal class StoreViewModel : ViewModelBase
     {
         private readonly IStoreService store;
 
         public StoreItem? StoreItem { get; set; }
-        public List<StoreItem?>? StoreItems { get; set; }
+        public ObservableCollection<StoreItem?> StoreItems { get; set; } = new();
 
         public StoreViewModel(IStoreService store)
         {
@@ -83,7 +84,7 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            StoreItems = new(ServiceProviderHelper.GetService<IStoreService>()?.GetItems());
+            StoreItems = new(ServiceProviderHelper.GetService<IStoreService>()?.GetItems());          
         }
 
         #endregion

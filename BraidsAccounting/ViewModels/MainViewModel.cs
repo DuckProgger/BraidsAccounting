@@ -41,7 +41,7 @@ namespace BraidsAccounting.ViewModels
 
         //}
 
-        public ViewModel CurrentModel { get; set; }
+        public ViewModelBase CurrentModel { get; set; }
 
         #region Command LoadStoreView - Команда загрузить StoreView
 

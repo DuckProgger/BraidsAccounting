@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BraidsAccounting.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"                              
+             xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"      
              mc:Ignorable="d"              
              d:DesignHeight="450" d:DesignWidth="800">
     <i:Interaction.Triggers>
@@ -21,18 +21,20 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>        
-        <DataGrid Grid.Row="0" DataContext="{Binding StoreItems}">
+        <DataGrid Grid.Row="0" ItemsSource="{Binding StoreItems}" 
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Производить" Binding="{Binding Item.ItemPrice.Manufacturer}"/>
+                <DataGridTextColumn Header="Производитель" Binding="{Binding Item.ItemPrice.Manufacturer}"/>
                 <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}"/>
                 <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}"/>
-                <DataGridTextColumn Header="Количество"  Binding="{Binding Item.Count}"/>
+                <DataGridTextColumn Header="Количество"  Binding="{Binding Count}"/>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Button Content="Редактирать"/>
-                                <Button Content="Редактирать"/>
+                                <Button Content="Удалить"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>                    
