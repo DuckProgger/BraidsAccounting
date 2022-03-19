@@ -54,22 +54,34 @@ namespace BraidsAccounting.Services
             store.Edit(existingStoreItem);
         }
 
-        public IEnumerable<StoreItem> GetItems() => throw new NotImplementedException();
+        public IEnumerable<StoreItem> GetItems() => store.Items;
         public void RemoveItems(IEnumerable<WastedItem> wastedItems)
         {
             //var storeItems = store.Items.Select(si => si).Where(si => wastedItems.Any(wi => wi.Item.Id == si.Item.Id));
             //foreach (var storeItem in storeItems)
             //    storeItem.Count -=
 
-            List<StoreItem> storeItems = new();
+            //List<StoreItem> storeItems = new();
             foreach (var wastedItem in wastedItems)
             {
-                var existingStoreItem = store.Get(wastedItem.ItemId);
+                //var existingStoreItem = store.Get(wastedItem.ItemId);
+                var existingStoreItem = store.Items/*.AsNoTracking()*/.First(si => si.ItemId == wastedItem.ItemId);
                 if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
                 existingStoreItem.Count -= wastedItem.Count;
-                storeItems.Add(existingStoreItem);
+                switch (existingStoreItem.Count)
+                {
+                    case > 0:
+                        store.Edit(existingStoreItem);
+                        break;
+                    case 0:
+                        store.Remove(existingStoreItem.Id);
+                        break;
+                    default:
+                        throw new Exception("Указанного количества товара нет на складе");
+                }
+                //storeItems.Add(existingStoreItem);
             }
-            store.EditRange(storeItems);
+            //store.EditRange(storeItems);
         }
 
         //private void AddStoreItem(StoreItems storeItem)

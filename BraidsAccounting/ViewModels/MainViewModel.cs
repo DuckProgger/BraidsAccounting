@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Interfaces;
+using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System;
@@ -31,30 +32,30 @@ namespace BraidsAccounting.ViewModels
         public MainViewModel(
             IStoreService storeService,
             Services.Interfaces.IServiceProvider serviceProvider
-            //, <Item> itemsRep,
-            //IRepository<StoreItem> storeRep,
-            //IRepository<Service> servicesRep,
-            //IRepository<WastedItem> wastedItemsRep,
-            //IRepository<ItemPrice> itemPricesRep
+           // , IRepository<Service> servicesRep
+           //, IRepository<WastedItem> wastedItemsRep
+           //, IRepository<ItemPrice> itemPricesRep
             )
         {
             this.storeService = storeService;
 
-            //Service service = new()
+            var storeItems = storeService.GetItems().ToArray();
+
+            List <ServiceFormItem> serviceFormItems = new();
+            ServiceFormItem item1 = new()
+            {
+                Count = 8,
+                StoreItem = storeItems[0]
+            };
+            //ServiceFormItem item2 = new()
             //{
-            //    Name = "Наташа",
-            //    Profit = 2000,
-            //    NetProfit = 1500,
-            //    WastedItems = new()
-            //    {
-            //        new()
-            //        {
-            //            Item = storeService.
-            //        }
-            //    }
-            //}
+            //    Count = 1,
+            //    StoreItem = storeItems[1]
+            //};
+            serviceFormItems.Add(item1);
+            //serviceFormItems.Add(item2);   
 
-
+            serviceProvider.ProvideService(serviceFormItems, "Наташа", 2000);
 
             //this.itemsRep = itemsRep;
             //this.storeRep = storeRep;

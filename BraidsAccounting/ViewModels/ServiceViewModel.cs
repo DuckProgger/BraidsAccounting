@@ -12,6 +12,8 @@ namespace BraidsAccounting.ViewModels
     internal class ServiceViewModel
     {
         public List<ServiceFormItem> ServiceFormItems { get; set; }
+        public string Name { get; set; } = null!;
+        public decimal Profit { get; set; }
 
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
 
@@ -29,7 +31,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanCreateServiceCommandExecute() => true;
         private async void OnCreateServiceCommandExecuted()
         {
-
+            serviceProvider.ProvideService(ServiceFormItems, Name, Profit);
         }
 
         #endregion

@@ -88,14 +88,14 @@ namespace BraidsAccounting.DAL.Repositories
         }
         public void Remove(int id)
         {
-            T item = new() { Id = id };
+            T item = Get(id) ?? throw new Exception("Элемент не найден.");
             dbSet.Remove(item);
             context.SaveChanges();
         }
 
         public async Task RemoveAsync(int id, CancellationToken cancel = default)
         {
-            T item = new() { Id = id };
+            T item = Get(id) ?? throw new Exception("Элемент не найден.");
             dbSet.Remove(item);
             await context.SaveChangesAsync(cancel).ConfigureAwait(false);
         }

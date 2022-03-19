@@ -1,21 +1,15 @@
-﻿using BraidsAccounting.DAL.Entities;
+﻿using BraidsAccounting.DAL.Context;
+using BraidsAccounting.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
+using BraidsAccounting.
 
 class Program
 {
     static void Main()
     {
-        //Item item1 = new()
-        //{
-        //    Article = "AbC",
-        //    Color = "reD",
-        //    Manufacturer = "company"
-        //};
-        //Item item2 = new()
-        //{
-        //    Article = "Abc",
-        //    Color = "ed",
-        //    Manufacturer = "Company"
-        //};
-        //Console.WriteLine(item1.Equals(item2));
+        const string connection = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Braids;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        using var db = new ApplicationContext(new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(connection).Options);
+
+        ServiceProvider serviceProvider = new()
     }
 }
