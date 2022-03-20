@@ -5,6 +5,8 @@ using BraidsAccounting.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Ioc;
+using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
@@ -17,10 +19,11 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class StoreViewModel : ViewModelBase
+    internal class StoreViewModel : BindableBase
     {
         private readonly IStoreService store;
         private readonly IEventAggregator eventAggregator;
+        private readonly IContainerProvider container;
 
         public StoreItem? StoreItem { get; set; }
         public ObservableCollection<StoreItem?> StoreItems { get; set; } = new();
@@ -28,13 +31,16 @@ namespace BraidsAccounting.ViewModels
         public StoreViewModel(
             IStoreService store
             , IEventAggregator eventAggregator
+            , IContainerProvider container
+
             )
         {
             this.store = store;
             this.eventAggregator = eventAggregator;
+            this.container = container;
         }
 
-        public StoreViewModel() { }
+        //public StoreViewModel() { }
 
         #region Command AddItem - Команда добавить предмет на склад
 
@@ -94,7 +100,7 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            //StoreItems = new(ServiceProviderHelper.GetService<IStoreService>()?.GetItems());          
+            StoreItems = new(store.GetItems());
         }
 
         #endregion

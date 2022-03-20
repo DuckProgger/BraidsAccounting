@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BraidsAccounting.Views"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"      
+             xmlns:vm="clr-namespace:BraidsAccounting.ViewModels" 
+             xmlns:prism="http://prismlibrary.com/" 
+             prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"              
              d:DesignHeight="450" d:DesignWidth="800">
     <i:Interaction.Triggers>
@@ -13,9 +15,9 @@
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <UserControl.DataContext>
+    <!--<UserControl.DataContext>
         <vm:StoreViewModel/>
-    </UserControl.DataContext>
+    </UserControl.DataContext>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -34,7 +36,10 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Редактирать" Command="{Binding EditItemCommand}"/>
+                                <Button Content="Редактирать" 
+                                        Command="{Binding 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:StoreView}}, 
+                                    Path=DataContext.EditItemCommand}"/>
                                 <Button Content="Удалить"/>
                             </StackPanel>
                         </DataTemplate>

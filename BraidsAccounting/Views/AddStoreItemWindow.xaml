@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BraidsAccounting.Views"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"  
-        DataContext ="{Binding AddStoreItemViewModel, Source={StaticResource Locator}}"
-        
+        xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"  
+        xmlns:prism="http://prismlibrary.com/" 
+        prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="AddStoreItemWindow" Height="130" Width="400">
     <!--<Window.DataContext>
@@ -37,10 +37,10 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Text="{Binding StoreItem.Item.ItemPrice.Manufacturer}"/>
-            <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article}"/>
-            <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color}"/>
-            <TextBox Grid.Column="3" Text="{Binding StoreItem.Count}"/>
+            <TextBox Grid.Column="0" Text="{Binding StoreItem.Item.ItemPrice.Manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="3" Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
        
         <Grid Grid.Row="2">

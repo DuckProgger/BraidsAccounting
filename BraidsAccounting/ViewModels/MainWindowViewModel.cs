@@ -3,6 +3,7 @@ using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
+using Prism.Ioc;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,6 @@ namespace BraidsAccounting.ViewModels
         private readonly IServiceProvider servicesRep;
         private readonly IRepository<WastedItem> wastedItemsRep;
         private readonly IRepository<ItemPrice> itemPricesRep;
-        private readonly IRegionNavigationService regionService;
 
         public string Title { get; set; } = "Моё окно";
         //public MainViewModel(
@@ -44,7 +44,7 @@ namespace BraidsAccounting.ViewModels
 
         //}
 
-        public ViewModelBase CurrentModel { get; set; }
+        //public ViewModelBase CurrentModel { get; set; }
 
         #region Command LoadStoreView - Команда загрузить StoreView
 
@@ -63,7 +63,6 @@ namespace BraidsAccounting.ViewModels
             this.servicesRep = servicesRep;
             this.wastedItemsRep = wastedItemsRep;
             this.itemPricesRep = itemPricesRep;
-            this.regionService = regionService;
         }
 
         /// <summary>Команда - загрузить StoreViewModel</summary>

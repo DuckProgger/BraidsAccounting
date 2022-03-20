@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.Data;
+using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.ViewModels;
 using BraidsAccounting.Views;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -53,7 +55,6 @@ namespace BraidsAccounting
                 .AddDatabase()
                 .AddServices()
                 ;
-
         }
         protected override Window CreateShell()
         {
@@ -62,7 +63,13 @@ namespace BraidsAccounting
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule(typeof(MainWindow));
+            moduleCatalog.AddModule(typeof(MainModule));
+        }
+
+        protected override void ConfigureViewModelLocator()
+        {
+            base.ConfigureViewModelLocator();    
+            ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
         }
     }
 }

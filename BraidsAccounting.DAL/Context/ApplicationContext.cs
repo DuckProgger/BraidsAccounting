@@ -28,7 +28,7 @@ namespace BraidsAccounting.DAL.Context
                 .UseSqlServer(GetConnectionString());
         }
 
-        private static string GetConnectionString()
+        internal static string GetConnectionString()
         {
             ConfigurationBuilder builder = new ConfigurationBuilder();
             // установка пути к текущему каталогу
@@ -41,5 +41,20 @@ namespace BraidsAccounting.DAL.Context
             return config.GetConnectionString("DefaultConnection");
         }
 
+    }
+
+    public class MyServiceFactory
+    {
+        //private readonly ApplicationContext appDbContext;
+        //public MyServiceFactory(ApplicationContext appDbContext)
+        //{
+        //    this.appDbContext = appDbContext;
+        //}
+
+        public static ApplicationContext Create()
+        {
+           return new ApplicationContext(new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(ApplicationContext.GetConnectionString()).Options);
+
+        }
     }
 }

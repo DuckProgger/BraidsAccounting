@@ -21,7 +21,7 @@ namespace BraidsAccounting.Data
         //    ;
 
         public static IContainerRegistry AddDatabase(this IContainerRegistry container) => container
-            .Register<DbContext, ApplicationContext>()
+            .Register<ApplicationContext>(MyServiceFactory.Create)
             .AddRepositories()
             ;
 
