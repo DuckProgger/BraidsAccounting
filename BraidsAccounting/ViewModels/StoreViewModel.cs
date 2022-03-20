@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
 using System;
@@ -37,7 +38,8 @@ namespace BraidsAccounting.ViewModels
         private bool CanAddItemCommandExecute() => true;
         private async void OnAddItemCommandExecuted()
         {
-            store.AddItem(StoreItem);
+            //store.AddItem(StoreItem);
+            (new AddStoreItemWindow()).Show();
         }
 
         #endregion

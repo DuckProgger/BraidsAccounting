@@ -29,8 +29,16 @@ namespace BraidsAccounting.Services
         public void AddItem(StoreItem? storeItem)
         {
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
-            if (!itemPrices.Items.AsEnumerable().Any(ip => ip.Equals(storeItem.Item.ItemPrice)))
-                throw new Exception("Такого производителя нет в базе.");
+            //if (!itemPrices.Items.AsEnumerable().Any(ip => ip.Equals(storeItem.Item.ItemPrice)))
+            //    throw new Exception("Такого производителя нет в базе.");
+            // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
+            var itemPrice = itemPrices.Items.FirstOrDefault(
+                ip => ip.Manufacturer.ToUpper() == storeItem.Item.ItemPrice.Manufacturer.ToUpper());
+            // Если такого производителя нет, то выдать ошибку,
+            // потому что производителей надо добавлять в отдельном окне
+            storeItem.Item.ItemPrice = itemPrice is not null 
+                ? itemPrice 
+                : throw new Exception("Такого производителя нет в базе."); ;
             var existingItem = items.Items
                 .AsEnumerable()
                 .FirstOrDefault(i => i.Equals(storeItem.Item));

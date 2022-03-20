@@ -11,6 +11,7 @@ namespace BraidsAccounting.ViewModels
     {
         public static IServiceCollection AddViewModels(this IServiceCollection services) => services
             .AddSingleton<MainViewModel>()
+            .AddScoped<AddStoreItemViewModel>()
             ;
     }
 }
