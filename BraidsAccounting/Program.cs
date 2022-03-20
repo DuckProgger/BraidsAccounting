@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting
 {
-    internal class Program
-    {
-        [STAThread]
-        static void Main(string[] args)
-        {
-            var app = new App(); 
-            app.InitializeComponent();
-            app.Run();
-        }
+    //internal class Program
+    //{
+        //[STAThread]
+        //static void Main(string[] args)
+        //{
+        //    var app = new App(); 
+        //    app.InitializeComponent();
+        //    app.Run();
+        //}
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => Host
-            .CreateDefaultBuilder(args)
-            .ConfigureServices(App.ConfigureServices)
-            ;
-    }
+        //public static IHostBuilder CreateHostBuilder(string[] args) => Host
+        //    .CreateDefaultBuilder(args)
+        //    .ConfigureServices(App.ConfigureServices)
+        //    ;
+    //}
 }

@@ -8,9 +8,9 @@ namespace BraidsAccounting.Infrastructure
 {
     public static class ServiceProviderHelper
     {
-        public static T? GetService<T>() where T : class
-        {
-            return App.Services.GetService(typeof(T)) as T;
-        }
+        //public static T? GetService<T>() where T : class
+        //{
+        //    return App.Services.GetService(typeof(T)) as T;
+        //}
     }
 }

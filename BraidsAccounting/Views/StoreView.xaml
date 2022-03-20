@@ -22,6 +22,7 @@
             <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>        
         <DataGrid Grid.Row="0" ItemsSource="{Binding StoreItems}" 
+                  SelectedItem="{Binding StoreItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
             <DataGrid.Columns>
@@ -33,7 +34,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Редактирать"/>
+                                <Button Content="Редактирать" Command="{Binding EditItemCommand}"/>
                                 <Button Content="Удалить"/>
                             </StackPanel>
                         </DataTemplate>

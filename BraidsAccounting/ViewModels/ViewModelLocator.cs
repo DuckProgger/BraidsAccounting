@@ -9,8 +9,8 @@ namespace BraidsAccounting.ViewModels
 {
     internal class ViewModelLocator
     {
-        public MainViewModel MainViewModel=> App.Services.GetRequiredService<MainViewModel>();
-        public AddStoreItemViewModel AddStoreItemViewModel => App.Services.GetRequiredService<AddStoreItemViewModel>();
+        //public MainWindowViewModel MainViewModel=> App.Services.GetRequiredService<MainWindowViewModel>();
+        //public AddStoreItemViewModel AddStoreItemViewModel => App.Services.GetRequiredService<AddStoreItemViewModel>();
 
     }
 }

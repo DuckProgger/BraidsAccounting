@@ -1,8 +1,12 @@
 ﻿using BraidsAccounting.Data;
 using BraidsAccounting.Services;
 using BraidsAccounting.ViewModels;
+using BraidsAccounting.Views;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Prism.Ioc;
+using Prism.Modularity;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -16,29 +20,49 @@ namespace BraidsAccounting
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App 
     {
-        private static IHost? __Host;
-        public static IHost Host => __Host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
-        public static IServiceProvider Services => Host.Services;
+        //private static IHost? __Host;
+        //public static IHost Host => __Host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+        //public static IServiceProvider Services => Host.Services;
 
-        internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
-            .AddServices()
-            .AddViewModels()
-            .AddDatabase()
-            ;
+        ////protected override create
 
-        protected override async void OnStartup(StartupEventArgs e)
+        //internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
+        //    .AddServices()
+        //    .AddViewModels()
+        //    .AddDatabase()
+        //    ;
+
+        //protected override async void OnStartup(StartupEventArgs e)
+        //{
+        //    IHost? host = Host;
+        //    base.OnStartup(e);
+        //    await host.StartAsync();
+        //}
+        //protected override async void OnExit(ExitEventArgs e)
+        //{
+        //    using IHost? host = Host;
+        //    base.OnExit(e);
+        //    await host.StopAsync();
+        //}
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            IHost? host = Host;
-            base.OnStartup(e);
-            await host.StartAsync();
+            containerRegistry
+                .AddDatabase()
+                .AddServices()
+                ;
+
         }
-        protected override async void OnExit(ExitEventArgs e)
+        protected override Window CreateShell()
         {
-            using IHost? host = Host;
-            base.OnExit(e);
-            await host.StopAsync();
+            return Container.Resolve<MainWindow>();
+        }
+
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            moduleCatalog.AddModule(typeof(MainWindow));
         }
     }
 }

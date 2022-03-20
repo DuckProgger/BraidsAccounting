@@ -38,7 +38,8 @@ namespace BraidsAccounting.Services
             // потому что производителей надо добавлять в отдельном окне
             storeItem.Item.ItemPrice = itemPrice is not null 
                 ? itemPrice 
-                : throw new Exception("Такого производителя нет в базе."); ;
+                : throw new Exception("Такого производителя нет в базе."); 
+            // Найти товар на складе
             var existingItem = items.Items
                 .AsEnumerable()
                 .FirstOrDefault(i => i.Equals(storeItem.Item));

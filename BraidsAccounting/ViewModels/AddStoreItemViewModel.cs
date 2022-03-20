@@ -1,6 +1,8 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
+using Prism.Events;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +21,21 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
 
-        public AddStoreItemViewModel(IStoreService store)
+        public AddStoreItemViewModel(
+            IStoreService store
+            , IEventAggregator eventAggregator
+            )
         {
             this.store = store;
             StoreItem.Item = new();
             StoreItem.Item.ItemPrice = new();
+            eventAggregator.GetEvent<PubSubEvent<StoreItem>>().Subscribe(MessageReceived);
+
+        }
+
+        private void MessageReceived(StoreItem item)
+        {
+            StoreItem = item;
         }
 
         /// <summary>Команда - добавить товар на склад</summary>

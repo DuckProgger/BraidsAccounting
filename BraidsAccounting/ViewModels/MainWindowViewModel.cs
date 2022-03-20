@@ -3,6 +3,7 @@ using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +13,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using IServiceProvider = BraidsAccounting.Services.Interfaces.IServiceProvider;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class MainViewModel : ViewModelBase
+    internal class MainWindowViewModel : ViewModelBase
     {
 
         //public ObservableCollection<Item>? Items { get; set; }
@@ -27,6 +29,7 @@ namespace BraidsAccounting.ViewModels
         private readonly IServiceProvider servicesRep;
         private readonly IRepository<WastedItem> wastedItemsRep;
         private readonly IRepository<ItemPrice> itemPricesRep;
+        private readonly IRegionNavigationService regionService;
 
         public string Title { get; set; } = "Моё окно";
         //public MainViewModel(
@@ -47,7 +50,7 @@ namespace BraidsAccounting.ViewModels
 
         private ICommand? _LoadStoreViewCommand;
 
-        public MainViewModel(
+        public MainWindowViewModel(
             IRepository<Item> itemsRep
             , IStoreService store
             , IServiceProvider servicesRep
@@ -60,6 +63,7 @@ namespace BraidsAccounting.ViewModels
             this.servicesRep = servicesRep;
             this.wastedItemsRep = wastedItemsRep;
             this.itemPricesRep = itemPricesRep;
+            this.regionService = regionService;
         }
 
         /// <summary>Команда - загрузить StoreViewModel</summary>
@@ -68,7 +72,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanLoadStoreViewModelCommandExecute() => true;
         private async void OnLoadStoreViewModelCommandExecuted()
         {
-            CurrentModel = new StoreViewModel(store);
+            //CurrentModel = new StoreViewModel(store);
         }
 
         #endregion

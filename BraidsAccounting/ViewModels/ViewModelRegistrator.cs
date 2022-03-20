@@ -9,9 +9,9 @@ namespace BraidsAccounting.ViewModels
 {
     public static class ViewModelRegistrator
     {
-        public static IServiceCollection AddViewModels(this IServiceCollection services) => services
-            .AddSingleton<MainViewModel>()
-            .AddScoped<AddStoreItemViewModel>()
-            ;
+        //public static IServiceCollection AddViewModels(this IServiceCollection services) => services
+        //    .AddSingleton<MainWindowViewModel>()
+        //    .AddScoped<AddStoreItemViewModel>()
+        //    ;
     }
 }

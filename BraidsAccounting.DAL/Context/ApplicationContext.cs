@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,24 @@ namespace BraidsAccounting.DAL.Context
         {
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    modelBuilder.Ignore<EnumerableItems>();
-        //    base.OnModelCreating(modelBuilder);
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+                .UseSqlServer(GetConnectionString());
+        }
+
+        private static string GetConnectionString()
+        {
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            // установка пути к текущему каталогу
+            builder.SetBasePath(Directory.GetCurrentDirectory());
+            // получаем конфигурацию из файла appsettings.json
+            builder.AddJsonFile("appsettings.json");
+            // создаем конфигурацию
+            IConfigurationRoot config = builder.Build();
+            // получаем строку подключения
+            return config.GetConnectionString("DefaultConnection");
+        }
 
     }
 }

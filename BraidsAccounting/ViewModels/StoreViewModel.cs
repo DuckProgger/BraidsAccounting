@@ -4,6 +4,8 @@ using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
+using Prism.Events;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,13 +20,18 @@ namespace BraidsAccounting.ViewModels
     internal class StoreViewModel : ViewModelBase
     {
         private readonly IStoreService store;
+        private readonly IEventAggregator eventAggregator;
 
         public StoreItem? StoreItem { get; set; }
         public ObservableCollection<StoreItem?> StoreItems { get; set; } = new();
 
-        public StoreViewModel(IStoreService store)
+        public StoreViewModel(
+            IStoreService store
+            , IEventAggregator eventAggregator
+            )
         {
             this.store = store;
+            this.eventAggregator = eventAggregator;
         }
 
         public StoreViewModel() { }
@@ -39,7 +46,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnAddItemCommandExecuted()
         {
             //store.AddItem(StoreItem);
-            (new AddStoreItemWindow()).Show();
+            new AddStoreItemWindow().Show();
         }
 
         #endregion
@@ -53,7 +60,8 @@ namespace BraidsAccounting.ViewModels
         private bool CanEditItemCommandExecute() => true;
         private async void OnEditItemCommandExecuted()
         {
-
+            eventAggregator.GetEvent<PubSubEvent<StoreItem>>().Publish(StoreItem);
+            new AddStoreItemWindow().Show();
         }
 
         #endregion
@@ -86,7 +94,7 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            StoreItems = new(ServiceProviderHelper.GetService<IStoreService>()?.GetItems());          
+            //StoreItems = new(ServiceProviderHelper.GetService<IStoreService>()?.GetItems());          
         }
 
         #endregion
