@@ -30,7 +30,9 @@ namespace BraidsAccounting.DAL.Repositories
         public T Create(T item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            context.Add(item);
+            if (Items.Contains(item)) return item;
+            //context.Add(item);
+            context.Entry(item).State = EntityState.Added;
             context.SaveChanges();
             return item;
         }
@@ -47,7 +49,9 @@ namespace BraidsAccounting.DAL.Repositories
         public void CreateRange(IEnumerable<T> items)
         {
             if (items is null) throw new ArgumentNullException(nameof(items));
-            context.AddRange(items);
+            //context.AddRange(items);
+            foreach (var item in items)
+                context.Entry(item).State = EntityState.Added;
             context.SaveChanges();
         }
 

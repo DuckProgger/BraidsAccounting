@@ -15,7 +15,7 @@ namespace BraidsAccounting.ViewModels
 {
     internal class AddStoreItemViewModel : BindableBase
     {
-        public StoreItem StoreItem { get; set; } /*= new();*/
+        public StoreItem StoreItem { get; set; } = new();
 
         public AddStoreItemViewModel(
           IStoreService store
@@ -23,8 +23,8 @@ namespace BraidsAccounting.ViewModels
           )
         {
             this.store = store;
-            //StoreItem.Item = new();
-            //StoreItem.Item.ItemPrice = new();
+            StoreItem.Item = new();
+            StoreItem.Item.ItemPrice = new();
             eventAggregator.GetEvent<PubSubEvent<StoreItem>>().Subscribe(MessageReceived);
 
         }

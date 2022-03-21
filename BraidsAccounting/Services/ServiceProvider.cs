@@ -14,17 +14,21 @@ namespace BraidsAccounting.Services
     {
         private readonly IRepository<Service> services;
         private readonly IStoreService store;
-        //private readonly IRepository<WastedItem> wastedItemsRepository;
+        private readonly IRepository<Item> itemsRepository;
+
+        private readonly IRepository<WastedItem> wastedItemsRepository;
 
         public ServiceProvider(
             IRepository<Service> services
             , IStoreService store
-            //, IRepository<WastedItem> wastedItemsRepository
+            , IRepository<Item> itemsRepository
+            , IRepository<WastedItem> wastedItemsRepository
             )
         {
             this.services = services;
             this.store = store;
-            //this.wastedItemsRepository = wastedItemsRepository;
+            this.itemsRepository = itemsRepository;
+            this.wastedItemsRepository = wastedItemsRepository;
         }
 
         public void ProvideService(Service service)
@@ -41,11 +45,23 @@ namespace BraidsAccounting.Services
             //    WastedItems = wastedItems
             //};
 
-            //// Добавить услугу в БД
-            //services.Create(newService);
+            // Добавить услугу в БД
+            //FillWastedItems(service.WastedItems);
+            CalculateNetProfit(service);
+            var s = services.Create(service);
 
-            //// Убрать использованные товары со склада
-            //store.RemoveItems(wastedItems);
+            FillWastedItems(s);
+            wastedItemsRepository.CreateRange(s.WastedItems);
+
+            // Убрать использованные товары со склада
+            store.RemoveItems(service.WastedItems);
+        }
+
+        private void FillWastedItems(Service s)
+        {
+            foreach (var wastedItem in s.WastedItems)
+                wastedItem.ServiceId = s.Id;
+            //wastedItem.Item = itemsRepository.Get(wastedItem.Item.Id);
         }
 
         //private static List<WastedItem> FillWastedItems(IEnumerable<ServiceFormItem> serviceFormItems)
@@ -63,13 +79,21 @@ namespace BraidsAccounting.Services
         //    return wastedItems;
         //}
 
-        private static decimal CalculateNetProfit(IEnumerable<WastedItem> wastedItems, decimal profit)
+        private static void CalculateNetProfit(Service service)
         {
             decimal expenses = 0;
-            foreach (var wastedItem in wastedItems)
+            foreach (var wastedItem in service.WastedItems)
                 expenses += wastedItem.Item.ItemPrice.Price * wastedItem.Count;
-            return profit - expenses;
+            service.NetProfit = service.Profit - expenses;
         }
+
+        //private static decimal CalculateNetProfit(IEnumerable<WastedItem> wastedItems, decimal profit)
+        //{
+        //    decimal expenses = 0;
+        //    foreach (var wastedItem in wastedItems)
+        //        expenses += wastedItem.Item.ItemPrice.Price * wastedItem.Count;
+        //    return profit - expenses;
+        //}
 
 
         //public void ProvideService(Service service)

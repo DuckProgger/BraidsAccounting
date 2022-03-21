@@ -33,7 +33,7 @@ namespace BraidsAccounting.Services
             //    throw new Exception("Такого производителя нет в базе.");
             // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
             var itemPrice = itemPrices.Items.FirstOrDefault(
-                ip => ip.Manufacturer.ToUpper() == storeItem.Item.ItemPrice.Manufacturer.ToUpper());
+                ip => ip.Manufacturer/*.ToUpper()*/ == storeItem.Item.ItemPrice.Manufacturer/*.ToUpper()*/);
             // Если такого производителя нет, то выдать ошибку,
             // потому что производителей надо добавлять в отдельном окне
             storeItem.Item.ItemPrice = itemPrice is not null 
@@ -70,7 +70,7 @@ namespace BraidsAccounting.Services
             if (wastedItems == null) throw new ArgumentNullException(nameof(wastedItems));
             foreach (var wastedItem in wastedItems)            {
                 if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
-                var existingStoreItem = store.Items.First(si => si.ItemId == wastedItem.ItemId);
+                var existingStoreItem = store.Items.First(si => si.ItemId == wastedItem.Item.Id);
                 if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
                 existingStoreItem.Count -= wastedItem.Count;
                 switch (existingStoreItem.Count)

@@ -22,7 +22,7 @@ namespace BraidsAccounting
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App 
+    public partial class App
     {
         //private static IHost? __Host;
         //public static IHost Host => __Host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
@@ -68,8 +68,10 @@ namespace BraidsAccounting
 
         protected override void ConfigureViewModelLocator()
         {
-            base.ConfigureViewModelLocator();    
+            base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
+            ViewModelLocationProvider.Register<SelectStoreItemView, SelectStoreItemViewModel>();
+
         }
     }
 }
