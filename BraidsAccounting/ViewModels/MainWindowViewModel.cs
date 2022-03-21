@@ -2,8 +2,10 @@
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Views;
 using Prism.Commands;
 using Prism.Ioc;
+using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ using IServiceProvider = BraidsAccounting.Services.Interfaces.IServiceProvider;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class MainWindowViewModel : ViewModelBase
+    internal class MainWindowViewModel : BindableBase
     {
 
         //public ObservableCollection<Item>? Items { get; set; }
@@ -30,6 +32,8 @@ namespace BraidsAccounting.ViewModels
         private readonly IServiceProvider servicesRep;
         private readonly IRepository<WastedItem> wastedItemsRep;
         private readonly IRepository<ItemPrice> itemPricesRep;
+        private readonly IContainerExtension container;
+        private readonly IRegionManager regionManager;
 
         public string Title { get; set; } = "Моё окно";
         //public MainViewModel(
@@ -46,7 +50,7 @@ namespace BraidsAccounting.ViewModels
 
         //public ViewModelBase CurrentModel { get; set; }
 
-        #region Command LoadStoreView - Команда загрузить StoreView
+
 
         private ICommand? _LoadStoreViewCommand;
 
@@ -56,6 +60,8 @@ namespace BraidsAccounting.ViewModels
             , IServiceProvider servicesRep
             , IRepository<WastedItem> wastedItemsRep
             , IRepository<ItemPrice> itemPricesRep
+            , IContainerExtension container
+            , IRegionManager regionManager
             )
         {
             this.itemsRep = itemsRep;
@@ -63,7 +69,11 @@ namespace BraidsAccounting.ViewModels
             this.servicesRep = servicesRep;
             this.wastedItemsRep = wastedItemsRep;
             this.itemPricesRep = itemPricesRep;
+            this.container = container;
+            this.regionManager = regionManager;
         }
+
+        #region Command LoadStoreView - Команда загрузить StoreView
 
         /// <summary>Команда - загрузить StoreViewModel</summary>
         public ICommand LoadStoreViewCommand => _LoadStoreViewCommand
@@ -77,24 +87,21 @@ namespace BraidsAccounting.ViewModels
         #endregion
 
 
-        //private ICommand? _CreateItemCommand;
-        //public ICommand? CreateItemCommand => _CreateItemCommand ??= new DelegateCommand<Item>(async (item) => Item = await ItemRepo.Create(item));
+    
+        #region Command NavigateToOtherView - Команда переключиться на другое представление
 
-        //private ICommand? _getItemsCommand;
-        //public ICommand? GetItemsCommand => _getItemsCommand ??= new DelegateCommand(async () => Items = new(await ItemRepo.GetAll()));
+        private ICommand? _NavigateToOtherViewCommand;
+        /// <summary>Команда - переключиться на другое представление</summary>
+        public ICommand NavigateToOtherViewCommand => _NavigateToOtherViewCommand
+            ??= new DelegateCommand<string>(OnNavigateToOtherViewCommandExecuted, CanNavigateToOtherViewCommandExecute);
+        private bool CanNavigateToOtherViewCommandExecute(string viewName) => true;
+        private async void OnNavigateToOtherViewCommandExecuted(string viewName)
+        {
+            regionManager.RequestNavigate("ContentRegion", viewName);
 
-        //private ICommand? _getItemCommand;
-        //public ICommand? GetItemCommand => _getItemCommand ??= new DelegateCommand<int?>(async (id) => Item = await ItemRepo.Get(id));
+        }
 
-        //private ICommand? _editItemCommand;
-        //public ICommand? EditItemCommand => _editItemCommand ??= new DelegateCommand<Item>(async (item) => 
-        //{
-        //    Item = await ItemRepo.Edit(item);
-        //    oncol
-        //});
-
-        //private ICommand? _deleteItemCommand;
-        //public ICommand? DeleteItemCommand => _deleteItemCommand ??= new DelegateCommand<int?>(async (id) => Item = await ItemRepo.Delete(id));
+        #endregion
 
 
     }

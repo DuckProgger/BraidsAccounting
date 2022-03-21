@@ -6,6 +6,6 @@ namespace BraidsAccounting.Services.Interfaces
 {
     internal interface IServiceProvider
     {
-        void ProvideService(IEnumerable<ServiceFormItem> serviceFormItems, string name, decimal profit);
+        void ProvideService(Service service);
     }
 }

@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class AddStoreItemViewModel : ViewModelBase
+    internal class AddStoreItemViewModel : BindableBase
     {
         public StoreItem StoreItem { get; set; } /*= new();*/
 

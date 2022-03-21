@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace BraidsAccounting.Views
@@ -17,7 +18,7 @@ namespace BraidsAccounting.Views
     /// <summary>
     /// Логика взаимодействия для ServiceView.xaml
     /// </summary>
-    public partial class ServiceView : Window
+    public partial class ServiceView : UserControl
     {
         public ServiceView()
         {

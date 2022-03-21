@@ -27,41 +27,41 @@ namespace BraidsAccounting.Services
             //this.wastedItemsRepository = wastedItemsRepository;
         }
 
-        public void ProvideService(IEnumerable<ServiceFormItem> serviceFormItems, string name, decimal profit)
+        public void ProvideService(Service service)
         {
-            // Опеределить какие товары были использованы
-            List<WastedItem> wastedItems = FillWastedItems(serviceFormItems);
+            //// Опеределить какие товары были использованы
+            //List<WastedItem> wastedItems = FillWastedItems(serviceFormItems);
 
-            // Создать и заполнить класс оказанной услуги (Service)
-            Service newService = new()
-            {
-                Profit = profit,
-                NetProfit = CalculateNetProfit(wastedItems, profit),
-                Name = name,
-                WastedItems = wastedItems
-            };
+            //// Создать и заполнить класс оказанной услуги (Service)
+            //Service newService = new()
+            //{
+            //    Profit = profit,
+            //    NetProfit = CalculateNetProfit(wastedItems, profit),
+            //    Name = name,
+            //    WastedItems = wastedItems
+            //};
 
-            // Добавить услугу в БД
-            services.Create(newService);
+            //// Добавить услугу в БД
+            //services.Create(newService);
 
-            // Убрать использованные товары со склада
-            store.RemoveItems(wastedItems);
+            //// Убрать использованные товары со склада
+            //store.RemoveItems(wastedItems);
         }
 
-        private static List<WastedItem> FillWastedItems(IEnumerable<ServiceFormItem> serviceFormItems)
-        {
-            List<WastedItem> wastedItems = new();
-            foreach (var formItem in serviceFormItems)
-            {
-                WastedItem wastedItem = new()
-                {
-                    Item = formItem.StoreItem.Item,
-                    Count = formItem.Count
-                };
-                wastedItems.Add(wastedItem);
-            }
-            return wastedItems;
-        }
+        //private static List<WastedItem> FillWastedItems(IEnumerable<ServiceFormItem> serviceFormItems)
+        //{
+        //    List<WastedItem> wastedItems = new();
+        //    foreach (var formItem in serviceFormItems)
+        //    {
+        //        WastedItem wastedItem = new()
+        //        {
+        //            Item = formItem.StoreItem.Item,
+        //            Count = formItem.Count
+        //        };
+        //        wastedItems.Add(wastedItem);
+        //    }
+        //    return wastedItems;
+        //}
 
         private static decimal CalculateNetProfit(IEnumerable<WastedItem> wastedItems, decimal profit)
         {

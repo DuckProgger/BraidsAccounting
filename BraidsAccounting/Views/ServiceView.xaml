@@ -1,12 +1,77 @@
-﻿<Window x:Class="BraidsAccounting.Views.ServiceView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BraidsAccounting.Views"
-        mc:Ignorable="d"
-        Title="ServiceView" Height="450" Width="800">
+﻿<UserControl x:Class="BraidsAccounting.Views.ServiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BraidsAccounting.Views"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="600">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Text="{Binding Service.Name}"/>
+                <TextBox Grid.Column="1" Text="{Binding Service.Profit}"/>
+            </Grid>              
+        </Grid>        
+        <Grid Grid.Row="1">
+            <DataGrid Grid.Row="0" ItemsSource="{Binding WastedItems}" 
+                  SelectedItem="{Binding WastedItem}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Item.ItemPrice.Manufacturer}"/>
+                    <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}"/>
+                    <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}"/>
+                    <!--<DataGridTextColumn Header="Количество"  Binding="{Binding Count}"/>-->
+                    <DataGridTemplateColumn Header="Количество">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Count}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <!--<ListView ItemsSource="{Binding WastedItems}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Item.ItemPrice.Manufacturer}"/>
+                        <GridViewColumn Header="Модель" DisplayMemberBinding="{Binding Item.Article}"/>
+                        <GridViewColumn Header="Цвет" DisplayMemberBinding="{Binding Item.Color}"/>
+                        <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding Count}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>-->
+            
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding StoreItem.Item.ItemPrice.Manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="3" Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"/>-->
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Button Content="Добавить" />
+        </Grid>
+        <Grid Grid.Row="3">
+            <Button Content="Сохранить"/>
+        </Grid>
     </Grid>
-</Window>
+</UserControl>

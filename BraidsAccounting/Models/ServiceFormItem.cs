@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Models
 {
-    internal class ServiceFormItem
-    {
-        public StoreItem StoreItem { get; set; } = null!;
-        public int Count { get; set; }
-    }
+    //internal class ServiceFormItem
+    //{
+    //    public StoreItem StoreItem { get; set; } = null!;
+    //    public int Count { get; set; }
+    //}
 }

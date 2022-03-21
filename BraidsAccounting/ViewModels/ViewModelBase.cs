@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal abstract class ViewModelBase : INotifyPropertyChanged
+    internal abstract class NotifiedModel2 : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

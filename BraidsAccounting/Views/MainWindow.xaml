@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BraidsAccounting"   
         xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"  
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"  
-         xmlns:prism="http://prismlibrary.com/"
+        xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
        
@@ -19,10 +19,14 @@
             <i:InvokeCommandAction Command="{Binding LoadStoreViewCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Grid>
+    <DockPanel>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="Склад" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>
+            <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>        
+        </Menu>
         <!--<ContentControl Content="{Binding CurrentModel}"/>-->
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
-    </Grid>
+    </DockPanel>
 </Window>
 
 <!--DataContext ="{Binding MainViewModel, Source={StaticResource Locator}}"-->

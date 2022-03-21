@@ -1,4 +1,5 @@
-﻿using BraidsAccounting.Models;
+﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Models;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,12 @@ namespace BraidsAccounting.ViewModels
 {
     internal class ServiceViewModel
     {
-        public List<ServiceFormItem> ServiceFormItems { get; set; }
-        public string Name { get; set; } = null!;
-        public decimal Profit { get; set; }
+        public Service Service { get; set; }
+        public List<WastedItem> WastedItems { get; set; } = new();
+        public WastedItem WastedItem { get; set; } = new();
+
+        //public string Name { get; set; } = null!;
+        //public decimal Profit { get; set; }
 
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
 
@@ -31,10 +35,23 @@ namespace BraidsAccounting.ViewModels
         private bool CanCreateServiceCommandExecute() => true;
         private async void OnCreateServiceCommandExecuted()
         {
-            serviceProvider.ProvideService(ServiceFormItems, Name, Profit);
+            serviceProvider.ProvideService(Service);
         }
 
         #endregion
 
+        #region Command SelectStoreItem - Команда выбрать товар со склада
+
+        private ICommand? _SelectStoreItemCommand;
+        /// <summary>Команда - выбрать товар со склада</summary>
+        public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
+            ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
+        private bool CanSelectStoreItemCommandExecute() => true;
+        private async void OnSelectStoreItemCommandExecuted()
+        {
+
+        }
+
+        #endregion
     }
 }
