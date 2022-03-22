@@ -18,11 +18,13 @@ namespace BraidsAccounting.Services
         //    ;
 
         public static IContainerRegistry AddServices(this IContainerRegistry services) => services
-           .Register<Interfaces.IServiceProvider, ServiceProvider>()
-           .Register<IStoreService, StoreService>()
+            .Register<Interfaces.IServiceProvider, ServiceProvider>()
+            .Register<IStoreService, StoreService>()
+            .Register<IItemsService, ItemsService>()
+
            ;
 
 
-        
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
@@ -6,6 +7,7 @@ using BraidsAccounting.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,25 +29,31 @@ namespace BraidsAccounting.ViewModels
 
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRepository<WastedItem> wastedItemsRepository;
+        private readonly IRegionManager regionManager;
 
         public ServiceViewModel(
             Services.Interfaces.IServiceProvider serviceProvider
             , IEventAggregator eventAggregator
             , IRepository<WastedItem> wastedItemsRepository
+            , IRegionManager regionManager
             )
         {
             this.serviceProvider = serviceProvider;
             this.wastedItemsRepository = wastedItemsRepository;
+            this.regionManager = regionManager;
             eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
         }
 
         private void MessageReceived(StoreItem storeItem)
         {
-            WastedItem wastedItem = new()
+            if (regionManager.IsViewActive<ServiceView>("ContentRegion"))
             {
-                Item = storeItem.Item
-            };
-            WastedItems.Add(wastedItem);
+                WastedItem wastedItem = new()
+                {
+                    Item = storeItem.Item
+                };
+                WastedItems.Add(wastedItem);
+            }
         }
 
         #region Command CreateService - Добавление сервиса

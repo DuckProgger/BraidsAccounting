@@ -41,8 +41,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanSelectCommandExecute() => true;
         private async void OnSelectCommandExecuted()
         {
-            eventAggregator.GetEvent<SelectStoreItemEvent>().Publish(SelectedItem);
-            
+            eventAggregator.GetEvent<SelectStoreItemEvent>().Publish(SelectedItem);            
         }
 
         #endregion
