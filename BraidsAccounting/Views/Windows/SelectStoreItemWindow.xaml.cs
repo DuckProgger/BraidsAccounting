@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace BraidsAccounting.Views
+namespace BraidsAccounting.Views.Windows
 {
     /// <summary>
     /// Логика взаимодействия для SelectStoreItemView.xaml
     /// </summary>
-    public partial class SelectStoreItemView : Window
+    public partial class SelectStoreItemWindow : Window
     {
-        public SelectStoreItemView()
+        public SelectStoreItemWindow()
         {
             InitializeComponent();
         }

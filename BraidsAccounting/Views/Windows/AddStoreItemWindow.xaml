@@ -47,7 +47,7 @@
                         <i:CallMethodAction MethodName="Close"
                            TargetObject="{Binding RelativeSource={RelativeSource
                                                   Mode=FindAncestor,
-                                                  AncestorType=Window}}" />
+                                                  AncestorType=Window}}"  />                        
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>

@@ -3,7 +3,9 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
+using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
+using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -24,29 +26,30 @@ namespace BraidsAccounting.ViewModels
         public ObservableCollection<WastedItem> WastedItems { get; set; } = new();
         public WastedItem WastedItem { get; set; } = new();
 
-        //public string Name { get; set; } = null!;
-        //public decimal Profit { get; set; }
-
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRepository<WastedItem> wastedItemsRepository;
         private readonly IRegionManager regionManager;
+        private readonly IViewService viewService;
 
         public ServiceViewModel(
             Services.Interfaces.IServiceProvider serviceProvider
             , IEventAggregator eventAggregator
             , IRepository<WastedItem> wastedItemsRepository
             , IRegionManager regionManager
+            , IViewService viewService
+
             )
         {
             this.serviceProvider = serviceProvider;
             this.wastedItemsRepository = wastedItemsRepository;
             this.regionManager = regionManager;
+            this.viewService = viewService;
             eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
         }
 
-        private void MessageReceived(StoreItem storeItem)
+        private void MessageReceived(StoreItem? storeItem)
         {
-            if (regionManager.IsViewActive<ServiceView>("ContentRegion"))
+            if (storeItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
             {
                 WastedItem wastedItem = new()
                 {
@@ -80,7 +83,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanSelectStoreItemCommandExecute() => true;
         private async void OnSelectStoreItemCommandExecuted()
         {
-            new SelectStoreItemView().Show();
+            viewService.ActivateWindowWithClosing<SelectStoreItemWindow, MainWindow>();
         }
 
         #endregion

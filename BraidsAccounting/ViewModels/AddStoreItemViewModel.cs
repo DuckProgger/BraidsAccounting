@@ -3,6 +3,7 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
+using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -19,21 +20,28 @@ namespace BraidsAccounting.ViewModels
 {
     internal class AddStoreItemViewModel : BindableBase
     {
+        private ICommand? _AddStoreItemCommand;
+        private readonly IStoreService store;
+        private readonly IItemsService itemsService;
+        private readonly IRegionManager regionManager;
+        private readonly IViewService viewService;
+
         public StoreItem StoreItem { get; set; } = new();
         public ObservableCollection<string> Manufacturers { get; set; }
         public string SelectedManufacturer { get; set; }
 
         public AddStoreItemViewModel(
-          IStoreService store
+                IStoreService store
             , IItemsService itemsService
-          , IEventAggregator eventAggregator
-                        , IRegionManager regionManager
-
+            , IEventAggregator eventAggregator
+            , IRegionManager regionManager
+            , IViewService viewService
           )
         {
             this.store = store;
             this.itemsService = itemsService;
             this.regionManager = regionManager;
+            this.viewService = viewService;
             StoreItem.Item = new();
             StoreItem.Item.ItemPrice = new();
             eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
@@ -51,11 +59,6 @@ namespace BraidsAccounting.ViewModels
         }
 
         #region Command AddStoreItem - Команда добавить товар на склад
-
-        private ICommand? _AddStoreItemCommand;
-        private readonly IStoreService store;
-        private readonly IItemsService itemsService;
-        private readonly IRegionManager regionManager;
 
         /// <summary>Команда - добавить товар на склад</summary>
         public ICommand AddStoreItemCommand => _AddStoreItemCommand
@@ -92,7 +95,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanSelectStoreItemCommandExecute() => true;
         private async void OnSelectStoreItemCommandExecuted()
         {
-            new SelectStoreItemView().Show();
+            viewService.ActivateWindowWithClosing<SelectStoreItemWindow, AddStoreItemWindow>();
         }
 
         #endregion

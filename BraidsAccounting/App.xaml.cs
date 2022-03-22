@@ -25,31 +25,6 @@ namespace BraidsAccounting
     /// </summary>
     public partial class App
     {
-        //private static IHost? __Host;
-        //public static IHost Host => __Host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
-        //public static IServiceProvider Services => Host.Services;
-
-        ////protected override create
-
-        //internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
-        //    .AddServices()
-        //    .AddViewModels()
-        //    .AddDatabase()
-        //    ;
-
-        //protected override async void OnStartup(StartupEventArgs e)
-        //{
-        //    IHost? host = Host;
-        //    base.OnStartup(e);
-        //    await host.StartAsync();
-        //}
-        //protected override async void OnExit(ExitEventArgs e)
-        //{
-        //    using IHost? host = Host;
-        //    base.OnExit(e);
-        //    await host.StopAsync();
-        //}
-
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry
@@ -66,19 +41,15 @@ namespace BraidsAccounting
         {
             moduleCatalog
                 .AddModule(typeof(MainModule))
-                //.AddModule(typeof(StoreItemModule))
                 ;
         }
 
         protected override void ConfigureViewModelLocator()
         {
             base.ConfigureViewModelLocator();
-            //ViewModelLocationProvider.Register<AddStoreItemView, AddStoreItemViewModel>();
-            ViewModelLocationProvider.Register<SelectStoreItemView, SelectStoreItemViewModel>();
             ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
             ViewModelLocationProvider.Register<EditStoreItemWindow, EditStoreItemViewModel>();
-
-
+            ViewModelLocationProvider.Register<SelectStoreItemWindow, SelectStoreItemViewModel>();
         }
     }
 }
