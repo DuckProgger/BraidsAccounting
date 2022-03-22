@@ -66,7 +66,7 @@ namespace BraidsAccounting
         {
             moduleCatalog
                 .AddModule(typeof(MainModule))
-                .AddModule(typeof(StoreItemModule))
+                //.AddModule(typeof(StoreItemModule))
                 ;
         }
 
@@ -75,7 +75,9 @@ namespace BraidsAccounting
             base.ConfigureViewModelLocator();
             //ViewModelLocationProvider.Register<AddStoreItemView, AddStoreItemViewModel>();
             ViewModelLocationProvider.Register<SelectStoreItemView, SelectStoreItemViewModel>();
-            ViewModelLocationProvider.Register<StoreItemWindow, StoreItemWindowViewModel>();
+            ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
+            ViewModelLocationProvider.Register<EditStoreItemWindow, EditStoreItemViewModel>();
+
 
         }
     }

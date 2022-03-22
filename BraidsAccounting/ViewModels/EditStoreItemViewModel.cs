@@ -3,6 +3,7 @@ using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class EditStoreItemViewModel
+    internal class EditStoreItemViewModel : BindableBase
     {
         private readonly IStoreService store;
 

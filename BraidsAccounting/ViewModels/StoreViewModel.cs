@@ -71,10 +71,10 @@ namespace BraidsAccounting.ViewModels
         private bool CanEditItemCommandExecute(string viewName) => true;
         private async void OnEditItemCommandExecuted(string viewName)
         {
-            //var viewModel = new StoreItemWindow();
+            var window = new EditStoreItemWindow();
             eventAggregator.GetEvent<EditStoreItemEvent>().Publish(StoreItem);
-            //viewModel.Show();
-            OnNavigateToOtherViewCommandExecuted(viewName);
+            window.Show();
+            //OnNavigateToOtherWindowCommandExecuted(viewName);
         }
 
         #endregion
@@ -112,18 +112,42 @@ namespace BraidsAccounting.ViewModels
 
         #endregion
 
-        #region Command NavigateToOtherView - Команда переключиться на другое представление
+        //#region Command NavigateToOtherView - Команда переключиться на другое представление
 
-        private ICommand? _NavigateToOtherViewCommand;
-        /// <summary>Команда - переключиться на другое представление</summary>
-        public ICommand NavigateToOtherViewCommand => _NavigateToOtherViewCommand
-            ??= new DelegateCommand<string>(OnNavigateToOtherViewCommandExecuted, CanNavigateToOtherViewCommandExecute);
-        private bool CanNavigateToOtherViewCommandExecute(string viewName) => true;
-        private async void OnNavigateToOtherViewCommandExecuted(string viewName)
+        //private ICommand? _NavigateToOtherViewCommand;
+        ///// <summary>Команда - переключиться на другое представление</summary>
+        //public ICommand NavigateToOtherViewCommand => _NavigateToOtherViewCommand
+        //    ??= new DelegateCommand<string>(OnNavigateToOtherViewCommandExecuted, CanNavigateToOtherViewCommandExecute);
+        //private bool CanNavigateToOtherViewCommandExecute(string viewName) => true;
+        //private async void OnNavigateToOtherViewCommandExecuted(string viewName)
+        //{
+        //    new StoreItemWindow().Show();
+        //    //regionManager.RequestNavigate(StoreItemModule.RegionName, "EditStoreItemView");
+
+        //}
+
+        //#endregion
+
+        #region Command NavigateToOtherWindow - Команда перейти на другой экран
+
+        private ICommand? _NavigateToOtherWindowCommand;
+        /// <summary>Команда - перейти на другой экран</summary>
+        public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
+            ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
+        private bool CanNavigateToOtherWindowCommandExecute(string windowName) => true;
+        private async void OnNavigateToOtherWindowCommandExecuted(string windowName)
         {
-            new StoreItemWindow().Show();
-            //regionManager.RequestNavigate(StoreItemModule.RegionName, "EditStoreItemView");
-
+            switch (windowName)
+            {
+                case "AddStoreItemWindow":
+                    new AddStoreItemWindow().Show();
+                    break;
+                case "EditStoreItemWindow":
+                    new EditStoreItemWindow().Show();
+                    break;
+                default:
+                    break;
+            }
         }
 
         #endregion

@@ -91,6 +91,7 @@ namespace BraidsAccounting.Services
         {
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
             store.Edit(storeItem);
+            items.Edit(storeItem.Item);
         }
 
         public void RemoveItem(int id)
