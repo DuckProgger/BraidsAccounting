@@ -16,9 +16,11 @@ namespace BraidsAccounting.Modules
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager
-                .RegisterViewWithRegion("ContentRegion", typeof(StoreView))
-                .RegisterViewWithRegion("ContentRegion", typeof(ServiceView))
-                ;
+                 .RegisterViewWithRegion("ContentRegion", typeof(StoreView))
+                 .RegisterViewWithRegion("ContentRegion", typeof(ServiceView))
+            //     .RegisterViewWithRegion("StoreItemRegion", typeof(AddStoreItemView))
+            //.RegisterViewWithRegion("StoreItemRegion", typeof(EditStoreItemView))
+            ;
 
         }
         public void RegisterTypes(IContainerRegistry containerRegistry)

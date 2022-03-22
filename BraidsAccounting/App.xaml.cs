@@ -3,6 +3,7 @@ using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.ViewModels;
 using BraidsAccounting.Views;
+using BraidsAccounting.Views.Windows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,14 +64,18 @@ namespace BraidsAccounting
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule(typeof(MainModule));
+            moduleCatalog
+                .AddModule(typeof(MainModule))
+                .AddModule(typeof(StoreItemModule))
+                ;
         }
 
         protected override void ConfigureViewModelLocator()
         {
             base.ConfigureViewModelLocator();
-            ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
+            //ViewModelLocationProvider.Register<AddStoreItemView, AddStoreItemViewModel>();
             ViewModelLocationProvider.Register<SelectStoreItemView, SelectStoreItemViewModel>();
+            ViewModelLocationProvider.Register<StoreItemWindow, StoreItemWindowViewModel>();
 
         }
     }

@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using Prism.Events;
@@ -25,15 +26,9 @@ namespace BraidsAccounting.ViewModels
             this.store = store;
             StoreItem.Item = new();
             StoreItem.Item.ItemPrice = new();
-            eventAggregator.GetEvent<PubSubEvent<StoreItem>>().Subscribe(MessageReceived);
-
         }
 
-        private void MessageReceived(StoreItem item)
-        {
-            StoreItem = item;
-            //OnPropertyChanged(nameof(StoreItem));
-        }
+      
 
         #region Command AddStoreItem - Команда добавить товар на склад
 
@@ -50,5 +45,7 @@ namespace BraidsAccounting.ViewModels
         }
 
         #endregion
+
+
     }
 }

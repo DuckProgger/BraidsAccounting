@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using Prism.Events;
@@ -40,7 +41,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanSelectCommandExecute() => true;
         private async void OnSelectCommandExecuted()
         {
-            eventAggregator.GetEvent<PubSubEvent<StoreItem>>().Publish(SelectedItem);
+            eventAggregator.GetEvent<SelectStoreItemEvent>().Publish(SelectedItem);
             
         }
 

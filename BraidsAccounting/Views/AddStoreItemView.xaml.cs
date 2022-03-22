@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace BraidsAccounting.Views
 {
     /// <summary>
-    /// Логика взаимодействия для AddStoreItemWindow.xaml
+    /// Логика взаимодействия для AddStoreItemView.xaml
     /// </summary>
-    public partial class AddStoreItemWindow : Window
+    public partial class AddStoreItemView : UserControl
     {
-        public AddStoreItemWindow()
+        public AddStoreItemView()
         {
             InitializeComponent();
         }

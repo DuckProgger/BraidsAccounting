@@ -35,22 +35,7 @@ namespace BraidsAccounting.ViewModels
         private readonly IContainerExtension container;
         private readonly IRegionManager regionManager;
 
-        public string Title { get; set; } = "Моё окно";
-        //public MainViewModel(
-        //    IStoreService storeService,
-        //    Services.Interfaces.IServiceProvider serviceProvider
-        //   // , IRepository<Service> servicesRep
-        //   //, IRepository<WastedItem> wastedItemsRep
-        //   //, IRepository<ItemPrice> itemPricesRep
-        //    )
-        //{
-
-
-        //}
-
-        //public ViewModelBase CurrentModel { get; set; }
-
-
+        public string Title { get; set; } = "Моё окно"; 
 
         private ICommand? _LoadStoreViewCommand;
 

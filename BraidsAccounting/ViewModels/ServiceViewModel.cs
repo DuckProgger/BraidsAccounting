@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Views;
@@ -35,7 +36,7 @@ namespace BraidsAccounting.ViewModels
         {
             this.serviceProvider = serviceProvider;
             this.wastedItemsRepository = wastedItemsRepository;
-            eventAggregator.GetEvent<PubSubEvent<StoreItem>>().Subscribe(MessageReceived);
+            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
         }
 
         private void MessageReceived(StoreItem storeItem)
