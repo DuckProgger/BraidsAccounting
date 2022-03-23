@@ -2,6 +2,7 @@
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ManufacturersViewModel
+    internal class ManufacturersViewModel : BindableBase
     {
         private readonly IManufacturersService manufacturersService;
         private readonly IItemsService itemsService;
@@ -20,7 +21,7 @@ namespace BraidsAccounting.ViewModels
         public bool DialogResult { get; set; }
         public ObservableCollection<Manufacturer> Manufacturers { get; set; }
         public Manufacturer SelectedManufacturer { get; set; }
-        public Manufacturer ManufacturerInForm { get; set; }
+        public Manufacturer ManufacturerInForm { get; set; } = new();
 
 
         public ManufacturersViewModel(
@@ -51,22 +52,21 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _SaveCommand;
         /// <summary>Команда - сохранить изменения</summary>
         public ICommand SaveCommand => _SaveCommand
-            ??= new DelegateCommand<Manufacturer>(OnSaveCommandExecuted, CanSaveCommandExecute);
-        private bool CanSaveCommandExecute(Manufacturer manufacturer) => true;
-        private async void OnSaveCommandExecuted(Manufacturer manufacturer)
+            ??= new DelegateCommand(OnSaveCommandExecuted, CanSaveCommandExecute);
+        private bool CanSaveCommandExecute() => true;
+        private async void OnSaveCommandExecuted()
         {
-            switch (manufacturer.Id)
+            switch (ManufacturerInForm.Id)
             {
                 case 0:
-                    manufacturersService.AddManufacturer(manufacturer);
+                    manufacturersService.AddManufacturer(ManufacturerInForm);
                     break;
                 default:
-                    manufacturersService.RemoveManufacturer(manufacturer.Id);
+                    manufacturersService.EditManufacturer(ManufacturerInForm);
                     break;
             }
+            ResetFormCommand.Execute(null);
         }
-
-
 
         #endregion
 
@@ -75,17 +75,17 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _RemoveManufacturerCommand;
         /// <summary>Команда - удалить производителя с ценой</summary>
         public ICommand RemoveManufacturerCommand => _RemoveManufacturerCommand
-            ??= new DelegateCommand<Manufacturer>(OnRemoveManufacturerCommandExecuted, CanRemoveManufacturerCommandExecute);
-        private bool CanRemoveManufacturerCommandExecute(Manufacturer manufacturer) => true;
-        private async void OnRemoveManufacturerCommandExecuted(Manufacturer manufacturer)
+            ??= new DelegateCommand(OnRemoveManufacturerCommandExecuted, CanRemoveManufacturerCommandExecute);
+        private bool CanRemoveManufacturerCommandExecute() => true;
+        private async void OnRemoveManufacturerCommandExecuted()
         {
-            if (itemsService.ContainsManufacturer(manufacturer.Name))
+            if (itemsService.ContainsManufacturer(SelectedManufacturer.Name))
             {
                 // Предупредить, что в каталоге содержится товар производителя
                 // и при удалении удалятся все связанные товары из каталога и со склада
                 //if(!DialogResult) // не удалять
             }
-            manufacturersService.RemoveManufacturer(manufacturer.Id);
+            manufacturersService.RemoveManufacturer(SelectedManufacturer.Id);
         }
 
         #endregion
@@ -113,7 +113,12 @@ namespace BraidsAccounting.ViewModels
         private bool CanFillFormCommandExecute() => true;
         private async void OnFillFormCommandExecuted()
         {
-            //ManufacturerInForm = new() { };
+            ManufacturerInForm = new() 
+            { 
+                Id = SelectedManufacturer.Id,
+                Name = SelectedManufacturer.Name,
+                Price = SelectedManufacturer.Price
+            };
         }
 
         #endregion

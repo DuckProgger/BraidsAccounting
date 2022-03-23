@@ -22,7 +22,8 @@
     <DockPanel>
         <Menu IsMainMenu="True">
             <MenuItem Header="Склад" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>
-            <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>        
+            <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
+            <MenuItem Header="Производители" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ManufacturersView"/>        
         </Menu>
         <!--<ContentControl Content="{Binding CurrentModel}"/>-->
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />

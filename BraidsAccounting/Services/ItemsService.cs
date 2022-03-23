@@ -14,7 +14,7 @@ namespace BraidsAccounting.Services
         private readonly IRepository<Item> items;
         //private readonly IRepository<Manufacturer> manufacturers;
 
-        public ItemsService(IRepository<Item> items/*/*, IRepository<Manufacturer> manufacturers*/*/)
+        public ItemsService(IRepository<Item> items/*, IRepository<Manufacturer> manufacturers*/)
         {
             this.items = items;
             //this.manufacturers = manufacturers;

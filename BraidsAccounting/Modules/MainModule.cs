@@ -18,17 +18,15 @@ namespace BraidsAccounting.Modules
             regionManager
                  .RegisterViewWithRegion("ContentRegion", typeof(StoreView))
                  .RegisterViewWithRegion("ContentRegion", typeof(ServiceView))
-            //     .RegisterViewWithRegion("StoreItemRegion", typeof(AddStoreItemView))
-            //.RegisterViewWithRegion("StoreItemRegion", typeof(EditStoreItemView))
+                 .RegisterViewWithRegion("ContentRegion", typeof(ManufacturersView))
             ;
 
         }
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            //containerRegistry.RegisterForNavigation<StoreView>();
             containerRegistry.RegisterForNavigation<StoreView>();
             containerRegistry.RegisterForNavigation<ServiceView>();
-
+            containerRegistry.RegisterForNavigation<ManufacturersView>();
         }
     }
 }

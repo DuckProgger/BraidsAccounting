@@ -33,7 +33,7 @@ namespace BraidsAccounting.DAL.Repositories
             if (Items.Contains(item)) return item;
             //context.Add(item);
             context.Entry(item).State = EntityState.Added;
-            context.SaveChanges();
+            SaveChanges();
             return item;
         }
 
@@ -42,7 +42,7 @@ namespace BraidsAccounting.DAL.Repositories
             if (item is null) throw new ArgumentNullException(nameof(item));
             //context.Entry(item).State = EntityState.Added;
             await context.AddAsync(item, cancel);
-            await context.SaveChangesAsync(cancel).ConfigureAwait(false);
+            await SaveChangesAsync(cancel);
             return item;
         }
 
@@ -52,28 +52,33 @@ namespace BraidsAccounting.DAL.Repositories
             //context.AddRange(items);
             foreach (var item in items)
                 context.Entry(item).State = EntityState.Added;
-            context.SaveChanges();
+            SaveChanges();
         }
 
         public async Task CreateRangeAsync(IEnumerable<T> items, CancellationToken cancel = default)
         {
             if (items is null) throw new ArgumentNullException(nameof(items));
             await context.AddRangeAsync(items, cancel);
-            await context.SaveChangesAsync(cancel);
+            await SaveChangesAsync(cancel);
+        }
+
+        private void EditInternal(T item)
+        {
+            if (item is null) throw new ArgumentNullException(nameof(item));
+            T existingItem = Get(item.Id) ?? throw new Exception("Элемент не найден.");
+            context.Entry(existingItem).CurrentValues.SetValues(item);
         }
 
         public void Edit(T item)
         {
-            if (item is null) throw new ArgumentNullException(nameof(item));
-            context.Entry(item).State = EntityState.Modified;
-            context.SaveChanges();
+            EditInternal(item);
+            SaveChanges();
         }
 
         public async Task EditAsync(T item, CancellationToken cancel = default)
         {
-            if (item is null) throw new ArgumentNullException(nameof(item));
-            context.Entry(item).State = EntityState.Modified;
-            await context.SaveChangesAsync(cancel).ConfigureAwait(false);
+            EditInternal(item);
+            await SaveChangesAsync(cancel);
         }
 
         public void EditRange(IEnumerable<T> items)
@@ -81,38 +86,48 @@ namespace BraidsAccounting.DAL.Repositories
             if (items is null) throw new ArgumentNullException(nameof(items));
             foreach (var item in items)
                 context.Entry(item).State = EntityState.Modified;
-            context.SaveChanges();
+            SaveChanges();
         }
         public async Task EditRangeAsync(IEnumerable<T> items, CancellationToken cancel = default)
         {
             if (items is null) throw new ArgumentNullException(nameof(items));
             foreach (var item in items)
                 context.Entry(item).State = EntityState.Modified;
-            await context.SaveChangesAsync(cancel);
+            await SaveChangesAsync(cancel);
         }
         public void Remove(int id)
         {
             T item = Get(id) ?? throw new Exception("Элемент не найден.");
             dbSet.Remove(item);
-            context.SaveChanges();
+            SaveChanges();
         }
 
         public async Task RemoveAsync(int id, CancellationToken cancel = default)
         {
             T item = Get(id) ?? throw new Exception("Элемент не найден.");
             dbSet.Remove(item);
-            await context.SaveChangesAsync(cancel).ConfigureAwait(false);
+            await SaveChangesAsync(cancel);
         }
 
         public void RemoveRange(IEnumerable<T> items)
         {
             dbSet.RemoveRange(items);
-            context.SaveChanges();
+            SaveChanges();
         }
         public async Task RemoveRangeAsync(IEnumerable<T> items, CancellationToken cancel = default)
         {
             dbSet.RemoveRange(items);
-            await context.SaveChangesAsync(cancel);
+            await SaveChangesAsync(cancel);
+        }
+
+        private void SaveChanges()
+        {
+            context.SaveChanges();
+        }
+
+        private async Task SaveChangesAsync(CancellationToken cancel)
+        {
+            await context.SaveChangesAsync(cancel).ConfigureAwait(false);
         }
     }
 }
