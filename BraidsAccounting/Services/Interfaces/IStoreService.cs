@@ -10,5 +10,13 @@ namespace BraidsAccounting.Services.Interfaces
         IEnumerable<StoreItem?> GetItems();
         void RemoveItem(int id);
         void RemoveItems(IEnumerable<WastedItem?> items);
+
+        /// <summary>
+        /// Получить количество товара на складе.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        int GetItemCount(int id);
+        
     }
 }

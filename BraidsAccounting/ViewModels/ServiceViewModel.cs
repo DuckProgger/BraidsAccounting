@@ -22,10 +22,27 @@ namespace BraidsAccounting.ViewModels
 {
     internal class ServiceViewModel : BindableBase
     {
-        public Service Service { get; set; } = new();
-        public ObservableCollection<WastedItem> WastedItems { get; set; } = new();
-        public WastedItem WastedItem { get; set; } = new();
+        //private Service service = new();
+        private WastedItem wastedItem = new();
 
+        public Service Service { get; set; } = new();
+        //{
+        //    get => service;
+        //    set
+        //    {
+        //        service = value;
+        //    }
+        //}
+        public ObservableCollection<WastedItem> WastedItems { get; set; } = new();
+        public WastedItem WastedItem
+        {
+            get => wastedItem;
+            set
+            {
+                //int maxCount = sto
+                wastedItem = value;
+            }
+        }
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRepository<WastedItem> wastedItemsRepository;
         private readonly IRegionManager regionManager;
@@ -77,6 +94,7 @@ namespace BraidsAccounting.ViewModels
         #region Command SelectStoreItem - Команда выбрать товар со склада
 
         private ICommand? _SelectStoreItemCommand;
+
         /// <summary>Команда - выбрать товар со склада</summary>
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);

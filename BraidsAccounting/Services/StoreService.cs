@@ -36,9 +36,9 @@ namespace BraidsAccounting.Services
                 ip => ip.Manufacturer/*.ToUpper()*/ == storeItem.Item.ItemPrice.Manufacturer/*.ToUpper()*/);
             // Если такого производителя нет, то выдать ошибку,
             // потому что производителей надо добавлять в отдельном окне
-            storeItem.Item.ItemPrice = itemPrice is not null 
-                ? itemPrice 
-                : throw new Exception("Такого производителя нет в базе."); 
+            storeItem.Item.ItemPrice = itemPrice is not null
+                ? itemPrice
+                : throw new Exception("Такого производителя нет в базе.");
             // Найти товар на складе
             var existingItem = items.Items
                 .AsEnumerable()
@@ -68,9 +68,10 @@ namespace BraidsAccounting.Services
         public void RemoveItems(IEnumerable<WastedItem?> wastedItems)
         {
             if (wastedItems == null) throw new ArgumentNullException(nameof(wastedItems));
-            foreach (var wastedItem in wastedItems)            {
+            foreach (var wastedItem in wastedItems)
+            {
                 if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
-                var existingStoreItem = store.Items.First(si => si.ItemId == wastedItem.Item.Id);
+                var existingStoreItem = store.Items.First(si => si.Item.Id == wastedItem.Item.Id);
                 if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
                 existingStoreItem.Count -= wastedItem.Count;
                 switch (existingStoreItem.Count)
@@ -97,6 +98,8 @@ namespace BraidsAccounting.Services
         public void RemoveItem(int id)
         {
             store.Remove(id);
-        }
+        }       
+        public int GetItemCount(int id) => store.Items.First(si => si.Item.Id == id).Count;
+
     }
 }

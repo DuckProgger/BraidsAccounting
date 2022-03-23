@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.Data;
+using BraidsAccounting.Models;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.ViewModels;
@@ -31,6 +32,8 @@ namespace BraidsAccounting
                 .AddDatabase()
                 .AddServices()
                 ;
+
+            FormItem formItem = new();
         }
         protected override Window CreateShell()
         {
