@@ -16,6 +16,7 @@ namespace BraidsAccounting.Models
     internal class FormItem : BindableBase
     {
         private int? maxCount;
+        private int count;
 
         //public FormItem(/*string manufacturer, decimal price, string article, string color, int count*/)
         //{
@@ -34,7 +35,7 @@ namespace BraidsAccounting.Models
         public decimal Price { get; set; }
         public string Article { get; set; } = null!;
         public string Color { get; set; } = null!;
-        public int Count { get; set; }
+        public int Count { get => count; set => count = Math.Min(value, MaxCount); }
         public int MaxCount
         {
             get

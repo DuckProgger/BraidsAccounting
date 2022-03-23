@@ -22,43 +22,22 @@ namespace BraidsAccounting.ViewModels
 {
     internal class ServiceViewModel : BindableBase
     {
-        //private Service service = new();
-        private WastedItem wastedItem = new();
-
         public Service Service { get; set; } = new();
-        //{
-        //    get => service;
-        //    set
-        //    {
-        //        service = value;
-        //    }
-        //}
-        public ObservableCollection<WastedItem> WastedItems { get; set; } = new();
-        public WastedItem WastedItem
-        {
-            get => wastedItem;
-            set
-            {
-                //int maxCount = sto
-                wastedItem = value;
-            }
-        }
+        public ObservableCollection<FormItem> WastedItems { get; set; } = new();
+        public FormItem WastedItem { get; set; } = new();
+    
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
-        private readonly IRepository<WastedItem> wastedItemsRepository;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
 
         public ServiceViewModel(
             Services.Interfaces.IServiceProvider serviceProvider
             , IEventAggregator eventAggregator
-            , IRepository<WastedItem> wastedItemsRepository
             , IRegionManager regionManager
             , IViewService viewService
-
             )
         {
             this.serviceProvider = serviceProvider;
-            this.wastedItemsRepository = wastedItemsRepository;
             this.regionManager = regionManager;
             this.viewService = viewService;
             eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
@@ -68,11 +47,8 @@ namespace BraidsAccounting.ViewModels
         {
             if (storeItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
             {
-                WastedItem wastedItem = new()
-                {
-                    Item = storeItem.Item
-                };
-                WastedItems.Add(wastedItem);
+                storeItem.Count = 0;
+                WastedItems.Add(storeItem);
             }
         }
 
@@ -85,7 +61,9 @@ namespace BraidsAccounting.ViewModels
         private bool CanCreateServiceCommandExecute() => true;
         private async void OnCreateServiceCommandExecuted()
         {
-            Service.WastedItems = new(WastedItems);
+            Service.WastedItems = new();
+            foreach (var item in WastedItems)
+                Service.WastedItems.Add(item);
             serviceProvider.ProvideService(Service);
         }
 

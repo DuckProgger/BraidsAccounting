@@ -31,17 +31,17 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Производитель" Binding="{Binding Item.ItemPrice.Manufacturer}"/>
-                    <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}"/>
-                    <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}"/>
-                    <!--<DataGridTextColumn Header="Количество"  Binding="{Binding Count}"/>-->
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
                     <DataGridTemplateColumn Header="Количество">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="На складе"  Binding="{Binding MaxCount}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
             <!--<ListView ItemsSource="{Binding WastedItems}">

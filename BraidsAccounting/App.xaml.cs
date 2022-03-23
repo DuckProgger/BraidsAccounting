@@ -32,8 +32,6 @@ namespace BraidsAccounting
                 .AddDatabase()
                 .AddServices()
                 ;
-
-            FormItem formItem = new();
         }
         protected override Window CreateShell()
         {
