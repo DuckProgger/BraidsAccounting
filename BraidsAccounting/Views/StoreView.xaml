@@ -34,7 +34,7 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Производитель" Binding="{Binding Item.ItemPrice.Manufacturer}"/>
+                <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}"/>
                 <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}"/>
                 <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}"/>
                 <DataGridTextColumn Header="Количество"  Binding="{Binding Count}"/>

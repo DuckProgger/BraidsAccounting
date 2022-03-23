@@ -3,17 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BraidsAccounting.DAL.Entities
 {
-    public class ItemPrice : Entity, IEquatable<ItemPrice>
+    public class Manufacturer : Entity, IEquatable<Manufacturer>
     {
-        public string Manufacturer { get; set; } = null!;
+        public string Name { get; set; } = null!;
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
         public List<Item> Items { get; set; } = null!;
 
-        public bool Equals(ItemPrice? other)
+        public bool Equals(Manufacturer? other)
         {
             if (other is null) return false;
-            return Manufacturer.ToUpper() == other.Manufacturer.ToUpper()
+            return Name.ToUpper() == other.Name.ToUpper()
                 //&& Price == other.Price
                 ;
         }

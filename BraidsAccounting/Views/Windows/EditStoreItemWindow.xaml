@@ -24,7 +24,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Text="{Binding StoreItem.Item.ItemPrice.Manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="0" Text="{Binding StoreItem.Item.Manufacturer.Name, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="3" Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"/>

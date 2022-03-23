@@ -4,6 +4,7 @@ namespace BraidsAccounting.Services.Interfaces
 {
     internal interface IItemsService
     {
-        IEnumerable<string> GetManufacturers();
+        //IEnumerable<string> GetManufacturers();
+        bool ContainsManufacturer(string manufacturerName);
     }
 }

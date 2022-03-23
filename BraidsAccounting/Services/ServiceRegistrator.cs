@@ -22,6 +22,7 @@ namespace BraidsAccounting.Services
             .Register<IStoreService, StoreService>()
             .Register<IItemsService, ItemsService>()
             .Register<IViewService, ViewService>()
+            .Register<IManufacturersService, ManufacturersService>()
 
            ;
 

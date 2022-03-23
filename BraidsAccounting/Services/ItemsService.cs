@@ -12,13 +12,21 @@ namespace BraidsAccounting.Services
     internal class ItemsService : IItemsService
     {
         private readonly IRepository<Item> items;
+        //private readonly IRepository<Manufacturer> manufacturers;
 
-        public ItemsService(IRepository<Item> items)
+        public ItemsService(IRepository<Item> items/*/*, IRepository<Manufacturer> manufacturers*/*/)
         {
             this.items = items;
+            //this.manufacturers = manufacturers;
         }
 
-        public IEnumerable<string> GetManufacturers() => items.Items.Select(i => i.ItemPrice.Manufacturer).Distinct();
+        public bool ContainsManufacturer(string manufacturerName)
+        {
+           return items.Items.Any(i => i.Manufacturer.Name == manufacturerName);
+        }
 
+        //public IEnumerable<string> GetManufacturers() => manufacturers.Items.Select(m => m.Name);
+
+            //items.Items.Select(i => i.Manufacturer.Name).Distinct();
     }
 }

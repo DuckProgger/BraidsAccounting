@@ -6,14 +6,14 @@ namespace BraidsAccounting.DAL.Entities
     {
         public string Article { get; set; } = null!;
         public string Color { get; set; } = null!;
-        public ItemPrice ItemPrice { get; set; } = null!;
+        public Manufacturer Manufacturer { get; set; } = null!;
 
         public bool Equals(Item? other)
         {
             if (other is null) return false;
             return Article.ToUpper() == other.Article.ToUpper()
               && Color.ToUpper() == other.Color.ToUpper()
-              && ItemPrice.Equals(other.ItemPrice);
+              && Manufacturer.Equals(other.Manufacturer);
         }
 
     }

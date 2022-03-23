@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace BraidsAccounting.DAL.Context
         DbSet<Service> Services { get; set; }
         DbSet<StoreItem> Store { get; set; }
         DbSet<WastedItem> WastedItems { get; set; }
-        DbSet<ItemPrice> ItemPrices { get; set; }
+        DbSet<Manufacturer> Manufacturers { get; set; }
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
@@ -43,18 +44,13 @@ namespace BraidsAccounting.DAL.Context
 
     }
 
-    public class MyServiceFactory
+    public class MyServiceFactory : IDesignTimeDbContextFactory<ApplicationContext>
     {
-        //private readonly ApplicationContext appDbContext;
-        //public MyServiceFactory(ApplicationContext appDbContext)
-        //{
-        //    this.appDbContext = appDbContext;
-        //}
-
-        public static ApplicationContext Create()
+        public static ApplicationContext CreateDbContext()
         {
-           return new ApplicationContext(new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(ApplicationContext.GetConnectionString()).Options);
-
+            return new ApplicationContext(new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(ApplicationContext.GetConnectionString()).Options);
         }
+
+        public ApplicationContext CreateDbContext(string[] args) => CreateDbContext();
     }
 }

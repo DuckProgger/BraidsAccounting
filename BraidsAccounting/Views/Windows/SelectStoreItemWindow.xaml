@@ -25,7 +25,7 @@
                   SelectedItem="{Binding SelectedItem}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Item.ItemPrice.Manufacturer}"/>
+                    <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Item.Manufacturer.Name}"/>
                     <GridViewColumn Header="Модель" DisplayMemberBinding="{Binding Item.Article}"/>
                     <GridViewColumn Header="Цвет" DisplayMemberBinding="{Binding Item.Color}"/>
                 </GridView>

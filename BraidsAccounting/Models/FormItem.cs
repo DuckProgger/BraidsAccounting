@@ -55,17 +55,17 @@ namespace BraidsAccounting.Models
             {
                 Count = storeItem.Count,
                 Article = storeItem.Item.Article,
-                Manufacturer = storeItem.Item.ItemPrice.Manufacturer,
-                Price = storeItem.Item.ItemPrice.Price,
+                Manufacturer = storeItem.Item.Manufacturer.Name,
+                Price = storeItem.Item.Manufacturer.Price,
                 Color = storeItem.Item.Color,
                 Id = storeItem.Item.Id
             };
         }
         public static implicit operator WastedItem(FormItem formItem)
         {
-            ItemPrice itemPrice = new()
+            Manufacturer itemPrice = new()
             {
-                Manufacturer = formItem.Manufacturer,
+                Name = formItem.Manufacturer,
                 Price = formItem.Price
             };
             Item item = new()
@@ -73,7 +73,7 @@ namespace BraidsAccounting.Models
                 Id = formItem.Id,
                 Article = formItem.Article,
                 Color = formItem.Color,
-                ItemPrice = itemPrice
+                Manufacturer = itemPrice
             };
             return new WastedItem()
             {

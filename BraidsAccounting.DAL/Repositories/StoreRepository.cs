@@ -8,7 +8,7 @@ namespace BraidsAccounting.DAL.Repositories
     {
         public override IQueryable<StoreItem> Items => base.Items
             .Include(si => si.Item)
-            .ThenInclude(item => item.ItemPrice)
+            .ThenInclude(item => item.Manufacturer)
             ;
 
         public StoreRepository(ApplicationContext context) : base(context)

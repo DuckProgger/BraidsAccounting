@@ -22,9 +22,9 @@ namespace BraidsAccounting.ViewModels
     {
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
-        private readonly IItemsService itemsService;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
+        private readonly IManufacturersService manufacturersService;
 
         public StoreItem StoreItem { get; set; } = new();
         public ObservableCollection<string> Manufacturers { get; set; }
@@ -32,18 +32,18 @@ namespace BraidsAccounting.ViewModels
 
         public AddStoreItemViewModel(
                 IStoreService store
-            , IItemsService itemsService
             , IEventAggregator eventAggregator
             , IRegionManager regionManager
             , IViewService viewService
+            , IManufacturersService manufacturersService
           )
         {
             this.store = store;
-            this.itemsService = itemsService;
             this.regionManager = regionManager;
             this.viewService = viewService;
+            this.manufacturersService = manufacturersService;
             StoreItem.Item = new();
-            StoreItem.Item.ItemPrice = new();
+            StoreItem.Item.Manufacturer = new();
             eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
 
         }
@@ -66,7 +66,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanAddStoreItemCommandExecute() => true;
         private async void OnAddStoreItemCommandExecuted()
         {
-            StoreItem.Item.ItemPrice.Manufacturer = SelectedManufacturer;
+            StoreItem.Item.Manufacturer.Name = SelectedManufacturer;
             store.AddItem(StoreItem);
         }
 
@@ -81,7 +81,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanLoadManufacturersCommandExecute() => true;
         private async void OnLoadManufacturersCommandExecuted()
         {
-            Manufacturers = new(itemsService.GetManufacturers());
+            Manufacturers = new(manufacturersService.GetManufacturerNames());
         }
 
         #endregion

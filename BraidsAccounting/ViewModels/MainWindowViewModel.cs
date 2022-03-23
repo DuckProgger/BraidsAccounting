@@ -31,7 +31,7 @@ namespace BraidsAccounting.ViewModels
         private readonly IStoreService store;
         private readonly IServiceProvider servicesRep;
         private readonly IRepository<WastedItem> wastedItemsRep;
-        private readonly IRepository<ItemPrice> itemPricesRep;
+        private readonly IRepository<Manufacturer> itemPricesRep;
         private readonly IContainerExtension container;
         private readonly IRegionManager regionManager;
 
@@ -44,7 +44,7 @@ namespace BraidsAccounting.ViewModels
             , IStoreService store
             , IServiceProvider servicesRep
             , IRepository<WastedItem> wastedItemsRep
-            , IRepository<ItemPrice> itemPricesRep
+            , IRepository<Manufacturer> itemPricesRep
             , IContainerExtension container
             , IRegionManager regionManager
             )

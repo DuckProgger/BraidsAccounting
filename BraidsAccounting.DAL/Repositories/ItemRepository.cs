@@ -7,7 +7,7 @@ namespace BraidsAccounting.DAL.Repositories
     internal class ItemRepository : DbRepository<Item>
     {
         public override IQueryable<Item> Items => base.Items
-            .Include(item => item.ItemPrice)
+            .Include(item => item.Manufacturer)
             ;
 
         public ItemRepository(ApplicationContext context) : base(context)

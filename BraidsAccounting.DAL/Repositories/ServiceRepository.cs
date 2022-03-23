@@ -9,7 +9,7 @@ namespace BraidsAccounting.DAL.Repositories
         public override IQueryable<Service> Items => base.Items
             .Include(s => s.WastedItems)
             .ThenInclude(ei => ei.Item)
-            .ThenInclude(i => i.ItemPrice )
+            .ThenInclude(i => i.Manufacturer )
             ;
         public ServiceRepository(ApplicationContext context) : base(context)
         {
