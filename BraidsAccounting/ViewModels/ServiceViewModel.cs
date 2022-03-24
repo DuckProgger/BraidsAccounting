@@ -27,7 +27,7 @@ namespace BraidsAccounting.ViewModels
     {
         public Service Service { get; set; } = new();
         public ObservableCollection<FormItem> WastedItems { get; set; } = new();
-        public FormItem WastedItem { get; set; } = new();
+        public FormItem SelectedWastedItem { get; set; } = new();
         public MessageProvider StatusMessage { get; } = new(true);
         public MessageProvider ErrorMessage { get; } = new(true);
         public MessageProvider WarningMessage { get; } = new();
@@ -115,6 +115,20 @@ namespace BraidsAccounting.ViewModels
         {
             WarningMessage.Message = WastedItems.Count == 0 ? "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!" : string.Empty;
             MDDialogHost.OpenDialogCommand.Execute(null, null);
+        }
+
+        #endregion
+
+        #region Command RemoveWastedItem - Команда удалить использованный материал
+
+        private ICommand? _RemoveWastedItemCommand;
+        /// <summary>Команда - удалить использованный материал</summary>
+        public ICommand RemoveWastedItemCommand => _RemoveWastedItemCommand
+            ??= new DelegateCommand(OnRemoveWastedItemCommandExecuted, CanRemoveWastedItemCommandExecute);
+        private bool CanRemoveWastedItemCommandExecute() => true;
+        private async void OnRemoveWastedItemCommandExecuted()
+        {
+            WastedItems.Remove(SelectedWastedItem);
         }
 
         #endregion

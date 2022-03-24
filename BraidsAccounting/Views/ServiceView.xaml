@@ -71,7 +71,7 @@
                     <ColumnDefinition Width="67*"/>
                 </Grid.ColumnDefinitions>
                 <DataGrid Grid.Row="0" ItemsSource="{Binding WastedItems, UpdateSourceTrigger=PropertyChanged}" 
-                  SelectedItem="{Binding WastedItem}"
+                  SelectedItem="{Binding SelectedWastedItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False" Grid.ColumnSpan="2">
                     <DataGrid.Columns>
@@ -86,6 +86,19 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTextColumn Header="На складе"  Binding="{Binding MaxCount}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Удалить"
+                                            Command="{Binding 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ServiceView}}, 
+                                    Path=DataContext.RemoveWastedItemCommand}"                                
+                                            Visibility="{Binding IsMouseOver,
+                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
+                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
