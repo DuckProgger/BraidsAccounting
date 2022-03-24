@@ -24,7 +24,7 @@
     </UserControl.DataContext>-->
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <Style x:Key="FadeOutButton" TargetType="{x:Type Button}"
+        <!--<Style x:Key="FadeOutButton" TargetType="{x:Type Button}"
                BasedOn="{StaticResource MaterialDesignRaisedButton}">
             <Style.Setters>
                 <Setter Property="Opacity" Value="0"/>
@@ -45,7 +45,7 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
     </UserControl.Resources>
     <!--<UserControl.Visibility>
         <Binding Path="IsVisible" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource BooleanToVisibilityConverter}" />
@@ -53,13 +53,7 @@
     <md:DialogHost>
         <md:DialogHost.DialogContent>
             <StackPanel Margin="20" MinWidth="300">
-                <TextBlock Text="Удалить выбранный товар?" />
-                <TextBlock Foreground="DarkRed"
-                           TextAlignment="Center"
-                           DataContext="{Binding WarningMessage}"
-                           Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
+                <TextBlock Text="Удалить выбранный товар?" />   
                 <Grid Margin="0,10,0,-10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -83,6 +77,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="0.08*"/>
             </Grid.RowDefinitions>
             <DataGrid Name="List"
             Grid.Row="0" ItemsSource="{Binding StoreItems, UpdateSourceTrigger=PropertyChanged}" 
@@ -145,6 +140,14 @@
                 Content="Добавить товар" 
                 Command="{Binding NavigateToOtherWindowCommand}" 
                 CommandParameter="AddStoreItemWindow"/>
+            <Grid Grid.Row="2">
+                <TextBlock
+                           Foreground="DarkGreen"
+                           TextAlignment="Center"
+                           DataContext="{Binding StatusMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </Grid>
         </Grid>
     </md:DialogHost>
 </UserControl>

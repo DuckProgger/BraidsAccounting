@@ -6,6 +6,7 @@ using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
+using Cashbox.Visu;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
@@ -48,7 +49,8 @@ namespace BraidsAccounting.ViewModels
                 collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
             }
         }
-        public bool IsVisible { get; set; } = true;
+        public MessageProvider StatusMessage { get; } = new(true);
+
 
         public StoreViewModel(
             IStoreService store
@@ -63,6 +65,13 @@ namespace BraidsAccounting.ViewModels
             this.container = container;
             this.regionManager = regionManager;
             this.viewService = viewService;
+            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(MessageReceived);
+
+        }
+
+        private void MessageReceived(bool success)
+        {
+            if (success) StatusMessage.Message = "Операция выполнена";
         }
 
         #region Command EditItem - Команда редактировать предмет на складе
@@ -92,6 +101,7 @@ namespace BraidsAccounting.ViewModels
             store.RemoveItem(SelectedStoreItem.Id);
             storeItems.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
+            StatusMessage.Message = "Товар удалён";
         }
 
         #endregion

@@ -4,6 +4,7 @@ using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
+using Cashbox.Visu;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -23,6 +24,7 @@ namespace BraidsAccounting.ViewModels
     {
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
+        private readonly IEventAggregator eventAggregator;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
         private readonly IManufacturersService manufacturersService;
@@ -30,6 +32,7 @@ namespace BraidsAccounting.ViewModels
         public StoreItem StoreItem { get; set; } = new();
         public ObservableCollection<string> Manufacturers { get; set; }
         public string SelectedManufacturer { get; set; }
+        public MessageProvider ErrorMessage { get; } = new(true);
 
         public AddStoreItemViewModel(
                 IStoreService store
@@ -40,6 +43,7 @@ namespace BraidsAccounting.ViewModels
           )
         {
             this.store = store;
+            this.eventAggregator = eventAggregator;
             this.regionManager = regionManager;
             this.viewService = viewService;
             this.manufacturersService = manufacturersService;
@@ -68,8 +72,16 @@ namespace BraidsAccounting.ViewModels
         private async void OnAddStoreItemCommandExecuted()
         {
             StoreItem.Item.Manufacturer.Name = SelectedManufacturer;
-            store.AddItem(StoreItem);
-            viewService.GetWindow<AddStoreItemWindow>().Close();
+            try
+            {
+                store.AddItem(StoreItem);
+                viewService.GetWindow<AddStoreItemWindow>().Close();
+                eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
+            }
+            catch (ArgumentException)
+            {
+                ErrorMessage.Message = "Заполнены не все поля";
+            }
         }
 
         #endregion

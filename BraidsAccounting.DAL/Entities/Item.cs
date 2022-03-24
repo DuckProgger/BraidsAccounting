@@ -11,7 +11,7 @@ namespace BraidsAccounting.DAL.Entities
 
         public bool Equals(Item? other)
         {
-            if (other is null) return false;
+            if (other is null || other.Article is null || other.Color is null) throw new ArgumentNullException(nameof(other));
             return Article.ToUpper() == other.Article.ToUpper()
               && Color.ToUpper() == other.Color.ToUpper()
               && Manufacturer.Equals(other.Manufacturer);

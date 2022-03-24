@@ -29,11 +29,10 @@ namespace BraidsAccounting.Services
         public void AddItem(StoreItem? storeItem)
         {
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
-            //if (!itemPrices.Items.AsEnumerable().Any(ip => ip.Equals(storeItem.Item.ItemPrice)))
-            //    throw new Exception("Такого производителя нет в базе.");
-            // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
-            var manufacturer = manufacturers.Items.FirstOrDefault(
-                m => m.Name.ToUpper() == storeItem.Item.Manufacturer.Name.ToUpper());
+            if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
+                // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
+                var manufacturer = manufacturers.Items.FirstOrDefault(
+                    m => m.Name.ToUpper() == storeItem.Item.Manufacturer.Name.ToUpper());
             // Если такого производителя нет, то выдать ошибку,
             // потому что производителей надо добавлять в отдельном окне
             storeItem.Item.Manufacturer = manufacturer is not null
@@ -98,7 +97,7 @@ namespace BraidsAccounting.Services
         public void RemoveItem(int id)
         {
             store.Remove(id);
-        }       
+        }
         public int GetItemCount(int id) => store.Items.First(si => si.Item.Id == id).Count;
 
     }

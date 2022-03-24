@@ -18,6 +18,7 @@ namespace BraidsAccounting.ViewModels
     {
         private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
+        private readonly IEventAggregator eventAggregator;
 
         public StoreItem StoreItem { get; set; } = new();
         public ObservableCollection<string> Manufacturers { get; set; }
@@ -32,6 +33,7 @@ namespace BraidsAccounting.ViewModels
         {
             this.store = store;
             this.manufacturersService = manufacturersService;
+            this.eventAggregator = eventAggregator;
             eventAggregator.GetEvent<EditStoreItemEvent>().Subscribe(MessageReceived);
             this.store = store;
         }
@@ -55,6 +57,7 @@ namespace BraidsAccounting.ViewModels
         {
             StoreItem.Item.ManufacturerId = manufacturersService.GetManufacturer(SelectedManufacturer).Id;
             store.EditItem(StoreItem);
+            eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
         }
 
         #endregion
