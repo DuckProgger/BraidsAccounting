@@ -20,6 +20,42 @@
             <RowDefinition Height="3*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Фильтры"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" >
+                    <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
+                    <ComboBox 
+                      ItemsSource="{Binding Manufacturers}"
+                      SelectedValue="{Binding ManufacturerFilter, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" >
+                    <TextBlock Text="Модель" HorizontalAlignment="Center"/>
+                    <TextBox                              
+                            Padding="3"                        
+                            Text="{Binding ArticleFilter, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" >
+                    <TextBlock Text="Цвет" HorizontalAlignment="Center" />
+                    <TextBox       
+                            Padding="3"                        
+                            Text="{Binding ColorFilter, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                </StackPanel>
+                <Button Grid.Column="3" Content="Сбросить" Command="{Binding ResetFiltersCommand}" Margin="10"/>
+            </Grid>
+        </Grid>
         <ListView Grid.Row="1"
                   ItemsSource="{Binding StoreItems}"
                   SelectedItem="{Binding SelectedItem}">

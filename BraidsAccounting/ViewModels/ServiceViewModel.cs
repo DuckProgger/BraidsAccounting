@@ -72,7 +72,6 @@ namespace BraidsAccounting.ViewModels
             Service.WastedItems = new();
             foreach (var item in WastedItems)
                 Service.WastedItems.Add(item);
-
             try
             {
                 serviceProvider.ProvideService(Service);

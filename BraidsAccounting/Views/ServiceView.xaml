@@ -51,10 +51,10 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" >
                         <TextBlock Text="Имя" HorizontalAlignment="Center"/>
-                        <TextBox  
-                    Padding="3"                           
-                    Text="{Binding Service.Name, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                        <TextBox       
+                            Padding="3"                        
+                            Text="{Binding Service.Name, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" >
                         <TextBlock Text="Стоимость работы" HorizontalAlignment="Center"/>
@@ -66,10 +66,14 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="67*"/>
+                </Grid.ColumnDefinitions>
                 <DataGrid Grid.Row="0" ItemsSource="{Binding WastedItems, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding WastedItem}"
                   AutoGenerateColumns="False"
-                  CanUserAddRows="False">
+                  CanUserAddRows="False" Grid.ColumnSpan="2">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
                         <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
