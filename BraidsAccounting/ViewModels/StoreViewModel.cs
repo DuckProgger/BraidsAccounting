@@ -6,6 +6,7 @@ using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
 using Prism.Events;
@@ -22,6 +23,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
+
 
 namespace BraidsAccounting.ViewModels
 {
@@ -88,6 +91,7 @@ namespace BraidsAccounting.ViewModels
         {
             store.RemoveItem(SelectedStoreItem.Id);
             storeItems.Remove(SelectedStoreItem);
+            MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
 
         #endregion
