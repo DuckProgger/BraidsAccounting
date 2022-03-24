@@ -90,6 +90,7 @@ namespace BraidsAccounting.Services
         public void EditItem(StoreItem? storeItem)
         {
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
+            if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
             store.Edit(storeItem);
             items.Edit(storeItem.Item);
         }

@@ -9,41 +9,61 @@
              xmlns:prism="http://prismlibrary.com/" 
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-            Height="130" Width="400">
+            Height="150" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="0.3*"/>
         </Grid.RowDefinitions>
-        
-        <Grid Grid.Row="1">
+
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <!--<TextBox Grid.Column="0" Text="{Binding StoreItem.Item.Manufacturer.Name, UpdateSourceTrigger=PropertyChanged}"/>-->
-            <ComboBox Grid.Column="0"
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
+                <ComboBox 
                       ItemsSource="{Binding Manufacturers}"
-                      SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-            <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="3" Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"/>
-        </Grid>
+                      SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
+                      SelectedIndex="0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" >
+                <TextBlock Text="Модель" HorizontalAlignment="Center"/>
+                <TextBox  
+                    Padding="3"                           
+                    Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
+            </StackPanel>
+            <StackPanel Grid.Column="2" >
+                <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
+                <TextBox 
+                    Padding="3"                         
+                    Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
+            </StackPanel>
+            <StackPanel Grid.Column="3" >
+                <TextBlock Text="Количество" HorizontalAlignment="Center"/>
+                <TextBox 
+                    Padding="3"          
+                    Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"       
+                    Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
+            </StackPanel>
+        </Grid>       
 
+        <Grid Grid.Row="1">
+            <Button Content="Сохранить" Command="{Binding SaveChangesCommand}"/>
+        </Grid>
         <Grid Grid.Row="2">
-            <Button Content="Сохранить" Command="{Binding SaveChangesCommand}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:CallMethodAction MethodName="Close"
-                           TargetObject="{Binding RelativeSource={RelativeSource
-                                                  Mode=FindAncestor,
-                                                  AncestorType=Window}}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
+            <TextBlock
+                           Foreground="DarkRed"
+                           TextAlignment="Center"
+                           DataContext="{Binding ErrorMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
     </Grid>
 </Window>

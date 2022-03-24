@@ -23,12 +23,12 @@
     </i:Interaction.Triggers>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <Style x:Key="MaterialDesignOutlinedTextBox"
+        <!--<Style x:Key="MaterialDesignOutlinedTextBox"
                BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
                TargetType="TextBox">
             <Setter Property="MinWidth" Value="80" />
             <Setter Property="Margin" Value="5" />
-        </Style>
+        </Style>-->
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -59,21 +59,21 @@
                 <TextBox  
                     Padding="3"                           
                     Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"  />
+                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
             </StackPanel>
             <StackPanel Grid.Column="2" >
                 <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"                         
                     Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"  />
+                    Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
             <StackPanel Grid.Column="3" >
                 <TextBlock Text="Количество" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"          
                     Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"       
-                    Style="{StaticResource MaterialDesignOutlinedTextBox}"  />
+                    Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
         </Grid>
 
