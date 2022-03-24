@@ -31,7 +31,7 @@ namespace BraidsAccounting.ViewModels
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
 
-        public StoreItem? StoreItem { get; set; }
+        public StoreItem? SelectedStoreItem { get; set; }
         public ObservableCollection<StoreItem?> StoreItems { get; set; } = new();
         public bool IsVisible { get; set; } = true;
 
@@ -60,7 +60,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnEditItemCommandExecuted(string viewName)
         {
             OnNavigateToOtherWindowCommandExecuted(viewName);
-            eventAggregator.GetEvent<EditStoreItemEvent>().Publish(StoreItem);
+            eventAggregator.GetEvent<EditStoreItemEvent>().Publish(SelectedStoreItem);
         }
 
         #endregion
@@ -74,7 +74,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanRemoveItemCommandExecute() => true;
         private async void OnRemoveItemCommandExecuted()
         {
-
+            store.RemoveItem(SelectedStoreItem.Id);
         }
 
         #endregion

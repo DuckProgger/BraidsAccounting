@@ -6,6 +6,7 @@ namespace BraidsAccounting.DAL.Entities
     {
         public string Article { get; set; } = null!;
         public string Color { get; set; } = null!;
+        public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; } = null!;
 
         public bool Equals(Item? other)

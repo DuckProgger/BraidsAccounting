@@ -20,6 +20,7 @@ namespace BraidsAccounting.Services
 
         public IEnumerable<Manufacturer> GetManufacturers() => manufacturers.Items;
         public IEnumerable<string> GetManufacturerNames() => manufacturers.Items.Select(m => m.Name);
+        public Manufacturer? GetManufacturer(string name) => manufacturers.Items.FirstOrDefault(m => m.Name == name);
 
         public void AddManufacturer(Manufacturer manufacturer)
         {

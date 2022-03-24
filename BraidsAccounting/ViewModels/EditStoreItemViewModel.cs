@@ -6,6 +6,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,15 +17,21 @@ namespace BraidsAccounting.ViewModels
     internal class EditStoreItemViewModel : BindableBase
     {
         private readonly IStoreService store;
+        private readonly IManufacturersService manufacturersService;
 
         public StoreItem StoreItem { get; set; } = new();
+        public ObservableCollection<string> Manufacturers { get; set; }
+        public string SelectedManufacturer { get; set; }
+
 
         public EditStoreItemViewModel(
          IStoreService store
+            ,IManufacturersService manufacturersService
          , IEventAggregator eventAggregator
          )
         {
             this.store = store;
+            this.manufacturersService = manufacturersService;
             eventAggregator.GetEvent<EditStoreItemEvent>().Subscribe(MessageReceived);
             this.store = store;
         }
@@ -32,6 +39,8 @@ namespace BraidsAccounting.ViewModels
         private void MessageReceived(StoreItem item)
         {
             StoreItem = item;
+            Manufacturers = new(manufacturersService.GetManufacturerNames());
+            SelectedManufacturer = Manufacturers.FirstOrDefault(name => name == item.Item.Manufacturer.Name);
         }
 
 
@@ -44,6 +53,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanSaveChangesCommandExecute() => true;
         private async void OnSaveChangesCommandExecuted()
         {
+            StoreItem.Item.ManufacturerId = manufacturersService.GetManufacturer(SelectedManufacturer).Id;
             store.EditItem(StoreItem);
         }
 
