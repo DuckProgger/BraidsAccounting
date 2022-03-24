@@ -34,7 +34,7 @@
             <StackPanel Grid.Column="1" >
                 <TextBlock Text="Модель" HorizontalAlignment="Center"/>
                 <TextBox  
-                    Padding="3"                           
+                    Padding="3"            
                     Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
@@ -52,7 +52,7 @@
                     Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"       
                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
-        </Grid>       
+        </Grid>
 
         <Grid Grid.Row="1">
             <Button Content="Сохранить" Command="{Binding SaveChangesCommand}"/>

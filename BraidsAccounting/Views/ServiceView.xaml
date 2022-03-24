@@ -6,72 +6,110 @@
              xmlns:local="clr-namespace:BraidsAccounting.Views"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="600">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding Service.Name, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="1" Text="{Binding Service.Profit, UpdateSourceTrigger=PropertyChanged}"/>
-            </Grid>              
-        </Grid>        
-        <Grid Grid.Row="1">
-            <DataGrid Grid.Row="0" ItemsSource="{Binding WastedItems, UpdateSourceTrigger=PropertyChanged}" 
+             d:DesignHeight="300" d:DesignWidth="600">
+    <md:DialogHost>
+        <md:DialogHost.DialogContent>
+            <StackPanel Margin="20" MinWidth="300">
+                <TextBlock Text="Сохранить новую работу?" />
+                <TextBlock Foreground="DarkRed"
+                           TextAlignment="Center"
+                           DataContext="{Binding WarningMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Grid Margin="0,10,0,-10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Content="Отмена"
+                            Style="{StaticResource MaterialDesignFlatAccentButton}"
+                            Command="{x:Static md:DialogHost.CloseDialogCommand}" />
+                    <Button Content="Сохранить"
+                            Grid.Column="1"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsDefault="True"
+                            Command="{Binding CreateServiceCommand}" />
+                </Grid>
+            </StackPanel>
+        </md:DialogHost.DialogContent>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="0.1*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" >
+                        <TextBlock Text="Имя" HorizontalAlignment="Center"/>
+                        <TextBox  
+                    Padding="3"                           
+                    Text="{Binding Service.Name, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" >
+                        <TextBlock Text="Стоимость работы" HorizontalAlignment="Center"/>
+                        <TextBox  
+                    Padding="3"                           
+                    Text="{Binding Service.Profit, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1">
+                <DataGrid Grid.Row="0" ItemsSource="{Binding WastedItems, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding WastedItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
-                    <DataGridTemplateColumn Header="Количество">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="На складе"  Binding="{Binding MaxCount}" IsReadOnly="True"/>
-                </DataGrid.Columns>
-            </DataGrid>
-            <!--<ListView ItemsSource="{Binding WastedItems}">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Item.ItemPrice.Manufacturer}"/>
-                        <GridViewColumn Header="Модель" DisplayMemberBinding="{Binding Item.Article}"/>
-                        <GridViewColumn Header="Цвет" DisplayMemberBinding="{Binding Item.Color}"/>
-                        <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding Count}"/>
-                    </GridView>
-                </ListView.View>
-            </ListView>-->
-            
-            <!--<Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" Text="{Binding StoreItem.Item.ItemPrice.Manufacturer, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="3" Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"/>-->
-        </Grid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Количество">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="На складе"  Binding="{Binding MaxCount}" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
 
-        <Grid Grid.Row="2">
-            <Button Content="Добавить" Command="{Binding SelectStoreItemCommand}"/>
+            <Grid Grid.Row="2">
+                <Button Content="Добавить" Command="{Binding SelectStoreItemCommand}"/>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Button Content="Сохранить" Command="{Binding OpenDialogCommand}"/>
+            </Grid>
+            <Grid Grid.Row="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                           Foreground="DarkRed"
+                           TextAlignment="Center"
+                           DataContext="{Binding ErrorMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock
+                           Foreground="DarkGreen"
+                           TextAlignment="Center"
+                           DataContext="{Binding StatusMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </Grid>
         </Grid>
-        <Grid Grid.Row="3">
-            <Button Content="Сохранить" Command="{Binding CreateServiceCommand}"/>
-        </Grid>
-    </Grid>
+    </md:DialogHost>
 </UserControl>

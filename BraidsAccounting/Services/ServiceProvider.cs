@@ -43,7 +43,10 @@ namespace BraidsAccounting.Services
         private void BindWastedItemsToService(Service s)
         {
             foreach (var wastedItem in s.WastedItems)
+            {
+                if (wastedItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(wastedItem.Count));
                 wastedItem.ServiceId = s.Id;
+            }
         }
 
         private static void CalculateNetProfit(Service service)

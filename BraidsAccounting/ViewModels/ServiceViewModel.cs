@@ -6,6 +6,8 @@ using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
+using Cashbox.Visu;
+using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -17,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
@@ -25,7 +28,11 @@ namespace BraidsAccounting.ViewModels
         public Service Service { get; set; } = new();
         public ObservableCollection<FormItem> WastedItems { get; set; } = new();
         public FormItem WastedItem { get; set; } = new();
-    
+        public MessageProvider StatusMessage { get; } = new(true);
+        public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider WarningMessage { get; } = new();
+
+
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
@@ -61,10 +68,24 @@ namespace BraidsAccounting.ViewModels
         private bool CanCreateServiceCommandExecute() => true;
         private async void OnCreateServiceCommandExecuted()
         {
+            MDDialogHost.CloseDialogCommand.Execute(null, null);
             Service.WastedItems = new();
             foreach (var item in WastedItems)
                 Service.WastedItems.Add(item);
-            serviceProvider.ProvideService(Service);
+
+            try
+            {
+                serviceProvider.ProvideService(Service);
+                StatusMessage.Message = "Новая работа добавлена";
+            }
+            catch (ArgumentException)
+            {
+                ErrorMessage.Message = "Не все поля заполнены";
+            }
+            catch (DbUpdateException)
+            {
+                ErrorMessage.Message = "Не все поля заполнены";
+            }
         }
 
         #endregion
@@ -80,6 +101,21 @@ namespace BraidsAccounting.ViewModels
         private async void OnSelectStoreItemCommandExecuted()
         {
             viewService.ActivateWindowWithClosing<SelectStoreItemWindow, MainWindow>();
+        }
+
+        #endregion
+
+        #region Command OpenDialog - Команда открыть диалог
+
+        private ICommand? _OpenDialogCommand;
+        /// <summary>Команда - открыть диалог</summary>
+        public ICommand OpenDialogCommand => _OpenDialogCommand
+            ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
+        private bool CanOpenDialogCommandExecute() => true;
+        private async void OnOpenDialogCommandExecuted()
+        {
+            WarningMessage.Message = WastedItems.Count == 0 ? "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!" : string.Empty;
+            MDDialogHost.OpenDialogCommand.Execute(null, null);
         }
 
         #endregion

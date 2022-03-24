@@ -23,7 +23,9 @@
         <DataGrid 
             Grid.Row="1" 
             ItemsSource="{Binding Manufacturers}"
-            SelectedValue="{Binding SelectedManufacturer}">
+            SelectedValue="{Binding SelectedManufacturer}"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Производитель" Binding="{Binding Name}"/>
