@@ -67,8 +67,6 @@ namespace BraidsAccounting.DAL.Repositories
             if (item is null) throw new ArgumentNullException(nameof(item));
             T existingItem = Get(item.Id) ?? throw new Exception("Элемент не найден.");
             context.Entry(existingItem).CurrentValues.SetValues(item);
-            //context.ChangeTracker.Clear();
-            //context.Entry(item).State = EntityState.Modified;
         }
 
         public void Edit(T item)

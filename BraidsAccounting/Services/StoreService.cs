@@ -14,16 +14,16 @@ namespace BraidsAccounting.Services
     {
         private readonly IRepository<StoreItem> store;
         private readonly IRepository<Item> items;
-        private readonly IRepository<Manufacturer> itemPrices;
+        private readonly IRepository<Manufacturer> manufacturers;
 
         public StoreService(
             IRepository<StoreItem> store,
             IRepository<Item> items,
-            IRepository<Manufacturer> itemPrices)
+            IRepository<Manufacturer> manufacturers)
         {
             this.store = store;
             this.items = items;
-            this.itemPrices = itemPrices;
+            this.manufacturers = manufacturers;
         }
 
         public void AddItem(StoreItem? storeItem)
@@ -32,12 +32,12 @@ namespace BraidsAccounting.Services
             //if (!itemPrices.Items.AsEnumerable().Any(ip => ip.Equals(storeItem.Item.ItemPrice)))
             //    throw new Exception("Такого производителя нет в базе.");
             // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
-            var itemPrice = itemPrices.Items.FirstOrDefault(
-                ip => ip.Name/*.ToUpper()*/ == storeItem.Item.Manufacturer.Name/*.ToUpper()*/);
+            var manufacturer = manufacturers.Items.FirstOrDefault(
+                m => m.Name.ToUpper() == storeItem.Item.Manufacturer.Name.ToUpper());
             // Если такого производителя нет, то выдать ошибку,
             // потому что производителей надо добавлять в отдельном окне
-            storeItem.Item.Manufacturer = itemPrice is not null
-                ? itemPrice
+            storeItem.Item.Manufacturer = manufacturer is not null
+                ? manufacturer
                 : throw new Exception("Такого производителя нет в базе.");
             // Найти товар на складе
             var existingItem = items.Items

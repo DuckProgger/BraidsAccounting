@@ -2,6 +2,7 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Modules;
+using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
@@ -19,6 +20,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
@@ -30,9 +32,19 @@ namespace BraidsAccounting.ViewModels
         private readonly IContainerProvider container;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
+        private CollectionView collectionView;
+
 
         public StoreItem? SelectedStoreItem { get; set; }
-        public ObservableCollection<StoreItem?> StoreItems { get; set; } = new();
+        public ObservableCollection<StoreItem?> StoreItems
+        {
+            get => storeItems;
+            set
+            {
+                storeItems = value;
+                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
+            }
+        }
         public bool IsVisible { get; set; } = true;
 
         public StoreViewModel(
@@ -75,6 +87,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnRemoveItemCommandExecuted()
         {
             store.RemoveItem(SelectedStoreItem.Id);
+            storeItems.Remove(SelectedStoreItem);
         }
 
         #endregion
@@ -101,6 +114,8 @@ namespace BraidsAccounting.ViewModels
         #region Command NavigateToOtherWindow - Команда перейти на другой экран
 
         private ICommand? _NavigateToOtherWindowCommand;
+        private ObservableCollection<StoreItem?> storeItems = new();
+
         /// <summary>Команда - перейти на другой экран</summary>
         public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
             ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
@@ -110,7 +125,7 @@ namespace BraidsAccounting.ViewModels
             switch (windowName)
             {
                 case nameof(AddStoreItemWindow):
-                    viewService.ActivateWindowWithClosing<AddStoreItemWindow, MainWindow>();
+                    viewService.ActivateWindowWithClosing<AddStoreItemWindow, MainWindow>(OnLoadDataCommandExecuted);
                     break;
                 case nameof(EditStoreItemWindow):
                     viewService.ActivateWindowWithClosing<EditStoreItemWindow, MainWindow>();
@@ -120,6 +135,12 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        #endregion        
+        #endregion
+
+        //private void RefreshCollection()
+        //{
+        //    LoadData();
+        //    collectionView.Refresh();
+        //}      
     }
 }

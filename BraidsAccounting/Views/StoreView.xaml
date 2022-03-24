@@ -14,22 +14,25 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
         </i:EventTrigger>
+        <i:EventTrigger EventName="IsVisibleChanged">
+            <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
+        </i:EventTrigger>
     </i:Interaction.Triggers>
     <!--<UserControl.DataContext>
         <vm:StoreViewModel/>
     </UserControl.DataContext>-->
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <UserControl.Visibility>
         <Binding Path="IsVisible" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource BooleanToVisibilityConverter}" />
-    </UserControl.Visibility>
+    </UserControl.Visibility>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>        
-        <DataGrid Grid.Row="0" ItemsSource="{Binding StoreItems}" 
+        <DataGrid Grid.Row="0" ItemsSource="{Binding StoreItems, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding SelectedStoreItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
@@ -60,16 +63,7 @@
         <Button Grid.Row="1" 
                 Content="Добавить товар" 
                 Command="{Binding NavigateToOtherWindowCommand}" 
-                CommandParameter="AddStoreItemWindow">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="Click">
-                    <i:CallMethodAction MethodName="Hide"
-                           TargetObject="{Binding RelativeSource={RelativeSource
-                                                  Mode=FindAncestor,
-                                                  AncestorType=Window}}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
-        </Button>
+                CommandParameter="AddStoreItemWindow"/>
     </Grid>
 </UserControl>
 
