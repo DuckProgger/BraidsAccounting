@@ -20,14 +20,17 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <DockPanel>
-        <Menu IsMainMenu="True">
+        <Menu IsMainMenu="True" >
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
             <MenuItem Header="Склад" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>
             <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
             <MenuItem Header="Производители" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ManufacturersView"/>        
         </Menu>
-        <!--<ContentControl Content="{Binding CurrentModel}"/>-->
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </DockPanel>
 </Window>
 
-<!--DataContext ="{Binding MainViewModel, Source={StaticResource Locator}}"-->

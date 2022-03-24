@@ -21,10 +21,32 @@
     <!--<UserControl.DataContext>
         <vm:StoreViewModel/>
     </UserControl.DataContext>-->
-    <!--<UserControl.Resources>
+    <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="FadeOutButton" TargetType="{x:Type Button}"
+               BasedOn="{StaticResource MaterialDesignRaisedButton}">
+            <Style.Setters>
+                <Setter Property="Opacity" Value="0"/>
+            </Style.Setters>
+            <Style.Triggers>
+                <EventTrigger  RoutedEvent="Control.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard >
+                            <DoubleAnimation Duration="0:0:0.2" To="1" Storyboard.TargetProperty="Opacity"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Control.MouseLeave" >
+                    <BeginStoryboard>
+                        <Storyboard >
+                            <DoubleAnimation Duration="0:0:0.2" To="0" Storyboard.TargetProperty="Opacity"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
-    <UserControl.Visibility>
+    <!--<UserControl.Visibility>
         <Binding Path="IsVisible" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource BooleanToVisibilityConverter}" />
     </UserControl.Visibility>-->
     <Grid>
@@ -32,15 +54,16 @@
             <RowDefinition/>
             <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>        
-        <DataGrid Grid.Row="0" ItemsSource="{Binding StoreItems, UpdateSourceTrigger=PropertyChanged}" 
+        <DataGrid Name="List"
+            Grid.Row="0" ItemsSource="{Binding StoreItems, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding SelectedStoreItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}"/>
-                <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}"/>
-                <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}"/>
-                <DataGridTextColumn Header="Количество"  Binding="{Binding Count}"/>
+                <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Количество"  Binding="{Binding Count}" IsReadOnly="True"/>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -49,11 +72,41 @@
                                         Command="{Binding 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:StoreView}}, 
                                     Path=DataContext.EditItemCommand}"
-                                        CommandParameter="EditStoreItemWindow"/>
+                                        CommandParameter="EditStoreItemWindow"
+                                        Visibility="{Binding IsMouseOver,
+                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
+                                 Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       >
+                                    <!--<Button.Visibility>
+                                        <Binding 
+                                           RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=DataGridRow}"
+                                            
+                                           Path="IsMouseOver" 
+                                            UpdateSourceTrigger="PropertyChanged" 
+                                            Converter="{StaticResource BooleanToVisibilityConverter}" />
+                                    </Button.Visibility>-->
+                                    <!--<Button.Template>
+                                        <ControlTemplate>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger SourceName="List" Property="IsMouseOver" Value="True">
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Setter TargetName="MyEllipse" Property="Visibility" Value="Hidden"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>-->
+                                </Button>
                                 <Button Content="Удалить"
                                         Command="{Binding 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:StoreView}}, 
-                                    Path=DataContext.RemoveItemCommand}"/>
+                                    Path=DataContext.RemoveItemCommand}"
+                                        Visibility="{Binding IsMouseOver,
+                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
+                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>                    
@@ -68,3 +121,10 @@
 </UserControl>
 
 <!--d:DataContext="{d:DesignInstance {x:Type vm:StoreViewModel}, IsDesignTimeCreatable=True}"-->
+<!--Path="IsMouseOver"-->
+
+<!--Style="{StaticResource FadeOutButton}"-->
+
+<!--Visibility="{Binding IsMouseOver,
+                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
+                                 Converter={StaticResource BooleanToVisibilityConverter}}"--> 

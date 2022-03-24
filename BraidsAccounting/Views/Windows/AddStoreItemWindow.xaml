@@ -7,14 +7,29 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"  
              xmlns:prism="http://prismlibrary.com/" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-            Height="130" Width="400">
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+            Height="200" Width="400">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadManufacturersCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="MaterialDesignOutlinedTextBox"
+               BasedOn="{StaticResource MaterialDesignOutlinedTextBox}"
+               TargetType="TextBox">
+            <Setter Property="MinWidth" Value="80" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -31,13 +46,34 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0"
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
+                <ComboBox 
                       ItemsSource="{Binding Manufacturers}"
                       SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                       SelectedIndex="0"/>
-            <TextBox Grid.Column="1" Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="2" Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="3" Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" >
+                <TextBlock Text="Модель" HorizontalAlignment="Center"/>
+                <TextBox  
+                    Padding="3"                           
+                    Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"  />
+            </StackPanel>
+            <StackPanel Grid.Column="2" >
+                <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
+                <TextBox 
+                    Padding="3"                         
+                    Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"  />
+            </StackPanel>
+            <StackPanel Grid.Column="3" >
+                <TextBlock Text="Количество" HorizontalAlignment="Center"/>
+                <TextBox 
+                    Padding="3"          
+                    Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"       
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"  />
+            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2">
