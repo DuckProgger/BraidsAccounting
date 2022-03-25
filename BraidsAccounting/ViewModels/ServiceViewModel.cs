@@ -55,6 +55,11 @@ namespace BraidsAccounting.ViewModels
             if (storeItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
             {
                 storeItem.Count = 0;
+                if (WastedItems.FirstOrDefault(wi => wi.Equals(storeItem)) != null)
+                {
+                    ErrorMessage.Message = "Выбранный материал уже есть в списке";
+                    return;
+                }
                 WastedItems.Add(storeItem);
             }
         }

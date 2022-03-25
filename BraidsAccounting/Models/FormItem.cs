@@ -13,22 +13,10 @@ using BraidsAccounting.Services;
 
 namespace BraidsAccounting.Models
 {
-    internal class FormItem : BindableBase
+    internal class FormItem : BindableBase, IEquatable<StoreItem>
     {
         private int? maxCount;
         private int count;
-
-        //public FormItem(/*string manufacturer, decimal price, string article, string color, int count*/)
-        //{
-        //    //Manufacturer = manufacturer;
-        //    //Price = price;
-        //    //Article = article;
-        //    //Color = color;
-        //    //Count = count;
-
-        //    //var store = ServiceLocator.GetService<IStoreService>();
-        //    //MaxCount = store.
-        //}
 
         public int Id { get; set; }
         public string Manufacturer { get; set; } = null!;
@@ -80,6 +68,16 @@ namespace BraidsAccounting.Models
                 Count = formItem.Count,
                 Item = item
             };
+        }
+
+        public bool Equals(StoreItem? other)
+        {
+            if (other is null) throw new ArgumentNullException(nameof(other));
+            return
+                Manufacturer == other.Item.Manufacturer.Name
+                && Price == other.Item.Manufacturer.Price
+                && Color == other.Item.Color
+                && Article == other.Item.Article;
         }
     }
 }
