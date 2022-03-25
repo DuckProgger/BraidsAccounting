@@ -66,45 +66,45 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="8*"/>
-                    <ColumnDefinition Width="67*"/>
-                </Grid.ColumnDefinitions>
-                <DataGrid Grid.Row="0" ItemsSource="{Binding WastedItems, UpdateSourceTrigger=PropertyChanged}" 
+                <StackPanel>
+                    <TextBlock Text="Использованные материалы" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                    <DataGrid ItemsSource="{Binding WastedItems, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding SelectedWastedItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False" Grid.ColumnSpan="2">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
-                        <DataGridTemplateColumn Header="Количество">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="На складе"  Binding="{Binding MaxCount}" IsReadOnly="True"/>
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Удалить"
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
+                            <DataGridTemplateColumn Header="Количество">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="На складе"  Binding="{Binding MaxCount}" IsReadOnly="True"/>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Удалить"
                                             Command="{Binding 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ServiceView}}, 
                                     Path=DataContext.RemoveWastedItemCommand}"                                
                                             Visibility="{Binding IsMouseOver,
                                  RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
                                  Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+                
             </Grid>
 
             <Grid Grid.Row="2">
-                <Button Content="Добавить" Command="{Binding SelectStoreItemCommand}"/>
+                <Button Content="Добавить материал" Command="{Binding SelectStoreItemCommand}"/>
             </Grid>
             <Grid Grid.Row="3">
                 <Button Content="Сохранить" Command="{Binding OpenDialogCommand}"/>

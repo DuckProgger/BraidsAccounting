@@ -5,8 +5,8 @@ namespace BraidsAccounting.Services.Interfaces
 {
     internal interface IManufacturersService
     {
-        void AddManufacturer(Manufacturer manufacturer);
-        void EditManufacturer(Manufacturer manufacturer);
+        void AddManufacturer(Manufacturer? manufacturer);
+        void EditManufacturer(Manufacturer? manufacturer);
         Manufacturer? GetManufacturer(string name);
         IEnumerable<string> GetManufacturerNames();
         IEnumerable<Manufacturer> GetManufacturers();

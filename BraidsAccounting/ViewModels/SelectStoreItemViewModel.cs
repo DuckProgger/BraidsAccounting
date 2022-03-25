@@ -1,6 +1,9 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure.Events;
+using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Views.Windows;
+using Cashbox.Visu;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -61,22 +64,26 @@ namespace BraidsAccounting.ViewModels
         }
 
         public ObservableCollection<string> Manufacturers { get; set; }
+        public MessageProvider ErrorMessage { get; } = new(true);
 
 
         private CollectionView collectionView;
         private readonly IEventAggregator eventAggregator;
         private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
+        private readonly IViewService viewService;
 
         public SelectStoreItemViewModel(
             IEventAggregator eventAggregator
             , IStoreService store
             , IManufacturersService manufacturersService
+            , IViewService viewService            
             )
         {
             this.eventAggregator = eventAggregator;
             this.store = store;
             this.manufacturersService = manufacturersService;
+            this.viewService = viewService;
         }
 
         public bool Filter(object obj)
@@ -101,7 +108,13 @@ namespace BraidsAccounting.ViewModels
         private bool CanSelectCommandExecute() => true;
         private async void OnSelectCommandExecuted()
         {
+            if (SelectedItem is null)
+            {
+                ErrorMessage.Message = "Не выбран ни один товар";
+                return;
+            }
             eventAggregator.GetEvent<SelectStoreItemEvent>().Publish(SelectedItem);
+            viewService.GetWindow<SelectStoreItemWindow>().Close();
         }
 
         #endregion

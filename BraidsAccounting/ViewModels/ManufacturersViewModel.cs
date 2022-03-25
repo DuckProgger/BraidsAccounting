@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
+using Cashbox.Visu;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -9,7 +10,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
+using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
+
 
 namespace BraidsAccounting.ViewModels
 {
@@ -17,11 +21,36 @@ namespace BraidsAccounting.ViewModels
     {
         private readonly IManufacturersService manufacturersService;
         private readonly IItemsService itemsService;
+        private CollectionView collectionView;
+        public ObservableCollection<Manufacturer> manufacturers;
 
         public bool DialogResult { get; set; }
-        public ObservableCollection<Manufacturer> Manufacturers { get; set; }
+        public ObservableCollection<Manufacturer> Manufacturers
+        {
+            get => manufacturers;
+            set
+            {
+                manufacturers = value;
+                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(manufacturers);
+                collectionView.Filter = Filter;
+            }
+        }
         public Manufacturer SelectedManufacturer { get; set; }
         public Manufacturer ManufacturerInForm { get; set; } = new();
+        public MessageProvider StatusMessage { get; } = new(true);
+        public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider WarningMessage { get; } = new();
+        public ObservableCollection<string> ManufacturerList { get; set; }
+        private string _manufacturerFilter;
+        public string ManufacturerFilter
+        {
+            get => _manufacturerFilter;
+            set
+            {
+                _manufacturerFilter = value;
+                collectionView.Refresh();
+            }
+        }
 
 
         public ManufacturersViewModel(
@@ -31,6 +60,14 @@ namespace BraidsAccounting.ViewModels
         {
             this.manufacturersService = manufacturersService;
             this.itemsService = itemsService;
+        }
+
+        public bool Filter(object obj)
+        {
+            var item = obj as Manufacturer;
+            bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
+                || item.Name.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);          
+            return manufacturerCondition;
         }
 
         #region Command GetManufacturersList - Команда получить всех производителей
@@ -43,6 +80,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnGetManufacturersListCommandExecuted()
         {
             Manufacturers = new(manufacturersService.GetManufacturers());
+            ManufacturerList = new(manufacturersService.GetManufacturerNames());
         }
 
         #endregion
@@ -56,16 +94,27 @@ namespace BraidsAccounting.ViewModels
         private bool CanSaveCommandExecute() => true;
         private async void OnSaveCommandExecuted()
         {
-            switch (ManufacturerInForm.Id)
+            try
             {
-                case 0:
-                    manufacturersService.AddManufacturer(ManufacturerInForm);
-                    break;
-                default:
-                    manufacturersService.EditManufacturer(ManufacturerInForm);
-                    break;
+                switch (ManufacturerInForm.Id)
+                {
+                    case 0:
+                        manufacturersService.AddManufacturer(ManufacturerInForm);
+                        Manufacturers.Add(ManufacturerInForm);
+                        StatusMessage.Message = "Новый производитель добавлен";
+                        break;
+                    default:
+                        manufacturersService.EditManufacturer(ManufacturerInForm);
+                        OnGetManufacturersListCommandExecuted();
+                        StatusMessage.Message = "Производитель изменён";
+                        break;
+                }
+                ResetFormCommand.Execute(null);
             }
-            ResetFormCommand.Execute(null);
+            catch (ArgumentException)
+            {
+                ErrorMessage.Message = "Не все поля заполнены";
+            }            
         }
 
         #endregion
@@ -79,13 +128,10 @@ namespace BraidsAccounting.ViewModels
         private bool CanRemoveManufacturerCommandExecute() => true;
         private async void OnRemoveManufacturerCommandExecuted()
         {
-            if (itemsService.ContainsManufacturer(SelectedManufacturer.Name))
-            {
-                // Предупредить, что в каталоге содержится товар производителя
-                // и при удалении удалятся все связанные товары из каталога и со склада
-                //if(!DialogResult) // не удалять
-            }
             manufacturersService.RemoveManufacturer(SelectedManufacturer.Id);
+            Manufacturers.Remove(SelectedManufacturer);
+            StatusMessage.Message = "Производитель удалён";
+            MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
 
         #endregion
@@ -113,12 +159,43 @@ namespace BraidsAccounting.ViewModels
         private bool CanFillFormCommandExecute() => true;
         private async void OnFillFormCommandExecuted()
         {
-            ManufacturerInForm = new() 
-            { 
+            ManufacturerInForm = new()
+            {
                 Id = SelectedManufacturer.Id,
                 Name = SelectedManufacturer.Name,
                 Price = SelectedManufacturer.Price
             };
+        }
+
+        #endregion
+
+        #region Command OpenDialog - Команда открыть диалог
+
+        private ICommand? _OpenDialogCommand;
+        /// <summary>Команда - открыть диалог</summary>
+        public ICommand OpenDialogCommand => _OpenDialogCommand
+            ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
+        private bool CanOpenDialogCommandExecute() => true;
+        private async void OnOpenDialogCommandExecuted()
+        {
+            MDDialogHost.OpenDialogCommand.Execute(null, null);
+            WarningMessage.Message = itemsService.ContainsManufacturer(SelectedManufacturer.Name)
+                ? "В каталоге есть товары выбранной фирмы!"
+                : string.Empty;
+        }
+
+        #endregion
+
+        #region Command ResetFiltersCommand - Команда сбросить фильтры
+
+        private ICommand? _ResetFiltersCommand;
+        /// <summary>Команда - сбросить фильтры</summary>
+        public ICommand ResetFiltersCommand => _ResetFiltersCommand
+            ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);
+        private bool CanResetFiltersCommandExecute() => true;
+        private async void OnResetFiltersCommandExecuted()
+        {
+            ManufacturerFilter = string.Empty;
         }
 
         #endregion

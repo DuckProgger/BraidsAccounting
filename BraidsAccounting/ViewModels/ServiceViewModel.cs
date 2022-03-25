@@ -75,6 +75,8 @@ namespace BraidsAccounting.ViewModels
             try
             {
                 serviceProvider.ProvideService(Service);
+                Service = new();
+                WastedItems = new();
                 StatusMessage.Message = "Новая работа добавлена";
             }
             catch (ArgumentException)
