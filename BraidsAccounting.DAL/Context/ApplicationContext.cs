@@ -12,11 +12,11 @@ namespace BraidsAccounting.DAL.Context
 {
     public class ApplicationContext : DbContext
     {
-        DbSet<Item> Items { get; set; }
-        DbSet<Service> Services { get; set; }
-        DbSet<StoreItem> Store { get; set; }
-        DbSet<WastedItem> WastedItems { get; set; }
-        DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<StoreItem> Store { get; set; }
+        public DbSet<WastedItem> WastedItems { get; set; }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)

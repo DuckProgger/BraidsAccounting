@@ -4,8 +4,6 @@ using BraidsAccounting.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
@@ -24,8 +22,8 @@ namespace BraidsAccounting.Services
 
         public void AddManufacturer(Manufacturer? manufacturer)
         {
-            if(manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
-            if(string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0) 
+            if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
+            if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
                 throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
             manufacturers.Create(manufacturer);
         }
@@ -38,9 +36,6 @@ namespace BraidsAccounting.Services
             manufacturers.Edit(manufacturer);
         }
 
-        public void RemoveManufacturer(int id)
-        {
-            manufacturers.Remove(id);
-        }
+        public void RemoveManufacturer(int id) => manufacturers.Remove(id);
     }
 }

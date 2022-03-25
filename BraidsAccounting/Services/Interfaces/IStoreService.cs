@@ -17,6 +17,6 @@ namespace BraidsAccounting.Services.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         int GetItemCount(int id);
-        
+
     }
 }

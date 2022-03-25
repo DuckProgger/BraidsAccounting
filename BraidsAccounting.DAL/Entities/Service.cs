@@ -15,6 +15,6 @@ namespace BraidsAccounting.DAL.Entities
         public string Name { get; set; } = null!;
 
         public List<WastedItem> WastedItems { get; set; } = null!;
-
+        public DateTime DateTime { get; set; }
     }
 }

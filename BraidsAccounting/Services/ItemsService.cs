@@ -22,11 +22,11 @@ namespace BraidsAccounting.Services
 
         public bool ContainsManufacturer(string manufacturerName)
         {
-           return items.Items.Any(i => i.Manufacturer.Name == manufacturerName);
+            return items.Items.Any(i => i.Manufacturer.Name == manufacturerName);
         }
 
         //public IEnumerable<string> GetManufacturers() => manufacturers.Items.Select(m => m.Name);
 
-            //items.Items.Select(i => i.Manufacturer.Name).Distinct();
+        //items.Items.Select(i => i.Manufacturer.Name).Distinct();
     }
 }

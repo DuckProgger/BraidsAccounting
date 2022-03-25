@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
-    internal class ServiceProvider : Interfaces.IServiceProvider
+    internal    class ServiceProvider : Interfaces.IServiceProvider
     {
         private readonly IRepository<Service> services;
         private readonly IStoreService store;
