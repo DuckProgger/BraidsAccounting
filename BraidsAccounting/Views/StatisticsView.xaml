@@ -17,60 +17,94 @@
     </i:Interaction.Triggers>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <!--Фильтры-->
+            <RowDefinition Height="1.2*"/>
             <RowDefinition Height="3*"/>
-            <!--<RowDefinition Height="0.6*"/>-->
-            <!--<RowDefinition Height="0.2*"/>-->
+            <RowDefinition Height="0.2*"/>
         </Grid.RowDefinitions>
-        <Grid>
+        <!--Фильтры-->
+        <Grid Grid.Row="0">
             <Grid.RowDefinitions>
+                <!--Заголовок-->
                 <RowDefinition Height="0.5*"/>
+                <!--Контролы-->
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Фильтры" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" Text="Фильтры" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+            <!--Контролы-->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
+                    <!--Управление фильтрами-->
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="0.6*"/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="0.6*"/>
-                    <ColumnDefinition Width="0.6*"/>
+                    <!--Кнопки-->
+                    <ColumnDefinition Width="0.5*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" >
-                    <TextBlock Text="Имя сотрудника" HorizontalAlignment="Center"/>
-                    <ComboBox Margin="5"
-                      ItemsSource="{Binding Names}"
-                      SelectedValue="{Binding FilterOptions.WorkerNameFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectionChanged">
-                                <i:InvokeCommandAction Command="{Binding 
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <!--Основные контролы-->
+                        <RowDefinition Height="1.5*"/>
+                        <!--Checkboxes-->
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!--Основные контролы-->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <!--Выбор сотрудника-->
+                            <ColumnDefinition/>
+                            <!--Выбор начала даты-->
+                            <ColumnDefinition/>
+                            <!--Выбор конца даты-->
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <!--Выбор сотрудника-->
+                        <StackPanel Grid.Column="0" >
+                            <TextBlock Text="Имя сотрудника" HorizontalAlignment="Center"/>
+                            <ComboBox Margin="5"
+                                      ItemsSource="{Binding Names}"
+                                      SelectedValue="{Binding FilterOptions.WorkerNameFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:StatisticsView}}, 
                                     Path=DataContext.EnableWorkerFilterCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ComboBox>
-                </StackPanel>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </StackPanel>
+                        <!--Выбор начала даты-->
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Начало" HorizontalAlignment="Center"/>
+                            <DatePicker SelectedDate="{Binding Start, Mode=TwoWay}" Margin="5"/>
+                        </StackPanel>
+                        <!--Выбор конца даты-->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Конец" HorizontalAlignment="Center"/>
+                            <DatePicker SelectedDate="{Binding End, Mode=TwoWay}" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                    <!--Checkboxes-->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <!--Управление фильтром даты-->
+                        <TextBlock Grid.Column="0" Text="Фильтр даты" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="10,0,0,0" />
+                        <CheckBox Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnablePeriodFilter}" Margin="10,0,0,0"/>
+                        <!--Управление группировкой-->
+                        <TextBlock Grid.Row="1" Text="Сгруппировать" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="10,0,0,0"/>
+                        <CheckBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnableGrouping}" Margin="10,0,0,0"/>
+                    </Grid>
+                </Grid>
+                <!--Кнопки-->
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="Фильтр даты" HorizontalAlignment="Center"/>
-                    <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnablePeriodFilter}" Margin="10"/>
-                </StackPanel>
-                <StackPanel Grid.Column="2">
-                    <TextBlock Text="Начало" HorizontalAlignment="Center"/>
-                    <DatePicker SelectedDate="{Binding Start, Mode=TwoWay}"/>
-                </StackPanel>
-                <StackPanel Grid.Column="3">
-                    <TextBlock Text="Начало" HorizontalAlignment="Center"/>
-                    <DatePicker SelectedDate="{Binding End, Mode=TwoWay}"/>
-                </StackPanel>
-                <StackPanel Grid.Column="4">
-                    <TextBlock Text="Сгруппировать" HorizontalAlignment="Center"/>
-                    <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnableGrouping}" Margin="10"/>
-                </StackPanel>
-                <StackPanel Grid.Column="5">
                     <Button Content="Сбросить" Command="{Binding ResetFiltersCommand}" Margin="5"/>
                     <Button Content="Применить" Command="{Binding GetDataCommand}" Margin="5"/>
-                </StackPanel>                
+                </StackPanel>
             </Grid>
         </Grid>
         <ListView Grid.Row="1"
@@ -85,13 +119,9 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <!--<Grid Grid.Row="3">
-            <TextBlock
-                Foreground="DarkRed"
-                TextAlignment="Center"
-                DataContext="{Binding ErrorMessage}"
-                Text="{Binding Message}"
-                Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </Grid>-->
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
+            <TextBlock Text="Общие расходы: "/>
+            <TextBlock Text="{Binding TotalExpenses}" MinWidth="100"/>
+        </StackPanel>
     </Grid>
 </UserControl>

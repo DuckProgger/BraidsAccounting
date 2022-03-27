@@ -28,26 +28,17 @@ namespace BraidsAccounting.ViewModels
             this.serviceProvider = serviceProvider;
         }
 
-        public ObservableCollection<WastedItemForm> WastedItems { get; set; }
-        public List<string> Names { get; set; }
-
-        //public bool GroupByItems { get; set; }
-        ///// <summary>
-        ///// Выбранное в форме имя сотрудника
-        ///// </summary>
-        //public string SelectedName { get; set; }
-        //public DatePeriod DatePeriod { get; set; } 
+        public ObservableCollection<WastedItemForm>? WastedItems { get; set; }
+        public List<string>? Names { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public StatisticsFilterOptions FilterOptions { get; set; } = new();
+        public decimal TotalExpenses { get; set; }
 
         private void InitializeDatePeriod()
-        {
-            //DatePeriod = new()
-            //{
-            Start = DateTime.Now;
-            End = DateTime.Now;
-            //};
+        {         
+            Start = DateTime.Now.Date;
+            End = DateTime.Now.Date;
         }
 
         #region Command GetData - Команда получить данные
@@ -65,6 +56,9 @@ namespace BraidsAccounting.ViewModels
                 End = End
             };
             WastedItems = new(wastedItemsService.GetWastedItemForms(FilterOptions));
+            TotalExpenses = 0;
+            foreach (var wastedItem in WastedItems)
+                TotalExpenses += wastedItem.Expense;
         }
 
         #endregion
@@ -95,6 +89,8 @@ namespace BraidsAccounting.ViewModels
         {
             FilterOptions = new();
             InitializeDatePeriod();
+            WastedItems = null;
+            TotalExpenses = 0;
         }
 
         #endregion
