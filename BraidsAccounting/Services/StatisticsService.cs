@@ -5,41 +5,40 @@ using BraidsAccounting.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
-    internal class WastedItemsService : IWastedItemsService
+    internal class StatisticsService : IStatisticsService
     {
         private readonly IRepository<WastedItem> wastedItems;
-        private readonly IRepository<Service> services;
 
-        public WastedItemsService(
-            IRepository<WastedItem> wastedItems
-            , IRepository<Service> services
-            )
+        public StatisticsService(IRepository<WastedItem> wastedItems)
         {
             this.wastedItems = wastedItems;
-            this.services = services;
         }
 
-        public IEnumerable<WastedItemForm> GetWastedItemForms(string? workerName, bool grouping, DatePeriod period)
+        public IEnumerable<WastedItemForm> GetWastedItemForms(StatisticsFilterOptions options)
         {
             IQueryable<WastedItemForm> totalQuery;
-            var baseQuery = wastedItems.Items;
-            if (!string.IsNullOrEmpty(workerName)) AddFilter(ref baseQuery, workerName, period);
-            if (!grouping) totalQuery = AddSelect(baseQuery);
-            else totalQuery = AddSelectWithGrouping(baseQuery);
+            IQueryable<WastedItem>? baseQuery = wastedItems.Items;
+            if (options.EnableWorkerFilter) AddWorkerFilter(ref baseQuery, options.WorkerNameFilter);
+            if (options.EnablePeriodFilter) AddPeriodFilter(ref baseQuery, options.DatePeriod);
+            if (options.EnableGrouping) totalQuery = AddSelectWithGrouping(baseQuery);
+            else totalQuery = AddSelect(baseQuery);
             return totalQuery;
         }
 
-        private static void AddFilter(ref IQueryable<WastedItem> query, string workerName, DatePeriod period)
+        private static void AddWorkerFilter(ref IQueryable<WastedItem> query, string? workerName)
+        {
+            if (workerName is null) throw new ArgumentNullException(nameof(workerName));
+            query = query.Where(w => w.Service.Name == workerName);
+        }
+
+        private static void AddPeriodFilter(ref IQueryable<WastedItem> query, DatePeriod period)
         {
             query = query.Where(w =>
-            w.Service.Name == workerName 
-            && w.Service.DateTime.Date > period.Start
-            && w.Service.DateTime.Date < period.End
+            w.Service.DateTime.Date >= period.Start
+            && w.Service.DateTime.Date <= period.End
             );
         }
 
@@ -59,7 +58,7 @@ namespace BraidsAccounting.Services
         {
             return query.GroupBy(w => new
             {
-                ItemName = w.Service.Name,
+                ItemName = w.Item.Manufacturer.Name,
                 w.Item.Article,
                 w.Item.Color
             }

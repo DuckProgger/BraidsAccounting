@@ -18,9 +18,9 @@ namespace BraidsAccounting.Views
     /// <summary>
     /// Логика взаимодействия для WastedItemsView.xaml
     /// </summary>
-    public partial class WastedItemsView : UserControl
+    public partial class StatisticsView : UserControl
     {
-        public WastedItemsView()
+        public StatisticsView()
         {
             InitializeComponent();
         }

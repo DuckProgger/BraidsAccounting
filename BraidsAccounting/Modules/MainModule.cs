@@ -19,7 +19,7 @@ namespace BraidsAccounting.Modules
                  .RegisterViewWithRegion("ContentRegion", typeof(StoreView))
                  .RegisterViewWithRegion("ContentRegion", typeof(ServiceView))
                  .RegisterViewWithRegion("ContentRegion", typeof(ManufacturersView))
-                 .RegisterViewWithRegion("ContentRegion", typeof(WastedItemsView))
+                 .RegisterViewWithRegion("ContentRegion", typeof(StatisticsView))
             ;
 
         }
@@ -28,7 +28,7 @@ namespace BraidsAccounting.Modules
             containerRegistry.RegisterForNavigation<StoreView>();
             containerRegistry.RegisterForNavigation<ServiceView>();
             containerRegistry.RegisterForNavigation<ManufacturersView>();
-            containerRegistry.RegisterForNavigation<WastedItemsView>();
+            containerRegistry.RegisterForNavigation<StatisticsView>();
         }
     }
 }

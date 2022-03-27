@@ -11,7 +11,7 @@ namespace BraidsAccounting.Services
             .Register<IItemsService, ItemsService>()
             .Register<IViewService, ViewService>()
             .Register<IManufacturersService, ManufacturersService>()
-            .Register<IWastedItemsService, WastedItemsService>()
+            .Register<IStatisticsService, StatisticsService>()
            ;
     }
 }
