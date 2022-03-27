@@ -15,9 +15,9 @@
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
         </i:EventTrigger>
-        <i:EventTrigger EventName="IsVisibleChanged">
+        <!--<i:EventTrigger EventName="IsVisibleChanged">
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
-        </i:EventTrigger>
+        </i:EventTrigger>-->
     </i:Interaction.Triggers>
     <!--<UserControl.DataContext>
         <vm:StoreViewModel/>

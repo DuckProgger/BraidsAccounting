@@ -9,6 +9,7 @@ namespace BraidsAccounting.DAL.Repositories
         public override IQueryable<WastedItem> Items => base.Items
             .Include(wi => wi.Item)
             .ThenInclude(item => item.Manufacturer)
+            .Include(wi => wi.Service)
             ;
 
         public WastedItemRepository(ApplicationContext context) : base(context)

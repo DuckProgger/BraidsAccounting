@@ -5,6 +5,6 @@ namespace BraidsAccounting.Services.Interfaces
 {
     internal interface IWastedItemsService
     {
-        IEnumerable<WastedItemForm> GetWastedItemForms(string? workerName, bool grouping);
+        public IEnumerable<WastedItemForm> GetWastedItemForms(string? workerName, bool grouping, DatePeriod period);
     }
 }

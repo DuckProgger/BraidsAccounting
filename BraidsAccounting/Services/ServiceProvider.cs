@@ -40,6 +40,16 @@ namespace BraidsAccounting.Services
             store.RemoveItems(service.WastedItems);
         }
 
+        /// <summary>
+        /// Получить все имена сотрудников, которые когда-либо 
+        /// выполняли работу
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<string> GetNames()
+        {
+           return services.Items.Select(s => s.Name).Distinct();
+        }
+
         private void BindWastedItemsToService(Service s)
         {
             foreach (var wastedItem in s.WastedItems)
@@ -56,5 +66,6 @@ namespace BraidsAccounting.Services
                 expenses += wastedItem.Item.Manufacturer.Price * wastedItem.Count;
             service.NetProfit = service.Profit - expenses;
         }
+
     }
 }

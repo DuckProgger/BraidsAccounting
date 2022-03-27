@@ -24,54 +24,44 @@ namespace BraidsAccounting.Services
             this.services = services;
         }
 
-        public IEnumerable<WastedItemForm> GetWastedItemForms(string? workerName, bool grouping)
+        public IEnumerable<WastedItemForm> GetWastedItemForms(string? workerName, bool grouping, DatePeriod period)
         {
             IQueryable<WastedItemForm> totalQuery;
-            var baseQuery = GetBaseQuery();
-            if (!string.IsNullOrEmpty(workerName)) AddFilter(ref baseQuery, workerName);
+            var baseQuery = wastedItems.Items;
+            if (!string.IsNullOrEmpty(workerName)) AddFilter(ref baseQuery, workerName, period);
             if (!grouping) totalQuery = AddSelect(baseQuery);
             else totalQuery = AddSelectWithGrouping(baseQuery);
             return totalQuery;
         }
 
-        private IQueryable<WastedItemQuery> GetBaseQuery()
+        private static void AddFilter(ref IQueryable<WastedItem> query, string workerName, DatePeriod period)
         {
-            return wastedItems.Items
-               .Join(services.Items, w => w.ServiceId, s => s.Id, (w, s) => new WastedItemQuery
-               {
-                   WorkerName = s.Name,
-                   ItemName = w.Item.Manufacturer.Name,
-                   Article = w.Item.Article,
-                   Color = w.Item.Color,
-                   Count = w.Count,
-                   Price = w.Item.Manufacturer.Price
-               });
+            query = query.Where(w =>
+            w.Service.Name == workerName 
+            && w.Service.DateTime.Date > period.Start
+            && w.Service.DateTime.Date < period.End
+            );
         }
 
-        private static void AddFilter(ref IQueryable<WastedItemQuery> query, string workerName)
-        {
-            query = query.Where(w => w.WorkerName == workerName);
-        }
-
-        private static IQueryable<WastedItemForm> AddSelect(IQueryable<WastedItemQuery> query)
+        private static IQueryable<WastedItemForm> AddSelect(IQueryable<WastedItem> query)
         {
             return query.Select(w => new WastedItemForm()
             {
-                Article = w.Article,
-                ItemName = w.ItemName,
-                Color = w.Color,
+                Article = w.Item.Article,
+                ItemName = w.Item.Manufacturer.Name,
+                Color = w.Item.Color,
                 Count = w.Count,
-                Expense = w.Count * w.Price
+                Expense = w.Count * w.Item.Manufacturer.Price
             });
         }
 
-        private static IQueryable<WastedItemForm> AddSelectWithGrouping(IQueryable<WastedItemQuery> query)
+        private static IQueryable<WastedItemForm> AddSelectWithGrouping(IQueryable<WastedItem> query)
         {
             return query.GroupBy(w => new
             {
-                w.ItemName,
-                w.Article,
-                w.Color
+                ItemName = w.Service.Name,
+                w.Item.Article,
+                w.Item.Color
             }
                 ).Select(g =>
                 new WastedItemForm
@@ -80,18 +70,8 @@ namespace BraidsAccounting.Services
                     Article = g.Key.Article,
                     Color = g.Key.Color,
                     Count = g.Sum(w => w.Count),
-                    Expense = g.Sum(w => w.Count * w.Price)
+                    Expense = g.Sum(w => w.Count * w.Item.Manufacturer.Price)
                 });
-        }
-
-        private class WastedItemQuery
-        {
-            public string? WorkerName { get; set; }
-            public string? ItemName { get; set; }
-            public string? Article { get; set; }
-            public string? Color { get; set; }
-            public int Count { get; set; }
-            public decimal Price { get; set; }
         }
     }
 }

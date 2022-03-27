@@ -6,6 +6,7 @@ namespace BraidsAccounting.Services.Interfaces
 {
     internal interface IServiceProvider
     {
+        IEnumerable<string> GetNames();
         void ProvideService(Service service);
     }
 }
