@@ -25,6 +25,6 @@ namespace BraidsAccounting.DAL.Entities
             return Name.ToUpper() == other.Name.ToUpper();
         }
 
-        public override bool Equals(object? obj) => Equals(obj as Manufacturer);
+        //public override bool Equals(object? obj) => Equals(obj as Manufacturer);
     }
 }

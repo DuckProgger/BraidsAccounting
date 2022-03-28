@@ -110,7 +110,7 @@
                   ItemsSource="{Binding WastedItems}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding ItemName}"/>
+                    <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Manufacturer}"/>
                     <GridViewColumn Header="Модель" DisplayMemberBinding="{Binding Article}"/>
                     <GridViewColumn Header="Цвет" DisplayMemberBinding="{Binding Color}"/>
                     <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding Count}"/>

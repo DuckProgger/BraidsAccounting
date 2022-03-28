@@ -53,7 +53,7 @@
                         <TextBlock Text="Имя" HorizontalAlignment="Center"/>
                         <TextBox       
                             Padding="3"                        
-                            Text="{Binding Service.Name, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding Service.WorkerName, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
                     </StackPanel>
                     <StackPanel Grid.Column="1" >

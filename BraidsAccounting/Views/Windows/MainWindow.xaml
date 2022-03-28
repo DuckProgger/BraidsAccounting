@@ -6,12 +6,11 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"  
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        mc:Ignorable="d"
-       
-        Title="{Binding Title}" Height="500" Width="900">
+        mc:Ignorable="d"       
+        Height="500" Width="900">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadStoreViewCommand}"/>
+            <i:InvokeCommandAction Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <DockPanel>
