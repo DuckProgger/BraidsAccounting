@@ -11,11 +11,6 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
@@ -29,9 +24,21 @@ namespace BraidsAccounting.ViewModels
         private readonly IViewService viewService;
         private readonly IManufacturersService manufacturersService;
 
+        /// <summary>
+        /// Материал со склада, обрабатываемый в форме.
+        /// </summary>
         public StoreItem StoreItem { get; set; } = new();
-        public ObservableCollection<string> Manufacturers { get; set; }
-        public string SelectedManufacturer { get; set; }
+        /// <summary>
+        /// Список производителей.
+        /// </summary>
+        public List<string>? Manufacturers { get; set; }
+        /// <summary>
+        /// Выбранный производитель из списка.
+        /// </summary>
+        public string? SelectedManufacturer { get; set; }
+        /// <summary>
+        /// Выводимое сообщение об ошибке.
+        /// </summary>
         public MessageProvider ErrorMessage { get; } = new(true);
 
         public AddStoreItemViewModel(
@@ -49,10 +56,15 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             StoreItem.Item = new();
             StoreItem.Item.Manufacturer = new();
-            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
+            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(SetStoreItem);
 
         }
-        private void MessageReceived(StoreItem storeItem)
+
+        /// <summary>
+        /// Установить <see cref = "StoreItem" />.
+        /// </summary>
+        /// <param name="storeItem"></param>
+        private void SetStoreItem(StoreItem storeItem)
         {
             if (regionManager.IsViewActive<StoreView>("ContentRegion"))
             {
@@ -60,7 +72,7 @@ namespace BraidsAccounting.ViewModels
                 {
                     Item = storeItem.Item
                 };
-            }    
+            }
         }
 
         #region Command AddStoreItem - Команда добавить товар на склад
@@ -93,10 +105,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand LoadManufacturersCommand => _LoadManufacturersCommand
             ??= new DelegateCommand(OnLoadManufacturersCommandExecuted, CanLoadManufacturersCommandExecute);
         private bool CanLoadManufacturersCommandExecute() => true;
-        private async void OnLoadManufacturersCommandExecuted()
-        {
-            Manufacturers = new(manufacturersService.GetManufacturerNames());
-        }
+        private async void OnLoadManufacturersCommandExecuted() => Manufacturers = new(manufacturersService.GetManufacturerNames());
 
         #endregion
 
@@ -107,10 +116,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private async void OnSelectStoreItemCommandExecuted()
-        {
-            viewService.ActivateWindowWithClosing<SelectStoreItemWindow, AddStoreItemWindow>();
-        }
+        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<SelectStoreItemWindow, AddStoreItemWindow>();
 
         #endregion
     }

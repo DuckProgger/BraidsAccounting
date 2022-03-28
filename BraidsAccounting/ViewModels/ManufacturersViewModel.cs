@@ -1,15 +1,10 @@
 ﻿using BraidsAccounting.DAL.Entities;
-using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
 using Cashbox.Visu;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
@@ -21,10 +16,10 @@ namespace BraidsAccounting.ViewModels
     {
         private readonly IManufacturersService manufacturersService;
         private readonly IItemsService itemsService;
-        private CollectionView collectionView;
-        public ObservableCollection<Manufacturer> manufacturers;
+        private CollectionView? collectionView;
+        private ObservableCollection<Manufacturer> manufacturers = null!;
+        private string? _manufacturerFilter;
 
-        public bool DialogResult { get; set; }
         public ObservableCollection<Manufacturer> Manufacturers
         {
             get => manufacturers;
@@ -35,23 +30,42 @@ namespace BraidsAccounting.ViewModels
                 collectionView.Filter = Filter;
             }
         }
-        public Manufacturer SelectedManufacturer { get; set; }
+        /// <summary>
+        /// Выбранный производитель в представлении.
+        /// </summary>
+        public Manufacturer SelectedManufacturer { get; set; } = null!;
+        /// <summary>
+        /// Отображаемый в представлении прозводитель.
+        /// </summary>
         public Manufacturer ManufacturerInForm { get; set; } = new();
+        /// <summary>
+        /// Выводимое сообщение о статусе.
+        /// </summary>
         public MessageProvider StatusMessage { get; } = new(true);
+        /// <summary>
+        /// Выводимое сообщение об ошибке.
+        /// </summary>
         public MessageProvider ErrorMessage { get; } = new(true);
+        /// <summary>
+        /// Выводимое предупреждение.
+        /// </summary>
         public MessageProvider WarningMessage { get; } = new();
-        public ObservableCollection<string> ManufacturerList { get; set; }
-        private string _manufacturerFilter;
-        public string ManufacturerFilter
+        /// <summary>
+        /// Список производителей в представлении.
+        /// </summary>
+        public ObservableCollection<string> ManufacturerList { get; set; } = null!;
+        /// <summary>
+        /// Значение, введённое в поле фильтра производителя.
+        /// </summary>
+        public string? ManufacturerFilter
         {
             get => _manufacturerFilter;
             set
             {
                 _manufacturerFilter = value;
-                collectionView.Refresh();
+                collectionView?.Refresh();
             }
         }
-
 
         public ManufacturersViewModel(
             IManufacturersService manufacturersService,
@@ -61,12 +75,16 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             this.itemsService = itemsService;
         }
-
+        /// <summary>
+        /// Предикат фильтрации списка производителей.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public bool Filter(object obj)
         {
-            var item = obj as Manufacturer;
+            Manufacturer item = (Manufacturer)obj;
             bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
-                || item.Name.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);          
+                || item.Name.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
             return manufacturerCondition;
         }
 
@@ -114,7 +132,7 @@ namespace BraidsAccounting.ViewModels
             catch (ArgumentException)
             {
                 ErrorMessage.Message = "Не все поля заполнены";
-            }            
+            }
         }
 
         #endregion
@@ -143,10 +161,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand ResetFormCommand => _ResetFormCommand
             ??= new DelegateCommand(OnResetFormCommandExecuted, CanResetFormCommandExecute);
         private bool CanResetFormCommandExecute() => true;
-        private async void OnResetFormCommandExecuted()
-        {
-            ManufacturerInForm = new();
-        }
+        private async void OnResetFormCommandExecuted() => ManufacturerInForm = new();
 
         #endregion
 
@@ -193,10 +208,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand ResetFiltersCommand => _ResetFiltersCommand
             ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);
         private bool CanResetFiltersCommandExecute() => true;
-        private async void OnResetFiltersCommandExecuted()
-        {
-            ManufacturerFilter = string.Empty;
-        }
+        private async void OnResetFiltersCommandExecuted() => ManufacturerFilter = string.Empty;
 
         #endregion
     }

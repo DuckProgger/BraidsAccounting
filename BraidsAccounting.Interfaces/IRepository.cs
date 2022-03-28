@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BraidsAccounting.Interfaces
+﻿namespace BraidsAccounting.Interfaces
 {
+    /// <summary>
+    /// Базовый интерфейс репозиториев.
+    /// </summary>
     public interface IRepository<T> where T : class, IEntity, new()
     {
-        public IQueryable<T> Items { get;  }
+        public IQueryable<T> Items { get; }
         public T? Get(int id);
         public Task<T?> GetAsync(int id, CancellationToken cancel = default);
         public T Create(T item);
@@ -23,6 +20,5 @@ namespace BraidsAccounting.Interfaces
         public Task RemoveAsync(int id, CancellationToken cancel = default);
         public void RemoveRange(IEnumerable<T> items);
         public Task RemoveRangeAsync(IEnumerable<T> items, CancellationToken cancel = default);
-
     }
 }

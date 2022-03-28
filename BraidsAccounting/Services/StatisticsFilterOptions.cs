@@ -2,6 +2,9 @@
 
 namespace BraidsAccounting.Services
 {
+    /// <summary>
+    /// Класс, задающий параметры фильтрации для <see cref = "StatisticsService.GetWastedItemForms(StatisticsFilterOptions)" />.
+    /// </summary>
     internal class StatisticsFilterOptions
     {
         public bool EnableWorkerFilter { get; set; } = false;

@@ -1,27 +1,16 @@
 ﻿using BraidsAccounting.DAL.Entities;
-using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
-using BraidsAccounting.Modules;
-using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Cashbox.Visu;
-using MaterialDesignThemes.Wpf;
-using Microsoft.Extensions.DependencyInjection;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
@@ -36,21 +25,7 @@ namespace BraidsAccounting.ViewModels
         private readonly IContainerProvider container;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
-        private CollectionView collectionView;
-
-
-        public StoreItem? SelectedStoreItem { get; set; }
-        public ObservableCollection<StoreItem?> StoreItems
-        {
-            get => storeItems;
-            set
-            {
-                storeItems = value;
-                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
-            }
-        }
-        public MessageProvider StatusMessage { get; } = new(true);
-
+        private CollectionView? collectionView;       
 
         public StoreViewModel(
             IStoreService store
@@ -65,11 +40,34 @@ namespace BraidsAccounting.ViewModels
             this.container = container;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(MessageReceived);
-
+            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMassage);
         }
 
-        private void MessageReceived(bool success)
+        /// <summary>
+        /// Выбранный материал со склада.
+        /// </summary>
+        public StoreItem? SelectedStoreItem { get; set; }
+        /// <summary>
+        /// Коллекция всех материалов на складе.
+        /// </summary>
+        public ObservableCollection<StoreItem?> StoreItems
+        {
+            get => storeItems;
+            set
+            {
+                storeItems = value;
+                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
+            }
+        } /// <summary>
+          /// Выводимое сообщение о статусе.
+          /// </summary>
+        public MessageProvider StatusMessage { get; } = new(true);
+
+        /// <summary>
+        /// Устанавливает статус выполненной операции.
+        /// </summary>
+        /// <param name="success"></param>
+        private void SetStatusMassage(bool success)
         {
             if (success) StatusMessage.Message = "Операция выполнена";
         }
@@ -113,15 +111,9 @@ namespace BraidsAccounting.ViewModels
         public ICommand LoadDataCommand => _LoadDataCommand
             ??= new DelegateCommand(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
         private bool CanLoadDataCommandExecute() => true;
-        private async void OnLoadDataCommandExecuted()
-        {
-            await LoadData();
-        }
+        private async void OnLoadDataCommandExecuted() => await LoadData();
 
-        private async Task LoadData()
-        {
-            StoreItems = new(store.GetItems());
-        }
+        private async Task LoadData() => StoreItems = new(store.GetItems());
 
         #endregion
 
@@ -149,12 +141,6 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        #endregion
-
-        //private void RefreshCollection()
-        //{
-        //    LoadData();
-        //    collectionView.Refresh();
-        //}      
+        #endregion        
     }
 }

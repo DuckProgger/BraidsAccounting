@@ -1,7 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
-using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
@@ -13,11 +12,8 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
@@ -25,17 +21,9 @@ namespace BraidsAccounting.ViewModels
 {
     internal class ServiceViewModel : BindableBase
     {
-        public Service Service { get; set; } = new();
-        public ObservableCollection<FormItem> WastedItems { get; set; } = new();
-        public FormItem SelectedWastedItem { get; set; } = new();
-        public MessageProvider StatusMessage { get; } = new(true);
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider WarningMessage { get; } = new();
-
-
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
-        private readonly IViewService viewService;
+        private readonly IViewService viewService;        
 
         public ServiceViewModel(
             Services.Interfaces.IServiceProvider serviceProvider
@@ -47,10 +35,41 @@ namespace BraidsAccounting.ViewModels
             this.serviceProvider = serviceProvider;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(MessageReceived);
+            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(AddWastedItemToService);
         }
 
-        private void MessageReceived(StoreItem? storeItem)
+        /// <summary>
+        /// Выполненная работа, заполненная в представлении
+        /// </summary>
+        public Service Service { get; set; } = new();
+        /// <summary>
+        /// Список израсходованных материалов выполненной работы.
+        /// </summary>
+        public ObservableCollection<FormItem> WastedItems { get; set; } = new();
+        /// <summary>
+        /// Выбранный материал в представлении, который будет добавлен
+        /// в список израсходованных материалов.
+        /// </summary>
+        public FormItem SelectedWastedItem { get; set; } = new();
+        /// <summary>
+        /// Выводимое сообщение о статусе.
+        /// </summary>
+        public MessageProvider StatusMessage { get; } = new(true);
+        /// <summary>
+        /// Выводимое сообщение об ошибке.
+        /// </summary>
+        public MessageProvider ErrorMessage { get; } = new(true);
+        /// <summary>
+        /// Выводимое предупреждение.
+        /// </summary>
+        public MessageProvider WarningMessage { get; } = new();
+
+        /// <summary>
+        /// Добавляет выбранный материал в коллекцию израсходованных
+        /// материалов выполненной работы
+        /// </summary>
+        /// <param name="storeItem"></param>
+        private void AddWastedItemToService(StoreItem? storeItem)
         {
             if (storeItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
             {
@@ -66,7 +85,7 @@ namespace BraidsAccounting.ViewModels
 
         #region Command CreateService - Добавление сервиса
 
-        private ICommand _CreateServiceCommand;
+        private ICommand? _CreateServiceCommand;
         /// <summary>Команда - Добавление сервиса</summary>
         public ICommand CreateServiceCommand => _CreateServiceCommand
             ??= new DelegateCommand(OnCreateServiceCommandExecuted, CanCreateServiceCommandExecute);
@@ -75,7 +94,7 @@ namespace BraidsAccounting.ViewModels
         {
             MDDialogHost.CloseDialogCommand.Execute(null, null);
             Service.WastedItems = new();
-            foreach (var item in WastedItems)
+            foreach (FormItem? item in WastedItems)
                 Service.WastedItems.Add(item);
             try
             {
@@ -104,10 +123,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private async void OnSelectStoreItemCommandExecuted()
-        {
-            viewService.ActivateWindowWithClosing<SelectStoreItemWindow, MainWindow>();
-        }
+        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<SelectStoreItemWindow, MainWindow>();
 
         #endregion
 
@@ -133,10 +149,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand RemoveWastedItemCommand => _RemoveWastedItemCommand
             ??= new DelegateCommand(OnRemoveWastedItemCommandExecuted, CanRemoveWastedItemCommandExecute);
         private bool CanRemoveWastedItemCommandExecute() => true;
-        private async void OnRemoveWastedItemCommandExecuted()
-        {
-            WastedItems.Remove(SelectedWastedItem);
-        }
+        private async void OnRemoveWastedItemCommandExecuted() => WastedItems.Remove(SelectedWastedItem);
 
         #endregion
     }

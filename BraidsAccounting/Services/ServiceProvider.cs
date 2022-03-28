@@ -47,7 +47,7 @@ namespace BraidsAccounting.Services
         /// <returns></returns>
         public IEnumerable<string> GetNames()
         {
-           return services.Items.Select(s => s.Name).Distinct();
+           return services.Items.Select(s => s.WorkerName).Distinct();
         }
 
         private void BindWastedItemsToService(Service s)

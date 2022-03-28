@@ -1,36 +1,54 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Services;
+using BraidsAccounting.Services.Interfaces;
 using Prism.Mvvm;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Prism.Ioc;
-using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.Services;
 
 namespace BraidsAccounting.Models
 {
+    /// <summary>
+    /// Представляет класс для отображения информации о материале в форме.
+    /// </summary>
     internal class FormItem : BindableBase, IEquatable<StoreItem>
     {
         private int? maxCount;
         private int count;
 
+        /// <summary>
+        /// ID материала.
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// Название производителя.
+        /// </summary>
         public string Manufacturer { get; set; } = null!;
+        /// <summary>
+        /// Стоимость материала.
+        /// </summary>
         public decimal Price { get; set; }
+        /// <summary>
+        /// Артикул материала.
+        /// </summary>
         public string Article { get; set; } = null!;
+        /// <summary>
+        /// Цвет материала.
+        /// </summary>
         public string Color { get; set; } = null!;
+        /// <summary>
+        /// Количество материалов.
+        /// </summary>
         public int Count { get => count; set => count = Math.Min(value, MaxCount); }
+        /// <summary>
+        /// Максимально допустимое количество материалов, исходя из наличия на складе.
+        /// </summary>
         public int MaxCount
         {
             get
             {
                 if (maxCount is null)
                 {
-                    var store = ServiceLocator.GetService<IStoreService>();
+                    // Получить сервис работы со складом
+                    IStoreService? store = ServiceLocator.GetService<IStoreService>();
                     maxCount = store.GetItemCount(Id);
                 }
                 return maxCount.Value;

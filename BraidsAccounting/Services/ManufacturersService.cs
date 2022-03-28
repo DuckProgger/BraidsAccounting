@@ -7,6 +7,9 @@ using System.Linq;
 
 namespace BraidsAccounting.Services
 {
+    /// <summary>
+    /// Реализация сервиса <see cref = "IManufacturersService" />.
+    /// </summary>
     internal class ManufacturersService : IManufacturersService
     {
         private readonly IRepository<Manufacturer> manufacturers;

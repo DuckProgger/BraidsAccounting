@@ -2,21 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BraidsAccounting.DAL.Context
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<Item> Items { get; set; }
-        public DbSet<Service> Services { get; set; }
-        public DbSet<StoreItem> Store { get; set; }
-        public DbSet<WastedItem> WastedItems { get; set; }
-        public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<Item> Items { get; set; } = null!;
+        public DbSet<Service> Services { get; set; } = null!;
+        public DbSet<StoreItem> Store { get; set; } = null!;
+        public DbSet<WastedItem> WastedItems { get; set; } = null!;
+        public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
@@ -44,13 +39,19 @@ namespace BraidsAccounting.DAL.Context
 
     }
 
+    /// <summary>
+    /// Фабрика создания контекста для Dependency Injection.
+    /// </summary>
     public class MyServiceFactory : IDesignTimeDbContextFactory<ApplicationContext>
     {
-        public static ApplicationContext CreateDbContext()
-        {
-            return new ApplicationContext(new DbContextOptionsBuilder<ApplicationContext>().UseSqlServer(ApplicationContext.GetConnectionString()).Options);
-        }
+        public static ApplicationContext CreateDbContext() =>
+            new ApplicationContext(
+                new DbContextOptionsBuilder<ApplicationContext>()
+                .UseSqlServer(ApplicationContext.GetConnectionString()).Options);
 
+        /// <summary>
+        /// Создание экземпляра ApplicationContext.
+        /// </summary>
         public ApplicationContext CreateDbContext(string[] args) => CreateDbContext();
     }
 }

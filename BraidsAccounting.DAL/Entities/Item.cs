@@ -2,10 +2,22 @@
 
 namespace BraidsAccounting.DAL.Entities
 {
+    /// <summary>
+    ///  Материал, используемый для выполнения работ.
+    /// </summary>
     public class Item : Entity, IEquatable<Item>
     {
+        /// <summary>
+        /// Артикул.
+        /// </summary>
         public string Article { get; set; } = null!;
+        /// <summary>
+        /// Цвет.
+        /// </summary>
         public string Color { get; set; } = null!;
+        /// <summary>
+        /// Производитель.
+        /// </summary>
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; } = null!;
 
@@ -17,5 +29,6 @@ namespace BraidsAccounting.DAL.Entities
               && Manufacturer.Equals(other.Manufacturer);
         }
 
+        public override bool Equals(object? obj) => Equals(obj as Item);       
     }
 }

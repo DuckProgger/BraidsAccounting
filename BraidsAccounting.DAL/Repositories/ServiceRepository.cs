@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BraidsAccounting.DAL.Repositories
 {
+    /// <summary>
+    /// Репозиторий для выполненных работ.
+    /// </summary>
     internal class ServiceRepository : DbRepository<Service>
     {
         public override IQueryable<Service> Items => base.Items

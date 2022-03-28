@@ -1,6 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure.Events;
-using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Cashbox.Visu;
@@ -10,8 +9,6 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -20,6 +17,17 @@ namespace BraidsAccounting.ViewModels
 {
     internal class SelectStoreItemViewModel : BindableBase
     {
+        private CollectionView? collectionView;
+        private readonly IEventAggregator eventAggregator;
+        private readonly IStoreService store;
+        private readonly IManufacturersService manufacturersService;
+        private readonly IViewService viewService;
+        private string? _colorFilter;
+        private string? _manufacturerFilter;
+        private string? articleFilter;
+        private ICommand? _LoadDataCommand;
+        private ObservableCollection<StoreItem> storeItems = new();
+
         public ObservableCollection<StoreItem> StoreItems
         {
             get => storeItems;
@@ -30,9 +38,15 @@ namespace BraidsAccounting.ViewModels
                 collectionView.Filter = Filter;
             }
         }
-        public StoreItem SelectedItem { get; set; }
-        public string ArticleFilter 
-        { 
+        /// <summary>
+        /// Выбранный материал со склада.
+        /// </summary>
+        public StoreItem SelectedItem { get; set; } = null!;
+        /// <summary>
+        /// Значение, введённое в поле фильтра артикула.
+        /// </summary>
+        public string? ArticleFilter
+        {
             get => articleFilter;
             set
             {
@@ -40,9 +54,10 @@ namespace BraidsAccounting.ViewModels
                 collectionView.Refresh();
             }
         }
-
-        private string _colorFilter;
-        public string ColorFilter
+        /// <summary>
+        /// Значение, введённое в поле фильтра цвета.
+        /// </summary>
+        public string? ColorFilter
         {
             get => _colorFilter;
             set
@@ -51,33 +66,29 @@ namespace BraidsAccounting.ViewModels
                 collectionView.Refresh();
             }
         }
-
-        private string _manufacturerFilter;
-        public string ManufacturerFilter
+        /// <summary>
+        /// Значение, введённое в поле фильтра производителя.
+        /// </summary>
+        public string? ManufacturerFilter
         {
             get => _manufacturerFilter;
             set
             {
                 _manufacturerFilter = value;
-                collectionView.Refresh();
+                collectionView?.Refresh();
             }
         }
-
-        public ObservableCollection<string> Manufacturers { get; set; }
+        /// <summary>
+        /// Список производителей
+        /// </summary>
+        public List<string> Manufacturers { get; set; } = null!;
         public MessageProvider ErrorMessage { get; } = new(true);
-
-
-        private CollectionView collectionView;
-        private readonly IEventAggregator eventAggregator;
-        private readonly IStoreService store;
-        private readonly IManufacturersService manufacturersService;
-        private readonly IViewService viewService;
 
         public SelectStoreItemViewModel(
             IEventAggregator eventAggregator
             , IStoreService store
             , IManufacturersService manufacturersService
-            , IViewService viewService            
+            , IViewService viewService
             )
         {
             this.eventAggregator = eventAggregator;
@@ -85,10 +96,14 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             this.viewService = viewService;
         }
-
+        /// <summary>
+        /// Предикат фильтрации списка материалов со склада.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public bool Filter(object obj)
         {
-            var item = obj as StoreItem;
+            StoreItem? item = (StoreItem)obj;
             bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
                 || item.Item.Manufacturer.Name.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
             bool articleCondition = string.IsNullOrEmpty(ArticleFilter)
@@ -121,18 +136,11 @@ namespace BraidsAccounting.ViewModels
 
         #region Command LoadData - Команда загрузки данных со склада
 
-        private ICommand? _LoadDataCommand;
-        private ObservableCollection<StoreItem> storeItems = new();
-        private string articleFilter;
-
         /// <summary>Команда - загрузки данных со склада</summary>
         public ICommand LoadDataCommand => _LoadDataCommand
             ??= new DelegateCommand(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
         private bool CanLoadDataCommandExecute() => true;
-        private async void OnLoadDataCommandExecuted()
-        {
-            await LoadData();
-        }
+        private async void OnLoadDataCommandExecuted() => await LoadData();
 
         private async Task LoadData()
         {

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BraidsAccounting.Interfaces
+﻿namespace BraidsAccounting.Interfaces
 {
+    /// <summary>
+    /// Базовый интерфейс для всех сущностей.
+    /// </summary>
     public interface IEntity
     {
         int Id { get; set; }

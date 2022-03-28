@@ -8,10 +8,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
@@ -23,16 +20,28 @@ namespace BraidsAccounting.ViewModels
         private readonly IEventAggregator eventAggregator;
         private readonly IViewService viewService;
 
+        /// <summary>
+        /// Материал со склада, обрабатываемый в форме.
+        /// </summary>
         public StoreItem StoreItem { get; set; } = new();
-        public ObservableCollection<string> Manufacturers { get; set; }
-        public string SelectedManufacturer { get; set; }
+        /// <summary>
+        /// Список производителей.
+        /// </summary>
+        public List<string>? Manufacturers { get; set; }
+        /// <summary>
+        /// Выбранный производитель из списка.
+        /// </summary>
+        public string SelectedManufacturer { get; set; } = null!;
+        /// <summary>
+        /// Выводимое сообщение об ошибке.
+        /// </summary>
         public MessageProvider ErrorMessage { get; } = new(true);
 
 
         public EditStoreItemViewModel(
          IStoreService store
-            ,IManufacturersService manufacturersService
-         , IEventAggregator eventAggregator
+            , IManufacturersService manufacturersService
+            , IEventAggregator eventAggregator
             , IViewService viewService
          )
         {
@@ -40,11 +49,15 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             this.eventAggregator = eventAggregator;
             this.viewService = viewService;
-            eventAggregator.GetEvent<EditStoreItemEvent>().Subscribe(MessageReceived);
+            eventAggregator.GetEvent<EditStoreItemEvent>().Subscribe(SetProperties);
             this.store = store;
         }
 
-        private void MessageReceived(StoreItem item)
+        /// <summary>
+        /// Устанавливает свойства при приёме сообщения.
+        /// </summary>
+        /// <param name="item"></param>
+        private void SetProperties(StoreItem item)
         {
             StoreItem = item;
             Manufacturers = new(manufacturersService.GetManufacturerNames());

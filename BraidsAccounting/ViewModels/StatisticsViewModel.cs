@@ -6,9 +6,6 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using IServiceProvider = BraidsAccounting.Services.Interfaces.IServiceProvider;
 
@@ -28,15 +25,35 @@ namespace BraidsAccounting.ViewModels
             this.serviceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// Список израсходованных материалов в представлении.
+        /// </summary>
         public ObservableCollection<WastedItemForm>? WastedItems { get; set; }
+        /// <summary>
+        /// Список имён сотрудников, которые когда-либо выполняли работу.
+        /// </summary>
         public List<string>? Names { get; set; }
+        /// <summary>
+        /// Значение, введённое в поле фильтра начала периода.
+        /// </summary>
         public DateTime Start { get; set; }
+        /// <summary>
+        /// Значение, введённое в поле фильтра конца периода.
+        /// </summary>
         public DateTime End { get; set; }
+        /// <summary>
+        /// Опции фильтрации.
+        /// </summary>
         public StatisticsFilterOptions FilterOptions { get; set; } = new();
+        /// <summary>
+        /// Сумма расходов за материалы из списка израсходованных материалов.
+        /// </summary>
         public decimal TotalExpenses { get; set; }
-
+        /// <summary>
+        /// Задаёт значения фильтров периода по умолчанию.
+        /// </summary>
         private void InitializeDatePeriod()
-        {         
+        {
             Start = DateTime.Now.Date;
             End = DateTime.Now.Date;
         }
@@ -57,7 +74,7 @@ namespace BraidsAccounting.ViewModels
             };
             WastedItems = new(wastedItemsService.GetWastedItemForms(FilterOptions));
             TotalExpenses = 0;
-            foreach (var wastedItem in WastedItems)
+            foreach (WastedItemForm? wastedItem in WastedItems)
                 TotalExpenses += wastedItem.Expense;
         }
 

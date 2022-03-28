@@ -126,7 +126,7 @@ class Program
         return db.WastedItems.Include(w => w.Item).ThenInclude(i => i.Manufacturer)
            .Join(db.Services, w => w.ServiceId, s => s.Id, (w, s) => new WastedItemQuery
            {
-               WorkerName = s.Name,
+               WorkerName = s.WorkerName,
                ItemName = w.Item.Manufacturer.Name,
                Article = w.Item.Article,
                Color = w.Item.Color,

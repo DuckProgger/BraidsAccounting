@@ -1,22 +1,12 @@
 ﻿using BraidsAccounting.Data;
-using BraidsAccounting.Models;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.ViewModels;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace BraidsAccounting
@@ -33,10 +23,7 @@ namespace BraidsAccounting
                 .AddServices()
                 ;
         }
-        protected override Window CreateShell()
-        {
-            return Container.Resolve<MainWindow>();
-        }
+        protected override Window CreateShell() => Container.Resolve<MainWindow>();
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {

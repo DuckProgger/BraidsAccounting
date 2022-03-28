@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BraidsAccounting.DAL.Repositories
 {
+    /// <summary>
+    /// Репозиторий для израсходованных материалов.
+    /// </summary>
     internal class WastedItemRepository : DbRepository<WastedItem>
     {
         public override IQueryable<WastedItem> Items => base.Items

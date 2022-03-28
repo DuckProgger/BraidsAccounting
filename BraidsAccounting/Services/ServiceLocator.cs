@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Prism.Ioc;
+﻿using Prism.Ioc;
 
 namespace BraidsAccounting.Services
 {
+    /// <summary>
+    /// Класс для получения требуемых сервисов.
+    /// </summary>
     internal static class ServiceLocator
     {
+        /// <summary>
+        /// Получить сервис типа <typeparamref name = "T"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T GetService<T>() => ContainerLocator.Container.Resolve<T>();
     }
 }

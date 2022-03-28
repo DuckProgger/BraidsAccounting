@@ -1,14 +1,12 @@
 ﻿using BraidsAccounting.DAL.Context;
 using BraidsAccounting.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BraidsAccounting.DAL.Repositories
 {
+    /// <summary>
+    /// Базовый класс репозитория для сущности.
+    /// </summary>
     internal class DbRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         private readonly ApplicationContext context;
@@ -31,7 +29,6 @@ namespace BraidsAccounting.DAL.Repositories
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
             if (Items.Contains(item)) return item;
-            //context.Add(item);
             context.Entry(item).State = EntityState.Added;
             SaveChanges();
             return item;
@@ -40,7 +37,6 @@ namespace BraidsAccounting.DAL.Repositories
         public async Task<T?> CreateAsync(T item, CancellationToken cancel = default)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            //context.Entry(item).State = EntityState.Added;
             await context.AddAsync(item, cancel);
             await SaveChangesAsync(cancel);
             return item;
@@ -49,8 +45,7 @@ namespace BraidsAccounting.DAL.Repositories
         public void CreateRange(IEnumerable<T> items)
         {
             if (items is null) throw new ArgumentNullException(nameof(items));
-            //context.AddRange(items);
-            foreach (var item in items)
+            foreach (T? item in items)
                 context.Entry(item).State = EntityState.Added;
             SaveChanges();
         }
@@ -84,14 +79,14 @@ namespace BraidsAccounting.DAL.Repositories
         public void EditRange(IEnumerable<T> items)
         {
             if (items is null) throw new ArgumentNullException(nameof(items));
-            foreach (var item in items)
+            foreach (T? item in items)
                 context.Entry(item).State = EntityState.Modified;
             SaveChanges();
         }
         public async Task EditRangeAsync(IEnumerable<T> items, CancellationToken cancel = default)
         {
             if (items is null) throw new ArgumentNullException(nameof(items));
-            foreach (var item in items)
+            foreach (T? item in items)
                 context.Entry(item).State = EntityState.Modified;
             await SaveChangesAsync(cancel);
         }
@@ -120,14 +115,8 @@ namespace BraidsAccounting.DAL.Repositories
             await SaveChangesAsync(cancel);
         }
 
-        private void SaveChanges()
-        {
-            context.SaveChanges();
-        }
+        private void SaveChanges() => context.SaveChanges();
 
-        private async Task SaveChangesAsync(CancellationToken cancel)
-        {
-            await context.SaveChangesAsync(cancel).ConfigureAwait(false);
-        }
+        private async Task SaveChangesAsync(CancellationToken cancel) => await context.SaveChangesAsync(cancel).ConfigureAwait(false);
     }
 }
