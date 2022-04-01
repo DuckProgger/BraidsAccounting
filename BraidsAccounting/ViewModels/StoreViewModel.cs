@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure.Events;
+using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
@@ -20,12 +21,12 @@ namespace BraidsAccounting.ViewModels
 {
     internal class StoreViewModel : BindableBase
     {
-        private readonly IStoreService store;
+        private IStoreService store;
         private readonly IEventAggregator eventAggregator;
         private readonly IContainerProvider container;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
-        private CollectionView? collectionView;       
+        private CollectionView? collectionView;
 
         public StoreViewModel(
             IStoreService store
@@ -40,7 +41,7 @@ namespace BraidsAccounting.ViewModels
             this.container = container;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMassage);
+            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace BraidsAccounting.ViewModels
         /// Устанавливает статус выполненной операции.
         /// </summary>
         /// <param name="success"></param>
-        private void SetStatusMassage(bool success)
+        private void SetStatusMessage(bool success)
         {
             if (success) StatusMessage.Message = "Операция выполнена";
         }
@@ -99,7 +100,7 @@ namespace BraidsAccounting.ViewModels
             store.RemoveItem(SelectedStoreItem.Id);
             storeItems.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
-            StatusMessage.Message = "Товар удалён";
+            StatusMessage.Message = "Материал удалён со склада";
         }
 
         #endregion
@@ -113,7 +114,12 @@ namespace BraidsAccounting.ViewModels
         private bool CanLoadDataCommandExecute() => true;
         private async void OnLoadDataCommandExecuted() => await LoadData();
 
-        private async Task LoadData() => StoreItems = new(store.GetItems());
+        private async Task LoadData()
+        {
+            // Нужно обновить контекст, чтобы получать обновлённые данные
+            store = ServiceLocator.GetService<IStoreService>();
+            StoreItems = new(store.GetItems());
+        }
 
         #endregion
 

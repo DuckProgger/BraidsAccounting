@@ -25,6 +25,8 @@ namespace BraidsAccounting.Services
             openedWindow.Show();
         }
 
-        public T GetWindow<T>() => Application.Current.Windows.OfType<T>().First();
+        public T GetWindow<T>() where T : Window
+        { return  Application.Current.Windows.OfType<T>().First(); }
+        //=> 
     }
 }

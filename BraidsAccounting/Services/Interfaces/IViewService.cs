@@ -30,6 +30,6 @@ namespace BraidsAccounting.Services.Interfaces
         /// </summary>
         /// <typeparam name="T">Тип получаемого окна.</typeparam>
         /// <returns></returns>
-        T GetWindow<T>();
+        T GetWindow<T>() where T : Window;
     }
 }

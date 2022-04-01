@@ -48,7 +48,7 @@ namespace BraidsAccounting.Services
                 return;
             }
             // Найти материал на складе
-            StoreItem? existingStoreItem = store.Get(existingItem.Id);
+            StoreItem? existingStoreItem = GetItem(existingItem.Manufacturer.Name, existingItem.Article, existingItem.Color);
             // Продукт в каталоге есть, но нет на складе - добавить на склад
             if (existingStoreItem is null)
             {
@@ -57,7 +57,7 @@ namespace BraidsAccounting.Services
             }
             // Продукт есть в каталоге и на складе - изменить количество на складе
             existingStoreItem.Count += storeItem.Count;
-            store.Edit(existingStoreItem);
+            EditItem(existingStoreItem);
         }
 
         public StoreItem? GetItem(string manufacturer, string article, string color) =>
