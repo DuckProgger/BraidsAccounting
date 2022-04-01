@@ -27,7 +27,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Материал со склада, обрабатываемый в форме.
         /// </summary>
-        public StoreItem? StoreItem { get; set; } = new();
+        public StoreItem StoreItem { get; set; } = new();
         /// <summary>
         /// Список производителей.
         /// </summary>
@@ -36,6 +36,7 @@ namespace BraidsAccounting.ViewModels
         /// Выбранный производитель из списка.
         /// </summary>
         public string? SelectedManufacturer { get; set; }
+        public int InStock { get; set; }
         /// <summary>
         /// Выводимое сообщение об ошибке.
         /// </summary>
@@ -68,8 +69,11 @@ namespace BraidsAccounting.ViewModels
         {
             if (regionManager.IsViewActive<StoreView>("ContentRegion"))
             {
-                StoreItem = store.GetItem(item.Manufacturer.Name, item.Article, item.Color);
-                if (StoreItem is null) ErrorMessage.Message = "Выбранный материал отсутсвует на складе";
+                StoreItem = new()
+                {
+                    Item = item
+                };
+                InStock = store.GetItemCount(item.Manufacturer.Name, item.Article, item.Color);
             }
         }
 

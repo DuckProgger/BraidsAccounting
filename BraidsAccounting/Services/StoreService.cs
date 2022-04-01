@@ -65,38 +65,7 @@ namespace BraidsAccounting.Services
           i.Item.Manufacturer.Name == manufacturer
           && i.Item.Article == article
           && i.Item.Color == color);
-
-        //public void AddItem(StoreItem? storeItem)
-        //{
-        //    if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
-        //    if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
-        //    // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
-        //    Manufacturer? manufacturer = GetManufacturer(storeItem.Item.Manufacturer.Name);
-        //    // Если такого производителя нет, то выдать ошибку,
-        //    // потому что производителей надо добавлять в отдельном окне
-        //    storeItem.Item.Manufacturer = manufacturer is not null
-        //        ? manufacturer
-        //        : throw new Exception("Такого производителя нет в базе.");
-        //    // Найти товар на складе
-        //    Item? existingItem = GetItem(storeItem.Item);
-        //    // Продукта в каталоге нет - надо добавить
-        //    if (existingItem is null)
-        //    {
-        //        AddNewItem(storeItem);
-        //        return;
-        //    }
-        //    StoreItem? existingStoreItem = store.Get(existingItem.Id);
-        //    // Продукт в каталоге есть, но нет на складе - добавить на склад
-        //    if (existingStoreItem is null)
-        //    {
-        //        AddExistingItem(storeItem, existingItem);
-        //        return;
-        //    }
-        //    // Продукт есть в каталоге и на складе - изменить количество на складе
-        //    existingStoreItem.Count += storeItem.Count;
-        //    store.Edit(existingStoreItem);
-        //}
-
+      
 
         /// <summary>
         /// Получить производителя по имени.
@@ -106,16 +75,6 @@ namespace BraidsAccounting.Services
         private Manufacturer? GetManufacturer(string name) =>
             manufacturers.Items.FirstOrDefault(
                 m => m.Name.ToUpper() == name.ToUpper());
-
-        /// <summary>
-        /// Получить материал со склада.
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        //private Item? GetItem(Item item) =>
-        //    catalogue.Items
-        //        .AsEnumerable()
-        //        .FirstOrDefault(i => i.Equals(item));
 
         /// <summary>
         /// Добавить новый материал в каталог материалов и на склад.
@@ -173,12 +132,11 @@ namespace BraidsAccounting.Services
 
         public void RemoveItem(int id) => store.Remove(id);
 
-        public int GetItemCount(string manufacturer, string article, string color) =>
-            store.Items
-            .Where(i =>
-                     i.Item.Manufacturer.Name == manufacturer
-                     && i.Item.Article == article
-                     && i.Item.Color == color)
-            .Count();
+        public int GetItemCount(string manufacturer, string article, string color)
+        {
+            var storeItem = GetItem(manufacturer, article, color);
+            if (storeItem is null) return 0;
+            return storeItem.Count;
+        }           
     }
 }
