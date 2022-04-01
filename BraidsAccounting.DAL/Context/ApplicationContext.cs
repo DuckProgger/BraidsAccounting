@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
 
 namespace BraidsAccounting.DAL.Context
@@ -37,7 +38,18 @@ namespace BraidsAccounting.DAL.Context
             return config.GetConnectionString("DefaultConnection");
         }
 
-    }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Service>(ServiceConfigure);
+        }
+
+        private void ServiceConfigure(EntityTypeBuilder<Service> builder)
+        {       
+            builder
+              .Property(x => x.DateTime)
+              .HasDefaultValueSql("GETDATE()");
+        }
+    }   
 
     /// <summary>
     /// Фабрика создания контекста для Dependency Injection.
