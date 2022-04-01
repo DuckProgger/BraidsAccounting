@@ -3,6 +3,7 @@ using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Mvvm;
 using System;
+using System.Collections.Generic;
 
 namespace BraidsAccounting.Models
 {
@@ -15,9 +16,9 @@ namespace BraidsAccounting.Models
         private int count;
 
         /// <summary>
-        /// ID материала.
+        /// ID материала из каталога.
         /// </summary>
-        public int Id { get; set; }
+        public int ItemId { get; set; }
         /// <summary>
         /// Название производителя.
         /// </summary>
@@ -49,37 +50,82 @@ namespace BraidsAccounting.Models
                 {
                     // Получить сервис работы со складом
                     IStoreService? store = ServiceLocator.GetService<IStoreService>();
-                    maxCount = store.GetItemCount(Id);
+                    maxCount = store.GetItemCount(Manufacturer, Article, Color);
                 }
                 return maxCount.Value;
             }
         }
 
-        public static implicit operator FormItem(StoreItem storeItem)
+        //public IEnumerable<FormItem> CreateColection(IEnumerable<StoreItem> storeItems)
+        //{
+        //    List<FormItem> colections = new List<FormItem>();
+        //    foreach (var storeItem in storeItems)
+        //        colections.Add(storeItem);
+        //    return colections;
+        //}
+
+        public IEnumerable<FormItem> CreateColection(IEnumerable<Item> storeItems)
+        {
+            List<FormItem> colections = new List<FormItem>();
+            foreach (var storeItem in storeItems)
+                colections.Add(storeItem);
+            return colections;
+        }
+
+        //public static implicit operator FormItem(StoreItem storeItem)
+        //{
+        //    return new()
+        //    {
+        //        Count = storeItem.Count,
+        //        Article = storeItem.Item.Article,
+        //        Manufacturer = storeItem.Item.Manufacturer.Name,
+        //        Price = storeItem.Item.Manufacturer.Price,
+        //        Color = storeItem.Item.Color,
+        //        Id = storeItem.Item.Id
+        //    };
+        //}
+
+        public static implicit operator FormItem(Item item)
         {
             return new()
             {
-                Count = storeItem.Count,
-                Article = storeItem.Item.Article,
-                Manufacturer = storeItem.Item.Manufacturer.Name,
-                Price = storeItem.Item.Manufacturer.Price,
-                Color = storeItem.Item.Color,
-                Id = storeItem.Item.Id
+                Article = item.Article,
+                Manufacturer = item.Manufacturer.Name,
+                Price = item.Manufacturer.Price,
+                Color = item.Color,
+                ItemId = item.Id
             };
         }
+
+        public static implicit operator Item(FormItem formItem)
+        {
+            Manufacturer manufacturer = new()
+            {
+                Name = formItem.Manufacturer,
+                Price = formItem.Price
+            };
+            return new()
+            {
+                Id = formItem.ItemId,
+                Article = formItem.Article,
+                Color = formItem.Color,
+                Manufacturer = manufacturer
+            };
+        }
+
         public static implicit operator WastedItem(FormItem formItem)
         {
-            Manufacturer itemPrice = new()
+            Manufacturer manufacturer = new()
             {
                 Name = formItem.Manufacturer,
                 Price = formItem.Price
             };
             Item item = new()
             {
-                Id = formItem.Id,
+                Id = formItem.ItemId,
                 Article = formItem.Article,
                 Color = formItem.Color,
-                Manufacturer = itemPrice
+                Manufacturer = manufacturer
             };
             return new WastedItem()
             {

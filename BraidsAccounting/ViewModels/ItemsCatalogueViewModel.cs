@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure.Events;
+using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Cashbox.Visu;
@@ -15,20 +16,21 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class SelectStoreItemViewModel : BindableBase
+    internal class ItemsCatalogueViewModel : BindableBase
     {
         private CollectionView? collectionView;
         private readonly IEventAggregator eventAggregator;
         private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
         private readonly IViewService viewService;
+        private readonly IItemsService catalogue;
         private string? _colorFilter;
         private string? _manufacturerFilter;
         private string? articleFilter;
         private ICommand? _LoadDataCommand;
-        private ObservableCollection<StoreItem> storeItems = new();
+        private ObservableCollection<FormItem> storeItems = new();
 
-        public ObservableCollection<StoreItem> StoreItems
+        public ObservableCollection<FormItem> CatalogueItems
         {
             get => storeItems;
             set
@@ -39,9 +41,9 @@ namespace BraidsAccounting.ViewModels
             }
         }
         /// <summary>
-        /// Выбранный материал со склада.
+        /// Выбранный материал из каталога.
         /// </summary>
-        public StoreItem SelectedItem { get; set; } = null!;
+        public FormItem SelectedItem { get; set; } = null!;
         /// <summary>
         /// Значение, введённое в поле фильтра артикула.
         /// </summary>
@@ -54,6 +56,11 @@ namespace BraidsAccounting.ViewModels
                 collectionView.Refresh();
             }
         }
+        /// <summary>
+        /// Флаг фильтрации отображаемых элементов каталога
+        /// материалов - только в наличии.
+        /// </summary>
+        public bool OnlyInStock { get; set; } = false;
         /// <summary>
         /// Значение, введённое в поле фильтра цвета.
         /// </summary>
@@ -82,19 +89,24 @@ namespace BraidsAccounting.ViewModels
         /// Список производителей
         /// </summary>
         public List<string> Manufacturers { get; set; } = null!;
+        /// <summary>
+        /// Выводимое сообщение об ошибке.
+        /// </summary>
         public MessageProvider ErrorMessage { get; } = new(true);
 
-        public SelectStoreItemViewModel(
+        public ItemsCatalogueViewModel(
             IEventAggregator eventAggregator
             , IStoreService store
             , IManufacturersService manufacturersService
             , IViewService viewService
+            , IItemsService itemsService
             )
         {
             this.eventAggregator = eventAggregator;
             this.store = store;
             this.manufacturersService = manufacturersService;
             this.viewService = viewService;
+            this.catalogue = itemsService;
         }
         /// <summary>
         /// Предикат фильтрации списка материалов со склада.
@@ -128,8 +140,8 @@ namespace BraidsAccounting.ViewModels
                 ErrorMessage.Message = "Не выбран ни один товар";
                 return;
             }
-            eventAggregator.GetEvent<SelectStoreItemEvent>().Publish(SelectedItem);
-            viewService.GetWindow<SelectStoreItemWindow>().Close();
+            eventAggregator.GetEvent<SelectItemEvent>().Publish(SelectedItem);
+            viewService.GetWindow<ItemsCatalogueWindow>().Close();
         }
 
         #endregion
@@ -144,7 +156,9 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            StoreItems = new(store.GetItems());
+            CatalogueItems.Clear();
+            foreach (var item in catalogue.GetItems(OnlyInStock))
+                CatalogueItems.Add(item);
             Manufacturers = new(manufacturersService.GetManufacturerNames());
         }
 

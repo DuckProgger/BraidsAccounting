@@ -27,7 +27,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Материал со склада, обрабатываемый в форме.
         /// </summary>
-        public StoreItem StoreItem { get; set; } = new();
+        public StoreItem? StoreItem { get; set; } = new();
         /// <summary>
         /// Список производителей.
         /// </summary>
@@ -56,22 +56,20 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             StoreItem.Item = new();
             StoreItem.Item.Manufacturer = new();
-            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(SetStoreItem);
+            eventAggregator.GetEvent<SelectItemEvent>().Subscribe(SetStoreItem);
 
         }
 
         /// <summary>
         /// Установить <see cref = "StoreItem" />.
         /// </summary>
-        /// <param name="storeItem"></param>
-        private void SetStoreItem(StoreItem storeItem)
+        /// <param name="item"></param>
+        private void SetStoreItem(Item item)
         {
             if (regionManager.IsViewActive<StoreView>("ContentRegion"))
             {
-                StoreItem = new()
-                {
-                    Item = storeItem.Item
-                };
+                StoreItem = store.GetItem(item.Manufacturer.Name, item.Article, item.Color);
+                if (StoreItem is null) ErrorMessage.Message = "Выбранный материал отсутсвует на складе";
             }
         }
 
@@ -116,7 +114,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<SelectStoreItemWindow, AddStoreItemWindow>();
+        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, AddStoreItemWindow>();
 
         #endregion
     }

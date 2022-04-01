@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Exceptions;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
 using System;
@@ -13,16 +14,16 @@ namespace BraidsAccounting.Services
     internal class StoreService : IStoreService
     {
         private readonly IRepository<StoreItem> store;
-        private readonly IRepository<Item> items;
+        private readonly IItemsService catalogue;
         private readonly IRepository<Manufacturer> manufacturers;
 
         public StoreService(
             IRepository<StoreItem> store,
-            IRepository<Item> items,
+            IItemsService catalogue,
             IRepository<Manufacturer> manufacturers)
         {
             this.store = store;
-            this.items = items;
+            this.catalogue = catalogue;
             this.manufacturers = manufacturers;
         }
 
@@ -37,14 +38,16 @@ namespace BraidsAccounting.Services
             storeItem.Item.Manufacturer = manufacturer is not null
                 ? manufacturer
                 : throw new Exception("Такого производителя нет в базе.");
-            // Найти товар на складе
-            Item? existingItem = GetItem(storeItem.Item);
-            // Продукта в каталоге нет - надо добавить
+            // Найти материал в каталоге
+            Item? existingItem = catalogue
+                .GetItem(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
+            // Такого материала нет в каталоге - добавить в каталог и на склад
             if (existingItem is null)
             {
                 AddNewItem(storeItem);
                 return;
             }
+            // Найти материал на складе
             StoreItem? existingStoreItem = store.Get(existingItem.Id);
             // Продукт в каталоге есть, но нет на складе - добавить на склад
             if (existingStoreItem is null)
@@ -57,13 +60,50 @@ namespace BraidsAccounting.Services
             store.Edit(existingStoreItem);
         }
 
+        public StoreItem? GetItem(string manufacturer, string article, string color) =>
+          store.Items.FirstOrDefault(i =>
+          i.Item.Manufacturer.Name == manufacturer
+          && i.Item.Article == article
+          && i.Item.Color == color);
+
+        //public void AddItem(StoreItem? storeItem)
+        //{
+        //    if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
+        //    if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
+        //    // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
+        //    Manufacturer? manufacturer = GetManufacturer(storeItem.Item.Manufacturer.Name);
+        //    // Если такого производителя нет, то выдать ошибку,
+        //    // потому что производителей надо добавлять в отдельном окне
+        //    storeItem.Item.Manufacturer = manufacturer is not null
+        //        ? manufacturer
+        //        : throw new Exception("Такого производителя нет в базе.");
+        //    // Найти товар на складе
+        //    Item? existingItem = GetItem(storeItem.Item);
+        //    // Продукта в каталоге нет - надо добавить
+        //    if (existingItem is null)
+        //    {
+        //        AddNewItem(storeItem);
+        //        return;
+        //    }
+        //    StoreItem? existingStoreItem = store.Get(existingItem.Id);
+        //    // Продукт в каталоге есть, но нет на складе - добавить на склад
+        //    if (existingStoreItem is null)
+        //    {
+        //        AddExistingItem(storeItem, existingItem);
+        //        return;
+        //    }
+        //    // Продукт есть в каталоге и на складе - изменить количество на складе
+        //    existingStoreItem.Count += storeItem.Count;
+        //    store.Edit(existingStoreItem);
+        //}
+
 
         /// <summary>
         /// Получить производителя по имени.
         /// </summary>
         /// <param name="name">Имя производителя.</param>
         /// <returns></returns>
-        private Manufacturer? GetManufacturer(string name)=>
+        private Manufacturer? GetManufacturer(string name) =>
             manufacturers.Items.FirstOrDefault(
                 m => m.Name.ToUpper() == name.ToUpper());
 
@@ -72,10 +112,10 @@ namespace BraidsAccounting.Services
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private Item? GetItem(Item item)=>
-            items.Items
-                .AsEnumerable()
-                .FirstOrDefault(i => i.Equals(item));
+        //private Item? GetItem(Item item) =>
+        //    catalogue.Items
+        //        .AsEnumerable()
+        //        .FirstOrDefault(i => i.Equals(item));
 
         /// <summary>
         /// Добавить новый материал в каталог материалов и на склад.
@@ -83,7 +123,7 @@ namespace BraidsAccounting.Services
         /// <param name="addedItem">Добавляемый материал.</param>
         private void AddNewItem(StoreItem addedItem)
         {
-            Item? newItem = items.Create(addedItem.Item);
+            Item newItem = catalogue.Add(addedItem.Item);
             addedItem.Item = newItem;
             store.Create(addedItem);
         }
@@ -128,12 +168,17 @@ namespace BraidsAccounting.Services
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
             if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
             store.Edit(storeItem);
-            items.Edit(storeItem.Item);
+            catalogue.Edit(storeItem.Item);
         }
 
         public void RemoveItem(int id) => store.Remove(id);
 
-        public int GetItemCount(int id) => store.Items.First(si => si.Item.Id == id).Count;
-
+        public int GetItemCount(string manufacturer, string article, string color) =>
+            store.Items
+            .Where(i =>
+                     i.Item.Manufacturer.Name == manufacturer
+                     && i.Item.Article == article
+                     && i.Item.Color == color)
+            .Count();
     }
 }

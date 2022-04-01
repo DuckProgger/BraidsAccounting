@@ -33,13 +33,13 @@ namespace BraidsAccounting.Services.Interfaces
         /// </summary>
         /// <param name="items">Материалы, которые нужно удалить со склада.</param>
         void RemoveItems(IEnumerable<WastedItem?> items);
-
+      
+        StoreItem? GetItem(string manufacturer, string article, string color);
         /// <summary>
         /// Получить количество товара на складе.
         /// </summary>
         /// <param name="id"></param>
         /// <returns>ID материала.</returns>
-        int GetItemCount(int id);
-
+        int GetItemCount(string manufacturer, string article, string color);
     }
 }

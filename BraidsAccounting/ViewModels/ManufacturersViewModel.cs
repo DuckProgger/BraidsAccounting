@@ -195,7 +195,7 @@ namespace BraidsAccounting.ViewModels
         {
             MDDialogHost.OpenDialogCommand.Execute(null, null);
             WarningMessage.Message = itemsService.ContainsManufacturer(SelectedManufacturer.Name)
-                ? "В каталоге есть товары выбранной фирмы!"
+                ? "В списке есть товары выбранной фирмы!"
                 : string.Empty;
         }
 

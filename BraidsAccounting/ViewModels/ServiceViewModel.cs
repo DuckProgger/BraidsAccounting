@@ -35,7 +35,7 @@ namespace BraidsAccounting.ViewModels
             this.serviceProvider = serviceProvider;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            eventAggregator.GetEvent<SelectStoreItemEvent>().Subscribe(AddWastedItemToService);
+            eventAggregator.GetEvent<SelectItemEvent>().Subscribe(AddWastedItemToService);
         }
 
         /// <summary>
@@ -68,18 +68,23 @@ namespace BraidsAccounting.ViewModels
         /// Добавляет выбранный материал в коллекцию израсходованных
         /// материалов выполненной работы
         /// </summary>
-        /// <param name="storeItem"></param>
-        private void AddWastedItemToService(StoreItem? storeItem)
+        /// <param name="catalogueItem"></param>
+        private void AddWastedItemToService(Item? catalogueItem)
         {
-            if (storeItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
+            if (catalogueItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
             {
-                storeItem.Count = 0;
-                if (WastedItems.FirstOrDefault(wi => wi.Equals(storeItem)) != null)
+                if (WastedItems.FirstOrDefault(wi => wi.Equals(catalogueItem)) != null)
                 {
                     ErrorMessage.Message = "Выбранный материал уже есть в списке";
                     return;
                 }
-                WastedItems.Add(storeItem);
+                FormItem formItem = catalogueItem;
+                if (formItem.MaxCount == 0)
+                {
+                    ErrorMessage.Message = "Выбранный материал отсутсвует на складе";
+                    return;
+                }
+                WastedItems.Add(formItem);
             }
         }
 
@@ -123,7 +128,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<SelectStoreItemWindow, MainWindow>();
+        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, MainWindow>();
 
         #endregion
 

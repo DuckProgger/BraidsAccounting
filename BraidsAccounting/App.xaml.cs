@@ -37,7 +37,7 @@ namespace BraidsAccounting
             base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
             ViewModelLocationProvider.Register<EditStoreItemWindow, EditStoreItemViewModel>();
-            ViewModelLocationProvider.Register<SelectStoreItemWindow, SelectStoreItemViewModel>();
+            ViewModelLocationProvider.Register<ItemsCatalogueWindow, ItemsCatalogueViewModel>();
         }
     }
 }

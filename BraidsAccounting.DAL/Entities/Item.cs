@@ -20,6 +20,7 @@ namespace BraidsAccounting.DAL.Entities
         /// </summary>
         public int ManufacturerId { get; set; }
         public Manufacturer Manufacturer { get; set; } = null!;
+        public List<StoreItem> StoreItems { get; set; } = null!;
 
         public bool Equals(Item? other)
         {
