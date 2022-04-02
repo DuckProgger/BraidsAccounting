@@ -13,12 +13,12 @@ namespace BraidsAccounting.Services.Interfaces
         /// Добавить материал на склад.
         /// </summary>
         /// <param name="storeItem">Добавляемый материал.</param>
-        void AddItem(StoreItem? storeItem);
+        Task AddItemAsync(StoreItem? storeItem);
         /// <summary>
         /// Редактировать материал со склада.
         /// </summary>
         /// <param name="storeItem">Редактируемый материал.</param>
-        void EditItem(StoreItem? storeItem);
+        Task EditItemAsync(StoreItem? storeItem);
         /// <summary>
         /// Получить список материалов на складе.
         /// </summary>

@@ -29,24 +29,24 @@ namespace BraidsAccounting.Services
             this.manufacturers = manufacturers;
         }
 
-        public void AddItem(StoreItem? storeItem)
+        public async Task AddItemAsync(StoreItem? storeItem)
         {
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
             if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
             // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
-            Manufacturer? manufacturer = GetManufacturer(storeItem.Item.Manufacturer.Name);
+            Manufacturer? manufacturer = await GetManufacturerAsync(storeItem.Item.Manufacturer.Name);
             // Если такого производителя нет, то выдать ошибку,
             // потому что производителей надо добавлять в отдельном окне
             storeItem.Item.Manufacturer = manufacturer is not null
                 ? manufacturer
                 : throw new Exception("Такого производителя нет в базе.");
             // Найти материал в каталоге
-            Item? existingItem = catalogue
-                .GetItem(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
+            Item? existingItem = await catalogue
+                .GetItemAsync(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
             // Такого материала нет в каталоге - добавить в каталог и на склад
             if (existingItem is null)
             {
-                AddNewItem(storeItem);
+                await AddNewItemAsync(storeItem);
                 return;
             }
             // Найти материал на складе
@@ -54,12 +54,12 @@ namespace BraidsAccounting.Services
             // Продукт в каталоге есть, но нет на складе - добавить на склад
             if (existingStoreItem is null)
             {
-                AddExistingItem(storeItem, existingItem);
+                await AddExistingItemAsync(storeItem, existingItem);
                 return;
             }
             // Продукт есть в каталоге и на складе - изменить количество на складе
             existingStoreItem.Count += storeItem.Count;
-            EditItem(existingStoreItem);
+            await EditItemAsync(existingStoreItem);
         }
 
         public StoreItem? GetItem(string manufacturer, string article, string color) =>
@@ -74,19 +74,19 @@ namespace BraidsAccounting.Services
         /// </summary>
         /// <param name="name">Имя производителя.</param>
         /// <returns></returns>
-        private Manufacturer? GetManufacturer(string name) =>
-            manufacturers.Items.FirstOrDefault(
+        private async Task<Manufacturer?> GetManufacturerAsync(string name) =>
+           await manufacturers.Items.FirstOrDefaultAsync(
                 m => m.Name.ToUpper() == name.ToUpper());
 
         /// <summary>
         /// Добавить новый материал в каталог материалов и на склад.
         /// </summary>
         /// <param name="addedItem">Добавляемый материал.</param>
-        private void AddNewItem(StoreItem addedItem)
+        private async Task AddNewItemAsync(StoreItem addedItem)
         {
-            Item newItem = catalogue.Add(addedItem.Item);
+            Item newItem = await catalogue.AddAsync(addedItem.Item);
             addedItem.Item = newItem;
-            store.Create(addedItem);
+            await store.CreateAsync(addedItem);
         }
 
         /// <summary>
@@ -94,10 +94,10 @@ namespace BraidsAccounting.Services
         /// </summary>
         /// <param name="storeItem">Новый материал на складе.</param>
         /// <param name="item">Материал из каталога.</param>
-        private void AddExistingItem(StoreItem storeItem, Item item)
+        private async Task AddExistingItemAsync(StoreItem storeItem, Item item)
         {
             storeItem.Item = item;
-            store.Create(storeItem);
+            await store.CreateAsync(storeItem);
         }
 
         public async Task<List<StoreItem>> GetItemsAsync() => await store.Items.ToListAsync();
@@ -124,12 +124,12 @@ namespace BraidsAccounting.Services
             }
         }
 
-        public void EditItem(StoreItem? storeItem)
+        public async Task EditItemAsync(StoreItem? storeItem)
         {
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
             if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
-            store.Edit(storeItem);
-            catalogue.Edit(storeItem.Item);
+            await store.EditAsync(storeItem);
+            await catalogue.EditAsync(storeItem.Item);
         }
 
         public async Task RemoveItemAsync(int id) => await store.RemoveAsync(id);

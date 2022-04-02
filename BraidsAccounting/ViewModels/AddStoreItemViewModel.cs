@@ -35,7 +35,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Выбранный производитель из списка.
         /// </summary>
-        public string? SelectedManufacturer { get; set; }
+        public string SelectedManufacturer { get; set; } = null!;
         public int InStock { get; set; }
         /// <summary>
         /// Выводимое сообщение об ошибке.
@@ -88,8 +88,8 @@ namespace BraidsAccounting.ViewModels
             StoreItem.Item.Manufacturer.Name = SelectedManufacturer;
             try
             {
-                store.AddItem(StoreItem);
                 viewService.GetWindow<AddStoreItemWindow>().Close();
+                await store.AddItemAsync(StoreItem);
                 eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)

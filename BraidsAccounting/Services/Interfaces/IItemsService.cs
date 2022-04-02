@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces
 {
@@ -8,7 +9,7 @@ namespace BraidsAccounting.Services.Interfaces
     /// </summary>
     internal interface IItemsService
     {
-        Item Add(Item item);
+        Task<Item> AddAsync(Item item);
 
         /// <summary>
         /// Определяет содержится ли выбранный производитель в каталоге.
@@ -16,8 +17,8 @@ namespace BraidsAccounting.Services.Interfaces
         /// <param name="manufacturerName">Название производителя.</param>
         /// <returns></returns>
         bool ContainsManufacturer(string manufacturerName);
-        void Edit(Item item);
-        Item? GetItem(string manufacturer, string article, string color);
+        Task EditAsync(Item item);
+        Task<Item?> GetItemAsync(string manufacturer, string article, string color);
         IEnumerable<Item> GetItems(bool onlyInStock);
     }
 }

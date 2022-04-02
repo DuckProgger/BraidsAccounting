@@ -128,7 +128,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, MainWindow>();
+        private void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, MainWindow>();
 
         #endregion
 
@@ -139,7 +139,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand OpenDialogCommand => _OpenDialogCommand
             ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
         private bool CanOpenDialogCommandExecute() => true;
-        private async void OnOpenDialogCommandExecuted()
+        private void OnOpenDialogCommandExecuted()
         {
             WarningMessage.Message = WastedItems.Count == 0 ? "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!" : string.Empty;
             MDDialogHost.OpenDialogCommand.Execute(null, null);
@@ -154,7 +154,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand RemoveWastedItemCommand => _RemoveWastedItemCommand
             ??= new DelegateCommand(OnRemoveWastedItemCommandExecuted, CanRemoveWastedItemCommandExecute);
         private bool CanRemoveWastedItemCommandExecute() => true;
-        private async void OnRemoveWastedItemCommandExecuted() => WastedItems.Remove(SelectedWastedItem);
+        private void OnRemoveWastedItemCommandExecuted() => WastedItems.Remove(SelectedWastedItem);
 
         #endregion
     }

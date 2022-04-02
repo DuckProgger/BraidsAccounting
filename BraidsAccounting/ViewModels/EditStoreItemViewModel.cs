@@ -77,7 +77,7 @@ namespace BraidsAccounting.ViewModels
             try
             {
                 StoreItem.Item.ManufacturerId = manufacturersService.GetManufacturer(SelectedManufacturer).Id;
-                store.EditItem(StoreItem);
+                store.EditItemAsync(StoreItem);
                 viewService.GetWindow<EditStoreItemWindow>().Close();
                 eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
