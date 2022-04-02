@@ -7,6 +7,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              WindowStartupLocation="CenterScreen"
+             Title="Изменение материала"
              Height="150" Width="400">
     <Grid>
         <Grid.RowDefinitions>
