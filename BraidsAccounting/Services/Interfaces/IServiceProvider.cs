@@ -13,7 +13,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// Получить имена всех сотрудников, когда-либо выполнявших работы.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string> GetNames();
+        Task<List<string>> GetNamesAsync();
         /// <summary>
         /// Добавить выполненную работу.
         /// </summary>

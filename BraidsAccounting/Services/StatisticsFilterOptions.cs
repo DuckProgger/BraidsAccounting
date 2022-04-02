@@ -3,7 +3,7 @@
 namespace BraidsAccounting.Services
 {
     /// <summary>
-    /// Класс, задающий параметры фильтрации для <see cref = "StatisticsService.GetWastedItemForms(StatisticsFilterOptions)" />.
+    /// Класс, задающий параметры фильтрации для <see cref = "StatisticsService.GetWastedItemFormsAsync(StatisticsFilterOptions)" />.
     /// </summary>
     internal class StatisticsFilterOptions
     {

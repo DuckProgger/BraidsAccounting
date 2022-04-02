@@ -72,7 +72,7 @@ namespace BraidsAccounting.ViewModels
                 Start = Start,
                 End = End
             };
-            WastedItems = new(wastedItemsService.GetWastedItemForms(FilterOptions));
+            WastedItems = new(await wastedItemsService.GetWastedItemFormsAsync(FilterOptions));
             TotalExpenses = 0;
             foreach (WastedItemForm? wastedItem in WastedItems)
                 TotalExpenses += wastedItem.Expense;
@@ -89,7 +89,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanInitialDataCommandExecute() => true;
         private async void OnInitialDataCommandExecuted()
         {
-            Names = new(serviceProvider.GetNames());
+            Names = new(await serviceProvider.GetNamesAsync());
             InitializeDatePeriod();
         }
 
@@ -102,7 +102,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand ResetFiltersCommand => _ResetFiltersCommand
             ??= new DelegateCommand(OnResetFilterCommandExecuted, CanResetFilterCommandExecute);
         private bool CanResetFilterCommandExecute() => true;
-        private async void OnResetFilterCommandExecuted()
+        private void OnResetFilterCommandExecuted()
         {
             FilterOptions = new();
             InitializeDatePeriod();
@@ -119,7 +119,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand EnableWorkerFilterCommand => _EnableWorkerFilterCommand
             ??= new DelegateCommand(OnEnableWorkerFilterCommandExecuted, CanEnableWorkerFilterCommandExecute);
         private bool CanEnableWorkerFilterCommandExecute() => true;
-        private async void OnEnableWorkerFilterCommandExecuted()
+        private void OnEnableWorkerFilterCommandExecuted()
         {
             if (!string.IsNullOrEmpty(FilterOptions.WorkerNameFilter))
                 FilterOptions.EnableWorkerFilter = true;

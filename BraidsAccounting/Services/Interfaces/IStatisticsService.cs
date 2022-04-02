@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces
 {
@@ -13,6 +14,6 @@ namespace BraidsAccounting.Services.Interfaces
         /// </summary>
         /// <param name="options">Параметры фильтрации.</param>
         /// <returns></returns>
-        public IEnumerable<WastedItemForm> GetWastedItemForms(StatisticsFilterOptions options);
+        Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options);
     }
 }

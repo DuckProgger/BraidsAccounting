@@ -2,9 +2,11 @@
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
@@ -20,7 +22,7 @@ namespace BraidsAccounting.Services
             this.wastedItems = wastedItems;
         }
 
-        public IEnumerable<WastedItemForm> GetWastedItemForms(StatisticsFilterOptions options)
+        public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options)
         {
             IQueryable<WastedItemForm> totalQuery;
             IQueryable<WastedItem>? baseQuery = wastedItems.Items;
@@ -28,7 +30,7 @@ namespace BraidsAccounting.Services
             if (options.EnablePeriodFilter) AddPeriodFilter(ref baseQuery, options.DatePeriod);
             if (options.EnableGrouping) totalQuery = AddSelectWithGrouping(baseQuery);
             else totalQuery = AddSelect(baseQuery);
-            return totalQuery;
+            return await totalQuery.ToListAsync();
         }
 
         /// <summary>

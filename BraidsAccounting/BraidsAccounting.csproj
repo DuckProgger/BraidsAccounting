@@ -38,4 +38,8 @@
     <Folder Include="Templates\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="PropertyChanged.Fody" Version="3.3.1" PrivateAssets="All" />
+	</ItemGroup>
+
 </Project>

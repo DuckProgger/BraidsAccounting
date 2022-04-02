@@ -2,6 +2,7 @@
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,9 +46,9 @@ namespace BraidsAccounting.Services
         /// выполняли работу
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetNames()
+        public async Task<List<string>> GetNamesAsync()
         {
-            return services.Items.Select(s => s.WorkerName).Distinct();
+            return await services.Items.Select(s => s.WorkerName).Distinct().ToListAsync();
         }
 
         private void BindWastedItemsToService(Service s)
