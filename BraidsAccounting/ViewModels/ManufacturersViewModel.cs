@@ -97,7 +97,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanGetManufacturersListCommandExecute() => true;
         private async void OnGetManufacturersListCommandExecuted()
         {
-            Manufacturers = new(manufacturersService.GetManufacturers());
+            Manufacturers = new(await manufacturersService.GetManufacturersAsync());
             ManufacturerList = new(await manufacturersService.GetManufacturerNamesAsync());
         }
 
@@ -117,12 +117,12 @@ namespace BraidsAccounting.ViewModels
                 switch (ManufacturerInForm.Id)
                 {
                     case 0:
-                        manufacturersService.AddManufacturer(ManufacturerInForm);
+                        await manufacturersService.AddManufacturerAsync(ManufacturerInForm);
                         Manufacturers.Add(ManufacturerInForm);
                         StatusMessage.Message = "Новый производитель добавлен";
                         break;
                     default:
-                        manufacturersService.EditManufacturer(ManufacturerInForm);
+                        await manufacturersService.EditManufacturerAsync(ManufacturerInForm);
                         OnGetManufacturersListCommandExecuted();
                         StatusMessage.Message = "Производитель изменён";
                         break;
@@ -146,7 +146,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanRemoveManufacturerCommandExecute() => true;
         private async void OnRemoveManufacturerCommandExecuted()
         {
-            manufacturersService.RemoveManufacturer(SelectedManufacturer.Id);
+            await manufacturersService.RemoveManufacturerAsync(SelectedManufacturer.Id);
             Manufacturers.Remove(SelectedManufacturer);
             StatusMessage.Message = "Производитель удалён";
             MDDialogHost.CloseDialogCommand.Execute(null, null);
@@ -161,7 +161,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand ResetFormCommand => _ResetFormCommand
             ??= new DelegateCommand(OnResetFormCommandExecuted, CanResetFormCommandExecute);
         private bool CanResetFormCommandExecute() => true;
-        private async void OnResetFormCommandExecuted() => ManufacturerInForm = new();
+        private void OnResetFormCommandExecuted() => ManufacturerInForm = new();
 
         #endregion
 
@@ -172,7 +172,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand FillFormCommand => _FillFormCommand
             ??= new DelegateCommand(OnFillFormCommandExecuted, CanFillFormCommandExecute);
         private bool CanFillFormCommandExecute() => true;
-        private async void OnFillFormCommandExecuted()
+        private void OnFillFormCommandExecuted()
         {
             ManufacturerInForm = new()
             {
@@ -191,7 +191,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand OpenDialogCommand => _OpenDialogCommand
             ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
         private bool CanOpenDialogCommandExecute() => true;
-        private async void OnOpenDialogCommandExecuted()
+        private void OnOpenDialogCommandExecuted()
         {
             MDDialogHost.OpenDialogCommand.Execute(null, null);
             WarningMessage.Message = itemsService.ContainsManufacturer(SelectedManufacturer.Name)
@@ -208,7 +208,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand ResetFiltersCommand => _ResetFiltersCommand
             ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);
         private bool CanResetFiltersCommandExecute() => true;
-        private async void OnResetFiltersCommandExecuted() => ManufacturerFilter = string.Empty;
+        private void OnResetFiltersCommandExecuted() => ManufacturerFilter = string.Empty;
 
         #endregion
     }

@@ -21,26 +21,26 @@ namespace BraidsAccounting.Services
             this.manufacturers = manufacturers;
         }
 
-        public IEnumerable<Manufacturer> GetManufacturers() => manufacturers.Items;
+        public async Task<List<Manufacturer>> GetManufacturersAsync() => await manufacturers.Items.ToListAsync();
         public async Task<List<string>> GetManufacturerNamesAsync() => await manufacturers.Items.Select(m => m.Name).ToListAsync();
-        public Manufacturer? GetManufacturer(string name) => manufacturers.Items.FirstOrDefault(m => m.Name == name);
+        public async Task<Manufacturer?> GetManufacturerAsync(string name) => await manufacturers.Items.FirstOrDefaultAsync(m => m.Name == name);
 
-        public void AddManufacturer(Manufacturer? manufacturer)
+        public async Task AddManufacturerAsync(Manufacturer? manufacturer)
         {
             if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
             if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
                 throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
-            manufacturers.Create(manufacturer);
+            await manufacturers.CreateAsync(manufacturer);
         }
 
-        public void EditManufacturer(Manufacturer? manufacturer)
+        public async Task EditManufacturerAsync(Manufacturer? manufacturer)
         {
             if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
             if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
                 throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
-            manufacturers.Edit(manufacturer);
+            await manufacturers.EditAsync(manufacturer);
         }
 
-        public void RemoveManufacturer(int id) => manufacturers.Remove(id);
+        public async Task RemoveManufacturerAsync(int id) => await manufacturers.RemoveAsync(id);
     }
 }

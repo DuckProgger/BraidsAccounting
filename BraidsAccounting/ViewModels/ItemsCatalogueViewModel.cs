@@ -18,9 +18,8 @@ namespace BraidsAccounting.ViewModels
 {
     internal class ItemsCatalogueViewModel : BindableBase
     {
-        private CollectionView? collectionView;
+        private CollectionView collectionView = null!;
         private readonly IEventAggregator eventAggregator;
-        private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
         private readonly IViewService viewService;
         private readonly IItemsService catalogue;
@@ -96,17 +95,15 @@ namespace BraidsAccounting.ViewModels
 
         public ItemsCatalogueViewModel(
             IEventAggregator eventAggregator
-            , IStoreService store
             , IManufacturersService manufacturersService
             , IViewService viewService
-            , IItemsService itemsService
+            , IItemsService catalogue
             )
         {
             this.eventAggregator = eventAggregator;
-            this.store = store;
             this.manufacturersService = manufacturersService;
             this.viewService = viewService;
-            this.catalogue = itemsService;
+            this.catalogue = catalogue;
         }
         /// <summary>
         /// Предикат фильтрации списка материалов со склада.
@@ -133,7 +130,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectCommand => _SelectCommand
             ??= new DelegateCommand(OnSelectCommandExecuted, CanSelectCommandExecute);
         private bool CanSelectCommandExecute() => true;
-        private async void OnSelectCommandExecuted()
+        private void OnSelectCommandExecuted()
         {
             if (SelectedItem is null)
             {
@@ -171,7 +168,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand ResetFiltersCommand => _ResetFiltersCommand
             ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);
         private bool CanResetFiltersCommandExecute() => true;
-        private async void OnResetFiltersCommandExecuted()
+        private void OnResetFiltersCommandExecuted()
         {
             ArticleFilter = string.Empty;
             ColorFilter = string.Empty;

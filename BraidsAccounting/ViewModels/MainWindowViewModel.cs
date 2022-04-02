@@ -21,7 +21,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand NavigateToOtherViewCommand => _NavigateToOtherViewCommand
             ??= new DelegateCommand<string>(OnNavigateToOtherViewCommandExecuted, CanNavigateToOtherViewCommandExecute);
         private bool CanNavigateToOtherViewCommandExecute(string viewName) => true;
-        private async void OnNavigateToOtherViewCommandExecuted(string viewName) =>
+        private void OnNavigateToOtherViewCommandExecuted(string viewName) =>
             regionManager.RequestNavigate("ContentRegion", viewName);
 
         #endregion

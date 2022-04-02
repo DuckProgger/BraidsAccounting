@@ -9,7 +9,6 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
@@ -32,7 +31,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Выбранный производитель из списка.
         /// </summary>
-        public string? SelectedManufacturer { get; set; } = null!;
+        public string SelectedManufacturer { get; set; } = null!;
         /// <summary>
         /// Выводимое сообщение об ошибке.
         /// </summary>
@@ -62,7 +61,7 @@ namespace BraidsAccounting.ViewModels
         {
             StoreItem = item;
             Manufacturers = new(await manufacturersService.GetManufacturerNamesAsync());
-            SelectedManufacturer = Manufacturers.FirstOrDefault(name => name == item.Item.Manufacturer.Name);
+            SelectedManufacturer = Manufacturers.First(name => name == item.Item.Manufacturer.Name);
         }
 
 
@@ -77,8 +76,14 @@ namespace BraidsAccounting.ViewModels
         {
             try
             {
-                StoreItem.Item.ManufacturerId = manufacturersService.GetManufacturer(SelectedManufacturer).Id;
-                store.EditItemAsync(StoreItem);
+                Manufacturer? existingManufacturer = await manufacturersService.GetManufacturerAsync(SelectedManufacturer);
+                if (existingManufacturer is null)
+                {
+                    ErrorMessage.Message = "Выбранного производителя нет в каталоге";
+                    return;
+                }
+                StoreItem.Item.ManufacturerId = existingManufacturer.Id;
+                await store.EditItemAsync(StoreItem);
                 viewService.GetWindow<EditStoreItemWindow>().Close();
                 eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
