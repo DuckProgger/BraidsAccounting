@@ -11,6 +11,7 @@ namespace BraidsAccounting.DAL.Entities
         /// <summary>
         /// Название производителя.
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Name { get; set; } = null!;
         /// <summary>
         /// Стоимость материалов данного производителя.

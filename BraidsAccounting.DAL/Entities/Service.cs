@@ -23,6 +23,7 @@ namespace BraidsAccounting.DAL.Entities
         /// <summary>
         /// Имя сотрудника, выполнившего работы.
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string WorkerName { get; set; } = null!;
         /// <summary>
         /// Дата выполнения работы.

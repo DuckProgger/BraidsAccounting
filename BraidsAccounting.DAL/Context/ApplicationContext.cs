@@ -17,6 +17,7 @@ namespace BraidsAccounting.DAL.Context
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

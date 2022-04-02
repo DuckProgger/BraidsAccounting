@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BraidsAccounting.DAL.Entities
 {
@@ -10,10 +11,12 @@ namespace BraidsAccounting.DAL.Entities
         /// <summary>
         /// Артикул.
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Article { get; set; } = null!;
         /// <summary>
         /// Цвет.
         /// </summary>
+        [Column(TypeName = "nvarchar(50)")]
         public string Color { get; set; } = null!;
         /// <summary>
         /// Производитель.
