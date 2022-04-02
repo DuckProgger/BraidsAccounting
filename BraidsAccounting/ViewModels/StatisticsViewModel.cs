@@ -89,7 +89,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanInitialDataCommandExecute() => true;
         private async void OnInitialDataCommandExecuted()
         {
-            Names = new(await serviceProvider.GetNamesAsync());
+            Names = await serviceProvider.GetNamesAsync();
             InitializeDatePeriod();
         }
 

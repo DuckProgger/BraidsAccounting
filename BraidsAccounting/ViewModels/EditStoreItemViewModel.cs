@@ -60,7 +60,7 @@ namespace BraidsAccounting.ViewModels
         private async void SetProperties(StoreItem item)
         {
             StoreItem = item;
-            Manufacturers = new(await manufacturersService.GetManufacturerNamesAsync());
+            Manufacturers = await manufacturersService.GetManufacturerNamesAsync();
             SelectedManufacturer = Manufacturers.First(name => name == item.Item.Manufacturer.Name);
         }
 

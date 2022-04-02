@@ -123,10 +123,10 @@ namespace BraidsAccounting.ViewModels
                         break;
                     default:
                         await manufacturersService.EditManufacturerAsync(ManufacturerInForm);
-                        OnGetManufacturersListCommandExecuted();
                         StatusMessage.Message = "Производитель изменён";
                         break;
                 }
+                OnGetManufacturersListCommandExecuted();
                 ResetFormCommand.Execute(null);
             }
             catch (ArgumentException)

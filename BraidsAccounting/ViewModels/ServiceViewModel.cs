@@ -12,8 +12,11 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
@@ -24,6 +27,7 @@ namespace BraidsAccounting.ViewModels
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
+        private const int stockWarningThreshold = 2;
 
         public ServiceViewModel(
             Services.Interfaces.IServiceProvider serviceProvider
@@ -51,6 +55,10 @@ namespace BraidsAccounting.ViewModels
         /// в список израсходованных материалов.
         /// </summary>
         public FormItem SelectedWastedItem { get; set; } = new();
+        /// <summary>
+        /// Список имён сотрудников, которые когда-либо выполняли работу.
+        /// </summary>
+        public List<string>? Names { get; set; }
         /// <summary>
         /// Выводимое сообщение о статусе.
         /// </summary>
@@ -104,6 +112,7 @@ namespace BraidsAccounting.ViewModels
             try
             {
                 await serviceProvider.ProvideServiceAsync(Service);
+                CheckRunningOutItems(WastedItems);
                 Service = new();
                 WastedItems = new();
                 StatusMessage.Message = "Новая работа добавлена";
@@ -119,6 +128,23 @@ namespace BraidsAccounting.ViewModels
         }
 
         #endregion
+
+        private void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
+        {
+            var runningOutItems = wastedItems.Where(i => i.MaxCount - i.Count <= stockWarningThreshold).ToArray();
+            if (runningOutItems.Length > 0)
+            {
+                StringBuilder sb = new();
+                sb.Append("Заканчиваются следующие материалы:");
+                sb.Append(Environment.NewLine);
+                foreach (var item in runningOutItems)
+                {
+                    sb.Append($"{item.Manufacturer} {item.Article} {item.Color} осталось {item.MaxCount - item.Count} шт.");
+                    sb.Append(Environment.NewLine);
+                }
+                MessageBox.Show(sb.ToString(), "ВНИМАНИЕ!");
+            }
+        }
 
         #region Command SelectStoreItem - Команда выбрать товар со склада
 
@@ -155,6 +181,20 @@ namespace BraidsAccounting.ViewModels
             ??= new DelegateCommand(OnRemoveWastedItemCommandExecuted, CanRemoveWastedItemCommandExecute);
         private bool CanRemoveWastedItemCommandExecute() => true;
         private void OnRemoveWastedItemCommandExecuted() => WastedItems.Remove(SelectedWastedItem);
+
+        #endregion
+
+        #region Command InitializeData - Команда заполнить форму начальными данными
+
+        private ICommand? _InitializeDataCommand;
+        /// <summary>Команда - заполнить форму начальными данными</summary>
+        public ICommand InitializeDataCommand => _InitializeDataCommand
+            ??= new DelegateCommand(OnInitialDataCommandExecuted, CanInitialDataCommandExecute);
+        private bool CanInitialDataCommandExecute() => true;
+        private async void OnInitialDataCommandExecuted()
+        {
+            Names = await serviceProvider.GetNamesAsync();
+        }
 
         #endregion
     }

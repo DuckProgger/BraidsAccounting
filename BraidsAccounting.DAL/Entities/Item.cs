@@ -33,7 +33,7 @@ namespace BraidsAccounting.DAL.Entities
               && Manufacturer.Equals(other.Manufacturer);
         }
 
-        public override bool Equals(object? obj) => Equals(obj as Item);
+        //public override bool Equals(object? obj) => Equals(obj as Item);
 
         public override int GetHashCode() =>
             HashCode.Combine(Article, Color, ManufacturerId);

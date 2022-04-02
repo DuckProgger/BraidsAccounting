@@ -27,15 +27,15 @@ namespace BraidsAccounting.ViewModels
         private string? _manufacturerFilter;
         private string? articleFilter;
         private ICommand? _LoadDataCommand;
-        private ObservableCollection<FormItem> storeItems = new();
+        private ObservableCollection<FormItem> catalogueItems = new();
 
         public ObservableCollection<FormItem> CatalogueItems
         {
-            get => storeItems;
+            get => catalogueItems;
             set
             {
-                storeItems = value;
-                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
+                catalogueItems = value;
+                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(catalogueItems);
                 collectionView.Filter = Filter;
             }
         }
@@ -112,13 +112,13 @@ namespace BraidsAccounting.ViewModels
         /// <returns></returns>
         public bool Filter(object obj)
         {
-            StoreItem? item = (StoreItem)obj;
+            FormItem? item = (FormItem)obj;
             bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
-                || item.Item.Manufacturer.Name.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
+                || item.Manufacturer.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
             bool articleCondition = string.IsNullOrEmpty(ArticleFilter)
-                || item.Item.Article.Contains(ArticleFilter, StringComparison.OrdinalIgnoreCase);
+                || item.Article.Contains(ArticleFilter, StringComparison.OrdinalIgnoreCase);
             bool colorCondition = string.IsNullOrEmpty(ColorFilter)
-               || item.Item.Color.Contains(ColorFilter, StringComparison.OrdinalIgnoreCase);
+               || item.Color.Contains(ColorFilter, StringComparison.OrdinalIgnoreCase);
             return manufacturerCondition && articleCondition && colorCondition;
         }
 
@@ -153,10 +153,10 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            CatalogueItems.Clear();
-            foreach (var item in catalogue.GetItems(OnlyInStock))
+            CatalogueItems = new();
+            foreach (var item in await catalogue.GetItemsAsync(OnlyInStock))
                 CatalogueItems.Add(item);
-            Manufacturers = new(await manufacturersService.GetManufacturerNamesAsync());
+            Manufacturers = await manufacturersService.GetManufacturerNamesAsync();
         }
 
         #endregion

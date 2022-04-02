@@ -73,8 +73,8 @@
             AutoGenerateColumns="False"
             CanUserAddRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Производитель" Binding="{Binding Name}"/>
-                    <DataGridTextColumn Header="Стоимость продажи" Binding="{Binding Price}"/>
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Стоимость продажи" Binding="{Binding Price}" IsReadOnly="True"/>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
