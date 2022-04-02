@@ -21,7 +21,6 @@ namespace BraidsAccounting.Services
         {
             this.wastedItems = wastedItems;
         }
-
         public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options)
         {
             IQueryable<WastedItemForm> totalQuery;
@@ -71,7 +70,7 @@ namespace BraidsAccounting.Services
                 Manufacturer = w.Item.Manufacturer.Name,
                 Color = w.Item.Color,
                 Count = w.Count,
-                Expense = w.Count * w.Item.Manufacturer.Price
+                Expense = Math.Round(w.Count * w.Item.Manufacturer.Price, 2)
             });
         }
 
@@ -82,20 +81,21 @@ namespace BraidsAccounting.Services
         /// <returns></returns>
         private static IQueryable<WastedItemForm> AddSelectWithGrouping(IQueryable<WastedItem> query)
         {
-            return query.GroupBy(w => new
-            {
-                ItemName = w.Item.Manufacturer.Name,
-                w.Item.Article,
-                w.Item.Color
-            }
-                ).Select(g =>
+            return query
+                .GroupBy(w => new
+                {
+                    ItemName = w.Item.Manufacturer.Name,
+                    w.Item.Article,
+                    w.Item.Color
+                })
+                .Select(g =>
                 new WastedItemForm
                 {
                     Manufacturer = g.Key.ItemName,
                     Article = g.Key.Article,
                     Color = g.Key.Color,
                     Count = g.Sum(w => w.Count),
-                    Expense = g.Sum(w => w.Count * w.Item.Manufacturer.Price)
+                    Expense = Math.Round(g.Sum(w => w.Count * w.Item.Manufacturer.Price), 2)
                 });
         }
     }
