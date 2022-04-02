@@ -9,6 +9,7 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
@@ -31,7 +32,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Выбранный производитель из списка.
         /// </summary>
-        public string SelectedManufacturer { get; set; } = null!;
+        public string? SelectedManufacturer { get; set; } = null!;
         /// <summary>
         /// Выводимое сообщение об ошибке.
         /// </summary>
@@ -57,10 +58,10 @@ namespace BraidsAccounting.ViewModels
         /// Устанавливает свойства при приёме сообщения.
         /// </summary>
         /// <param name="item"></param>
-        private void SetProperties(StoreItem item)
+        private async void SetProperties(StoreItem item)
         {
             StoreItem = item;
-            Manufacturers = new(manufacturersService.GetManufacturerNames());
+            Manufacturers = new(await manufacturersService.GetManufacturerNamesAsync());
             SelectedManufacturer = Manufacturers.FirstOrDefault(name => name == item.Item.Manufacturer.Name);
         }
 

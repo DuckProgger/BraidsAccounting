@@ -159,7 +159,7 @@ namespace BraidsAccounting.ViewModels
             CatalogueItems.Clear();
             foreach (var item in catalogue.GetItems(OnlyInStock))
                 CatalogueItems.Add(item);
-            Manufacturers = new(manufacturersService.GetManufacturerNames());
+            Manufacturers = new(await manufacturersService.GetManufacturerNamesAsync());
         }
 
         #endregion

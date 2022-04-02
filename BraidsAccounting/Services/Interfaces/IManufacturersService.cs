@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces
 {
@@ -28,7 +29,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// Получить список названий производителей материалов.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<string> GetManufacturerNames();
+        Task<List<string>> GetManufacturerNamesAsync();
         /// <summary>
         /// Получить список производителей материалов.
         /// </summary>

@@ -88,8 +88,8 @@ namespace BraidsAccounting.ViewModels
             StoreItem.Item.Manufacturer.Name = SelectedManufacturer;
             try
             {
-                viewService.GetWindow<AddStoreItemWindow>().Close();
                 await store.AddItemAsync(StoreItem);
+                viewService.GetWindow<AddStoreItemWindow>().Close();
                 eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
@@ -107,7 +107,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand LoadManufacturersCommand => _LoadManufacturersCommand
             ??= new DelegateCommand(OnLoadManufacturersCommandExecuted, CanLoadManufacturersCommandExecute);
         private bool CanLoadManufacturersCommandExecute() => true;
-        private async void OnLoadManufacturersCommandExecuted() => Manufacturers = new(manufacturersService.GetManufacturerNames());
+        private async void OnLoadManufacturersCommandExecuted() => Manufacturers = new(await manufacturersService.GetManufacturerNamesAsync());
 
         #endregion
 
@@ -118,7 +118,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private async void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, AddStoreItemWindow>();
+        private void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, AddStoreItemWindow>();
 
         #endregion
     }

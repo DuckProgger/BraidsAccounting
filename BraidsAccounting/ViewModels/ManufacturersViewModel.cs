@@ -98,7 +98,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnGetManufacturersListCommandExecuted()
         {
             Manufacturers = new(manufacturersService.GetManufacturers());
-            ManufacturerList = new(manufacturersService.GetManufacturerNames());
+            ManufacturerList = new(await manufacturersService.GetManufacturerNamesAsync());
         }
 
         #endregion

@@ -1,9 +1,11 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
@@ -20,7 +22,7 @@ namespace BraidsAccounting.Services
         }
 
         public IEnumerable<Manufacturer> GetManufacturers() => manufacturers.Items;
-        public IEnumerable<string> GetManufacturerNames() => manufacturers.Items.Select(m => m.Name);
+        public async Task<List<string>> GetManufacturerNamesAsync() => await manufacturers.Items.Select(m => m.Name).ToListAsync();
         public Manufacturer? GetManufacturer(string name) => manufacturers.Items.FirstOrDefault(m => m.Name == name);
 
         public void AddManufacturer(Manufacturer? manufacturer)
