@@ -25,19 +25,24 @@ namespace BraidsAccounting.DAL.Repositories
             SingleOrDefaultAsync(item => item.Id == id, cancel)
             .ConfigureAwait(false);
 
-        public T Create(T item)
+        private bool CreateInternal(T item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            if (Items.Contains(item)) return item;
+            if (Items.Contains(item)) return true;
             context.Entry(item).State = EntityState.Added;
+            return false;
+        }
+
+        public T Create(T item)
+        {          
+            if (CreateInternal(item)) return item;
             SaveChanges();
             return item;
         }
 
-        public async Task<T?> CreateAsync(T item, CancellationToken cancel = default)
+        public async Task<T> CreateAsync(T item, CancellationToken cancel = default)
         {
-            if (item is null) throw new ArgumentNullException(nameof(item));
-            await context.AddAsync(item, cancel);
+            if (CreateInternal(item)) return item;
             await SaveChangesAsync(cancel);
             return item;
         }

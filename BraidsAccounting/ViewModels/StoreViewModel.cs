@@ -47,11 +47,11 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Выбранный материал со склада.
         /// </summary>
-        public StoreItem? SelectedStoreItem { get; set; }
+        public StoreItem SelectedStoreItem { get; set; } = null!;
         /// <summary>
         /// Коллекция всех материалов на складе.
         /// </summary>
-        public ObservableCollection<StoreItem?> StoreItems
+        public ObservableCollection<StoreItem> StoreItems
         {
             get => storeItems;
             set
@@ -80,7 +80,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand EditItemCommand => _EditItemCommand
             ??= new DelegateCommand<string>(OnEditItemCommandExecuted, CanEditItemCommandExecute);
         private bool CanEditItemCommandExecute(string viewName) => true;
-        private async void OnEditItemCommandExecuted(string viewName)
+        private void OnEditItemCommandExecuted(string viewName)
         {
             OnNavigateToOtherWindowCommandExecuted(viewName);
             eventAggregator.GetEvent<EditStoreItemEvent>().Publish(SelectedStoreItem);
@@ -97,7 +97,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanRemoveItemCommandExecute() => true;
         private async void OnRemoveItemCommandExecuted()
         {
-            store.RemoveItem(SelectedStoreItem.Id);
+            await store.RemoveItemAsync(SelectedStoreItem.Id);
             storeItems.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
             StatusMessage.Message = "Материал удалён со склада";
@@ -116,9 +116,11 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
+            StatusMessage.Message = "Загружается список материалов на складе...";
             // Нужно обновить контекст, чтобы получать обновлённые данные
             store = ServiceLocator.GetService<IStoreService>();
-            StoreItems = new(store.GetItems());
+            StoreItems = new(await store.GetItemsAsync());
+            StatusMessage.Message = string.Empty;
         }
 
         #endregion
@@ -126,13 +128,13 @@ namespace BraidsAccounting.ViewModels
         #region Command NavigateToOtherWindow - Команда перейти на другой экран
 
         private ICommand? _NavigateToOtherWindowCommand;
-        private ObservableCollection<StoreItem?> storeItems = new();
+        private ObservableCollection<StoreItem> storeItems = new();
 
         /// <summary>Команда - перейти на другой экран</summary>
         public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
             ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
         private bool CanNavigateToOtherWindowCommandExecute(string windowName) => true;
-        private async void OnNavigateToOtherWindowCommandExecuted(string windowName)
+        private void OnNavigateToOtherWindowCommandExecuted(string windowName)
         {
             switch (windowName)
             {

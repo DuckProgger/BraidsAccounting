@@ -9,7 +9,7 @@
         public T? Get(int id);
         public Task<T?> GetAsync(int id, CancellationToken cancel = default);
         public T Create(T item);
-        public Task<T?> CreateAsync(T item, CancellationToken cancel = default);
+        public Task<T> CreateAsync(T item, CancellationToken cancel = default);
         public void CreateRange(IEnumerable<T> items);
         public Task CreateRangeAsync(IEnumerable<T> items, CancellationToken cancel = default);
         public void Edit(T item);

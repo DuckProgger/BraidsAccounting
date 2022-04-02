@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces
 {
@@ -17,6 +18,6 @@ namespace BraidsAccounting.Services.Interfaces
         /// Добавить выполненную работу.
         /// </summary>
         /// <param name="service"></param>
-        void ProvideService(Service service);
+        Task ProvideServiceAsync(Service service);
     }
 }

@@ -2,9 +2,11 @@
 using BraidsAccounting.Exceptions;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
@@ -65,7 +67,7 @@ namespace BraidsAccounting.Services
           i.Item.Manufacturer.Name == manufacturer
           && i.Item.Article == article
           && i.Item.Color == color);
-      
+
 
         /// <summary>
         /// Получить производителя по имени.
@@ -98,23 +100,23 @@ namespace BraidsAccounting.Services
             store.Create(storeItem);
         }
 
-        public IEnumerable<StoreItem?> GetItems() => store.Items;
-        public void RemoveItems(IEnumerable<WastedItem?> wastedItems)
+        public async Task<List<StoreItem>> GetItemsAsync() => await store.Items.ToListAsync();
+        public async Task RemoveItemsAsync(IEnumerable<WastedItem?> wastedItems)
         {
             if (wastedItems == null) throw new ArgumentNullException(nameof(wastedItems));
             foreach (WastedItem? wastedItem in wastedItems)
             {
                 if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
-                StoreItem? existingStoreItem = store.Items.First(si => si.Item.Id == wastedItem.Item.Id);
+                StoreItem? existingStoreItem = await store.Items.FirstAsync(si => si.Item.Id == wastedItem.Item.Id);
                 if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
                 existingStoreItem.Count -= wastedItem.Count;
                 switch (existingStoreItem.Count)
                 {
                     case > 0:
-                        store.Edit(existingStoreItem);
+                        await store.EditAsync(existingStoreItem);
                         break;
                     case 0:
-                        store.Remove(existingStoreItem.Id);
+                        await store.RemoveAsync(existingStoreItem.Id);
                         break;
                     default:
                         throw new Exception("Указанного количества товара нет на складе");
@@ -130,13 +132,13 @@ namespace BraidsAccounting.Services
             catalogue.Edit(storeItem.Item);
         }
 
-        public void RemoveItem(int id) => store.Remove(id);
+        public async Task RemoveItemAsync(int id) => await store.RemoveAsync(id);
 
         public int GetItemCount(string manufacturer, string article, string color)
         {
             var storeItem = GetItem(manufacturer, article, color);
             if (storeItem is null) return 0;
             return storeItem.Count;
-        }           
+        }
     }
 }

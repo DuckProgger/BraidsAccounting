@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
-    internal    class ServiceProvider : Interfaces.IServiceProvider
+    internal class ServiceProvider : Interfaces.IServiceProvider
     {
         private readonly IRepository<Service> services;
         private readonly IStoreService store;
@@ -27,17 +27,17 @@ namespace BraidsAccounting.Services
             this.wastedItemsRepository = wastedItemsRepository;
         }
 
-        public void ProvideService(Service service)
-        {           
+        public async Task ProvideServiceAsync(Service service)
+        {
             // Добавить услугу в БД
             CalculateNetProfit(service);
-            var s = services.Create(service);
+            var newService = await services.CreateAsync(service);
 
-            BindWastedItemsToService(s);
-            wastedItemsRepository.CreateRange(s.WastedItems);
+            BindWastedItemsToService(newService);
+            wastedItemsRepository.CreateRange(newService.WastedItems);
 
             // Убрать использованные товары со склада
-            store.RemoveItems(service.WastedItems);
+            await store.RemoveItemsAsync(service.WastedItems);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace BraidsAccounting.Services
         /// <returns></returns>
         public IEnumerable<string> GetNames()
         {
-           return services.Items.Select(s => s.WorkerName).Distinct();
+            return services.Items.Select(s => s.WorkerName).Distinct();
         }
 
         private void BindWastedItemsToService(Service s)

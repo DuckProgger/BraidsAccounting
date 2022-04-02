@@ -23,7 +23,7 @@ namespace BraidsAccounting.ViewModels
     {
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
-        private readonly IViewService viewService;        
+        private readonly IViewService viewService;
 
         public ServiceViewModel(
             Services.Interfaces.IServiceProvider serviceProvider
@@ -103,7 +103,7 @@ namespace BraidsAccounting.ViewModels
                 Service.WastedItems.Add(item);
             try
             {
-                serviceProvider.ProvideService(Service);
+                await serviceProvider.ProvideServiceAsync(Service);
                 Service = new();
                 WastedItems = new();
                 StatusMessage.Message = "Новая работа добавлена";

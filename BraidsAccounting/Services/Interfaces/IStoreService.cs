@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces
 {
@@ -22,18 +23,19 @@ namespace BraidsAccounting.Services.Interfaces
         /// Получить список материалов на складе.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<StoreItem?> GetItems();
+        Task<List<StoreItem>> GetItemsAsync();
+
         /// <summary>
         /// Удалить материал со склада.
         /// </summary>
         /// <param name="id">ID материала.</param>
-        void RemoveItem(int id);
+        Task RemoveItemAsync(int id);
         /// <summary>
         /// Удалить список материалов со склада.
         /// </summary>
         /// <param name="items">Материалы, которые нужно удалить со склада.</param>
-        void RemoveItems(IEnumerable<WastedItem?> items);
-      
+        Task RemoveItemsAsync(IEnumerable<WastedItem?> wastedItems);
+
         StoreItem? GetItem(string manufacturer, string article, string color);
         /// <summary>
         /// Получить количество товара на складе.
