@@ -11,6 +11,7 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -59,9 +60,15 @@ namespace BraidsAccounting.ViewModels
                 storeItems = value;
                 collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
             }
-        } /// <summary>
-          /// Выводимое сообщение о статусе.
-          /// </summary>
+        }
+        /// <summary>
+        /// Общее количество материалов на складе.
+        /// </summary>
+        public int TotalItems { get; private set; }
+
+        /// <summary>
+        /// Выводимое сообщение о статусе.
+        /// </summary>
         public MessageProvider StatusMessage { get; } = new(true);
 
         /// <summary>
@@ -70,7 +77,11 @@ namespace BraidsAccounting.ViewModels
         /// <param name="success"></param>
         private void SetStatusMessage(bool success)
         {
-            if (success) StatusMessage.Message = "Операция выполнена";
+            if (success)
+            {
+                LoadDataCommand.Execute(null);
+                StatusMessage.Message = "Операция выполнена";
+            }
         }
 
         #region Command EditItem - Команда редактировать предмет на складе
@@ -121,6 +132,7 @@ namespace BraidsAccounting.ViewModels
             store = ServiceLocator.GetService<IStoreService>();
             StoreItems = new(await store.GetItemsAsync());
             StatusMessage.Message = string.Empty;
+            TotalItems = storeItems.Sum(i => i.Count);
         }
 
         #endregion
