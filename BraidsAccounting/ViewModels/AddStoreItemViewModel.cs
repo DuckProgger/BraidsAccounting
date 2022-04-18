@@ -4,7 +4,6 @@ using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
-using Cashbox.Visu;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;

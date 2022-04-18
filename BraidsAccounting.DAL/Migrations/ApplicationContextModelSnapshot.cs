@@ -22,6 +22,23 @@ namespace BraidsAccounting.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("BraidsAccounting.DAL.Entities.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.Item", b =>
                 {
                     b.Property<int>("Id")
@@ -81,17 +98,18 @@ namespace BraidsAccounting.DAL.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("NetProfit")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Profit")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("WorkerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Services");
                 });
@@ -152,6 +170,17 @@ namespace BraidsAccounting.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Manufacturer");
+                });
+
+            modelBuilder.Entity("BraidsAccounting.DAL.Entities.Service", b =>
+                {
+                    b.HasOne("BraidsAccounting.DAL.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.StoreItem", b =>

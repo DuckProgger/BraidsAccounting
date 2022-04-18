@@ -26,6 +26,7 @@
             <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
             <MenuItem Header="Статистика" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StatisticsView"/>
             <MenuItem Header="Производители" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ManufacturersView"/>
+            <MenuItem Header="Сотрудники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="EmployeesView"/>
         </Menu>
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </DockPanel>

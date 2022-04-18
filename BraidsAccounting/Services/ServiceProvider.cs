@@ -16,20 +16,27 @@ namespace BraidsAccounting.Services
         private readonly IRepository<Service> services;
         private readonly IStoreService store;
         private readonly IRepository<WastedItem> wastedItemsRepository;
+        private readonly IEmployeesService employeesService;
 
         public ServiceProvider(
             IRepository<Service> services
             , IStoreService store
             , IRepository<WastedItem> wastedItemsRepository
+            , IEmployeesService employeesService
             )
         {
             this.services = services;
             this.store = store;
             this.wastedItemsRepository = wastedItemsRepository;
+            this.employeesService = employeesService;
         }
 
         public async Task ProvideServiceAsync(Service service)
         {
+            // Найти ID сотрудника в БД
+            service.Employee = await employeesService.GetEmployeeAsync(service.Employee.Name)
+                ?? throw new ArgumentException("Сотрудник не найден.", nameof(service.Employee));
+
             // Добавить услугу в БД
             CalculateNetProfit(service);
             var newService = await services.CreateAsync(service);
@@ -48,7 +55,7 @@ namespace BraidsAccounting.Services
         /// <returns></returns>
         public async Task<List<string>> GetNamesAsync()
         {
-            return await services.Items.Select(s => s.WorkerName).Distinct().ToListAsync();
+            return await services.Items.Select(s => s.Employee.Name).Distinct().ToListAsync();
         }
 
         private void BindWastedItemsToService(Service s)

@@ -21,10 +21,10 @@ namespace BraidsAccounting.DAL.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal NetProfit { get; set; }
         /// <summary>
-        /// Имя сотрудника, выполнившего работы.
+        /// Сотрудник, выполнивший работу.
         /// </summary>
         [Column(TypeName = "nvarchar(50)")]
-        public string WorkerName { get; set; } = null!;
+        public Employee Employee { get; set; } = null!;
         /// <summary>
         /// Дата выполнения работы.
         /// </summary>

@@ -55,21 +55,21 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <!--<StackPanel Grid.Column="0" >
+                    <StackPanel Grid.Column="0" >
                         <TextBlock Text="Имя сотрудника" HorizontalAlignment="Center"/>
                         <ComboBox Margin="5"
                                       ItemsSource="{Binding Names}"
                                       IsEditable="True"
-                                      SelectedValue="{Binding Service.WorkerName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                      SelectedValue="{Binding SelectedEmployee, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         </ComboBox>
-                    </StackPanel>-->
-                    <StackPanel Grid.Column="0" >
+                    </StackPanel>
+                    <!--<StackPanel Grid.Column="0" >
                         <TextBlock Text="Имя сотрудника" HorizontalAlignment="Center"/>
                         <TextBox       
                             Padding="3"                        
-                            Text="{Binding Service.WorkerName, UpdateSourceTrigger=PropertyChanged}"
+                            Text="{Binding Service.Employee.Name, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
-                    </StackPanel>
+                    </StackPanel>-->
                     <StackPanel Grid.Column="1" >
                         <TextBlock Text="Стоимость работы" HorizontalAlignment="Center"/>
                         <TextBox  

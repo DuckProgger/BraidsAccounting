@@ -1,25 +1,39 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace BraidsAccounting.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class _1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ItemPrices",
+                name: "Employees",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Manufacturers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ItemPrices", x => x.Id);
+                    table.PrimaryKey("PK_Manufacturers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -30,11 +44,18 @@ namespace BraidsAccounting.DAL.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Profit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     NetProfit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Services", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Services_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -43,18 +64,17 @@ namespace BraidsAccounting.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Article = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PriceId = table.Column<int>(type: "int", nullable: false),
-                    ItemPriceId = table.Column<int>(type: "int", nullable: false)
+                    Article = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    ManufacturerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Items", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Items_ItemPrices_ItemPriceId",
-                        column: x => x.ItemPriceId,
-                        principalTable: "ItemPrices",
+                        name: "FK_Items_Manufacturers_ManufacturerId",
+                        column: x => x.ManufacturerId,
+                        principalTable: "Manufacturers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -107,9 +127,14 @@ namespace BraidsAccounting.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Items_ItemPriceId",
+                name: "IX_Items_ManufacturerId",
                 table: "Items",
-                column: "ItemPriceId");
+                column: "ManufacturerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Services_EmployeeId",
+                table: "Services",
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Store_ItemId",
@@ -142,7 +167,10 @@ namespace BraidsAccounting.DAL.Migrations
                 name: "Services");
 
             migrationBuilder.DropTable(
-                name: "ItemPrices");
+                name: "Manufacturers");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
         }
     }
 }

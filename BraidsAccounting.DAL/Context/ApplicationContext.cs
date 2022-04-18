@@ -13,6 +13,7 @@ namespace BraidsAccounting.DAL.Context
         public DbSet<StoreItem> Store { get; set; } = null!;
         public DbSet<WastedItem> WastedItems { get; set; } = null!;
         public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
+        public DbSet<Employee> Employees { get; set; } = null!;
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)

@@ -20,6 +20,7 @@ namespace BraidsAccounting.Services
             .Register<IViewService, ViewService>()
             .Register<IManufacturersService, ManufacturersService>()
             .Register<IStatisticsService, StatisticsService>()
+            .Register<IEmployeesService, EmployeesService>()
            ;
     }
 }

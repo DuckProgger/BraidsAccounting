@@ -41,7 +41,7 @@ namespace BraidsAccounting.Services
         private static void AddWorkerFilter(ref IQueryable<WastedItem> query, string? workerName)
         {
             if (workerName is null) throw new ArgumentNullException(nameof(workerName));
-            query = query.Where(w => w.Service.WorkerName == workerName);
+            query = query.Where(w => w.Service.Employee.Name == workerName);
         }
 
         /// <summary>

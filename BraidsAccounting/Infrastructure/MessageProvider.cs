@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Cashbox.Visu
+namespace BraidsAccounting.Infrastructure
 {
     /// <summary>
     /// Класс для отображения информационной строки в представлении.

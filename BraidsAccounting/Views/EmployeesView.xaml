@@ -1,0 +1,135 @@
+﻿<UserControl x:Class="BraidsAccounting.Views.EmployeesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BraidsAccounting.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetEmployeesCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <!--<md:DialogHost>
+        <md:DialogHost.DialogContent>
+            <StackPanel Margin="20" MinWidth="300">
+                <TextBlock Text="Удадить выбранного производителя?" />
+                <TextBlock Foreground="DarkRed"
+                           TextAlignment="Center"
+                           DataContext="{Binding WarningMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Grid Margin="0,10,0,-10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Content="Отмена"
+                            Style="{StaticResource MaterialDesignFlatAccentButton}"
+                            Command="{x:Static md:DialogHost.CloseDialogCommand}" />
+                    <Button Content="Удалить"
+                            Grid.Column="1"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            IsDefault="True"
+                            Command="{Binding RemoveManufacturerCommand}" />
+                </Grid>
+            </StackPanel>
+        </md:DialogHost.DialogContent>-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.4*"/>
+                <RowDefinition/>
+                <RowDefinition Height="0.3*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="0.1*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.5*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Фильтры"/>
+                <DockPanel Grid.Row="1">
+                    <Button DockPanel.Dock="Right" Content="Сбросить" Command="{Binding ResetFiltersCommand}" Margin="10" Width="100"/>
+                    <StackPanel DockPanel.Dock="Left" >
+                        <TextBlock Text="Имя" HorizontalAlignment="Center"/>
+                        <ComboBox 
+                      ItemsSource="{Binding EmployeeList}"
+                      SelectedValue="{Binding EmployeeFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Grid>
+
+            <DataGrid 
+            Grid.Row="1" 
+            ItemsSource="{Binding Employees}"
+            SelectedValue="{Binding SelectedEmployee}"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Имя" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Редактирать" 
+                                        Command="{Binding 
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EmployeesView}}, 
+                                                Path=DataContext.FillFormCommand}"
+                                        Visibility="{Binding IsMouseOver,
+                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
+                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>                                   
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" >
+                    <TextBlock Text="Имя" HorizontalAlignment="Center"/>
+                    <TextBox       
+                            Padding="3"                        
+                            Text="{Binding EmployeeInForm.Name, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                </StackPanel>                
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Сохранить" Command="{Binding SaveCommand}"/>
+                <Button Grid.Column="1" Content="Сбросить"  Command="{Binding ResetFormCommand}"/>
+            </Grid>
+            <Grid Grid.Row="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                           Foreground="DarkRed"
+                           TextAlignment="Center"
+                           DataContext="{Binding ErrorMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <TextBlock
+                           Foreground="DarkGreen"
+                           TextAlignment="Center"
+                           DataContext="{Binding StatusMessage}"
+                           Text="{Binding Message}"
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </Grid>
+        </Grid>
+    <!--</md:DialogHost>-->
+</UserControl>

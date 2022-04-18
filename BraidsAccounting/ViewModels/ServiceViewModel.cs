@@ -5,7 +5,6 @@ using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
-using Cashbox.Visu;
 using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
 using Prism.Events;
@@ -27,6 +26,7 @@ namespace BraidsAccounting.ViewModels
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
+        private readonly IEmployeesService employeesService;
         private const int stockWarningThreshold = 2;
 
         public ServiceViewModel(
@@ -34,11 +34,13 @@ namespace BraidsAccounting.ViewModels
             , IEventAggregator eventAggregator
             , IRegionManager regionManager
             , IViewService viewService
+            , IEmployeesService employeesService
             )
         {
             this.serviceProvider = serviceProvider;
             this.regionManager = regionManager;
             this.viewService = viewService;
+            this.employeesService = employeesService;
             eventAggregator.GetEvent<SelectItemEvent>().Subscribe(AddWastedItemToService);
         }
 
@@ -59,6 +61,10 @@ namespace BraidsAccounting.ViewModels
         /// Список имён сотрудников, которые когда-либо выполняли работу.
         /// </summary>
         public List<string>? Names { get; set; }
+        /// <summary>
+        /// Выбранный сотрудник, оказавший услугу.
+        /// </summary>
+        public string SelectedEmployee { get; set; }
         /// <summary>
         /// Выводимое сообщение о статусе.
         /// </summary>
@@ -109,6 +115,8 @@ namespace BraidsAccounting.ViewModels
             Service.WastedItems = new();
             foreach (FormItem? item in WastedItems)
                 Service.WastedItems.Add(item);
+            Service.Employee = new();
+            Service.Employee.Name = SelectedEmployee;
             try
             {
                 await serviceProvider.ProvideServiceAsync(Service);
@@ -193,7 +201,8 @@ namespace BraidsAccounting.ViewModels
         private bool CanInitialDataCommandExecute() => true;
         private async void OnInitialDataCommandExecuted()
         {
-            Names = await serviceProvider.GetNamesAsync();
+            var employees = await employeesService.GetEmployeesAsync();
+            Names = new(employees.Select(e => e.Name));
         }
 
         #endregion
