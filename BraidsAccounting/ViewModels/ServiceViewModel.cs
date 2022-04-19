@@ -2,6 +2,7 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Models;
+using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
@@ -26,7 +27,6 @@ namespace BraidsAccounting.ViewModels
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
-        private readonly IEmployeesService employeesService;
         private const int stockWarningThreshold = 2;
 
         public ServiceViewModel(
@@ -34,13 +34,11 @@ namespace BraidsAccounting.ViewModels
             , IEventAggregator eventAggregator
             , IRegionManager regionManager
             , IViewService viewService
-            , IEmployeesService employeesService
             )
         {
             this.serviceProvider = serviceProvider;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            this.employeesService = employeesService;
             eventAggregator.GetEvent<SelectItemEvent>().Subscribe(AddWastedItemToService);
         }
 
@@ -101,6 +99,22 @@ namespace BraidsAccounting.ViewModels
                 WastedItems.Add(formItem);
             }
         }
+        private void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
+        {
+            var runningOutItems = wastedItems.Where(i => i.MaxCount - i.Count <= stockWarningThreshold).ToArray();
+            if (runningOutItems.Length > 0)
+            {
+                StringBuilder sb = new();
+                sb.Append("Заканчиваются следующие материалы:");
+                sb.Append(Environment.NewLine);
+                foreach (var item in runningOutItems)
+                {
+                    sb.Append($"{item.Manufacturer} {item.Article} {item.Color} осталось {item.MaxCount - item.Count} шт.");
+                    sb.Append(Environment.NewLine);
+                }
+                MessageBox.Show(sb.ToString(), "ВНИМАНИЕ!");
+            }
+        }
 
         #region Command CreateService - Добавление сервиса
 
@@ -136,23 +150,6 @@ namespace BraidsAccounting.ViewModels
         }
 
         #endregion
-
-        private void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
-        {
-            var runningOutItems = wastedItems.Where(i => i.MaxCount - i.Count <= stockWarningThreshold).ToArray();
-            if (runningOutItems.Length > 0)
-            {
-                StringBuilder sb = new();
-                sb.Append("Заканчиваются следующие материалы:");
-                sb.Append(Environment.NewLine);
-                foreach (var item in runningOutItems)
-                {
-                    sb.Append($"{item.Manufacturer} {item.Article} {item.Color} осталось {item.MaxCount - item.Count} шт.");
-                    sb.Append(Environment.NewLine);
-                }
-                MessageBox.Show(sb.ToString(), "ВНИМАНИЕ!");
-            }
-        }
 
         #region Command SelectStoreItem - Команда выбрать товар со склада
 
@@ -201,6 +198,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanInitialDataCommandExecute() => true;
         private async void OnInitialDataCommandExecuted()
         {
+            var employeesService = ServiceLocator.GetService<IEmployeesService>();
             var employees = await employeesService.GetEmployeesAsync();
             Names = new(employees.Select(e => e.Name));
         }
