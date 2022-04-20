@@ -21,11 +21,11 @@ namespace BraidsAccounting.Services
             this.manufacturers = manufacturers;
         }
 
-        public async Task<List<Manufacturer>> GetManufacturersAsync() => await manufacturers.Items.ToListAsync();
-        public async Task<List<string>> GetManufacturerNamesAsync() => await manufacturers.Items.Select(m => m.Name).ToListAsync();
-        public async Task<Manufacturer?> GetManufacturerAsync(string name) => await manufacturers.Items.FirstOrDefaultAsync(m => m.Name == name);
+        public async Task<List<Manufacturer>> GetAllAsync() => await manufacturers.Items.ToListAsync();
+        public async Task<List<string>> GetNamesAsync() => await manufacturers.Items.Select(m => m.Name).ToListAsync();
+        public async Task<Manufacturer?> GetAsync(string name) => await manufacturers.Items.FirstOrDefaultAsync(m => m.Name == name);
 
-        public async Task AddManufacturerAsync(Manufacturer? manufacturer)
+        public async Task AddAsync(Manufacturer? manufacturer)
         {
             if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
             if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
@@ -33,7 +33,7 @@ namespace BraidsAccounting.Services
             await manufacturers.CreateAsync(manufacturer);
         }
 
-        public async Task EditManufacturerAsync(Manufacturer? manufacturer)
+        public async Task EditAsync(Manufacturer? manufacturer)
         {
             if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
             if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
@@ -41,6 +41,6 @@ namespace BraidsAccounting.Services
             await manufacturers.EditAsync(manufacturer);
         }
 
-        public async Task RemoveManufacturerAsync(int id) => await manufacturers.RemoveAsync(id);
+        public async Task RemoveAsync(int id) => await manufacturers.RemoveAsync(id);
     }
 }

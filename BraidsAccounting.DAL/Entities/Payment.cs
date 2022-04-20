@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.DAL.Entities
 {
-    internal class Payment : Entity
+    public class Payment : Entity
     {
         public decimal Amount { get; set; }
         public DateTime DateTime { get; set; }

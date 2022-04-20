@@ -106,7 +106,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand LoadManufacturersCommand => _LoadManufacturersCommand
             ??= new DelegateCommand(OnLoadManufacturersCommandExecuted, CanLoadManufacturersCommandExecute);
         private bool CanLoadManufacturersCommandExecute() => true;
-        private async void OnLoadManufacturersCommandExecuted() => Manufacturers = await manufacturersService.GetManufacturerNamesAsync();
+        private async void OnLoadManufacturersCommandExecuted() => Manufacturers = await manufacturersService.GetNamesAsync();
 
         #endregion
 

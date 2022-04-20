@@ -36,7 +36,7 @@ namespace BraidsAccounting.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.Item", b =>
@@ -62,7 +62,7 @@ namespace BraidsAccounting.DAL.Migrations
 
                     b.HasIndex("ManufacturerId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.Manufacturer", b =>
@@ -82,7 +82,7 @@ namespace BraidsAccounting.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Manufacturers");
+                    b.ToTable("Manufacturers", (string)null);
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.Service", b =>
@@ -111,7 +111,7 @@ namespace BraidsAccounting.DAL.Migrations
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.StoreItem", b =>
@@ -132,7 +132,7 @@ namespace BraidsAccounting.DAL.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Store");
+                    b.ToTable("Store", (string)null);
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.WastedItem", b =>
@@ -158,7 +158,7 @@ namespace BraidsAccounting.DAL.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("WastedItems");
+                    b.ToTable("WastedItems", (string)null);
                 });
 
             modelBuilder.Entity("BraidsAccounting.DAL.Entities.Item", b =>

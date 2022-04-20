@@ -24,12 +24,24 @@ namespace BraidsAccounting.Services
         public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options)
         {
             IQueryable<WastedItemForm> totalQuery;
-            IQueryable<WastedItem>? baseQuery = wastedItems.Items;
-            if (options.EnableWorkerFilter) AddWorkerFilter(ref baseQuery, options.WorkerNameFilter);
-            if (options.EnablePeriodFilter) AddPeriodFilter(ref baseQuery, options.DatePeriod);
+            var baseQuery = GetFilteredQuery(options);
             if (options.EnableGrouping) totalQuery = AddSelectWithGrouping(baseQuery);
             else totalQuery = AddSelect(baseQuery);
             return await totalQuery.ToListAsync();
+        }
+
+        public async Task<decimal> GetTotalExpensesAsync(StatisticsFilterOptions options)
+        {
+            var baseQuery = GetFilteredQuery(options);
+            return await baseQuery.SumAsync(w => w.Count * w.Item.Manufacturer.Price);
+        }
+
+        private IQueryable<WastedItem> GetFilteredQuery(StatisticsFilterOptions options)
+        {
+            IQueryable<WastedItem>? baseQuery = wastedItems.Items;
+            if (options.EnableWorkerFilter) AddWorkerFilter(ref baseQuery, options.WorkerNameFilter);
+            if (options.EnablePeriodFilter) AddPeriodFilter(ref baseQuery, options.DatePeriod);
+            return baseQuery;
         }
 
         /// <summary>

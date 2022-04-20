@@ -14,6 +14,7 @@ namespace BraidsAccounting.DAL.Context
         public DbSet<WastedItem> WastedItems { get; set; } = null!;
         public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
         public DbSet<Employee> Employees { get; set; } = null!;
+        public DbSet<Payment> Payments { get; set; } = null!;
 
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
@@ -42,11 +43,21 @@ namespace BraidsAccounting.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Service>(ServiceConfigure);
+            modelBuilder
+                .Entity<Service>(ServiceConfigure)
+                .Entity<Payment>(PaymentConfigure)
+                ;
         }
 
         private void ServiceConfigure(EntityTypeBuilder<Service> builder)
         {       
+            builder
+              .Property(x => x.DateTime)
+              .HasDefaultValueSql("GETDATE()");
+        }
+
+        private void PaymentConfigure(EntityTypeBuilder<Payment> builder)
+        {
             builder
               .Property(x => x.DateTime)
               .HasDefaultValueSql("GETDATE()");

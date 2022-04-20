@@ -13,32 +13,32 @@ namespace BraidsAccounting.Services.Interfaces
         /// Добавить производителя материала в каталог.
         /// </summary>
         /// <param name="manufacturer">Название производителя.</param>
-        Task AddManufacturerAsync(Manufacturer? manufacturer);
+        Task AddAsync(Manufacturer? manufacturer);
         /// <summary>
         /// Изменить производителя материала из каталога.
         /// </summary>
         /// <param name="manufacturer">Название производителя.</param>
-        Task EditManufacturerAsync(Manufacturer? manufacturer);
+        Task EditAsync(Manufacturer? manufacturer);
         /// <summary>
         /// Получить объект производителя материалов.
         /// </summary>
         /// <param name="name">Имя производителя.</param>
         /// <returns></returns>
-        Task<Manufacturer?> GetManufacturerAsync(string name);
+        Task<Manufacturer?> GetAsync(string name);
         /// <summary>
         /// Получить список названий производителей материалов.
         /// </summary>
         /// <returns></returns>
-        Task<List<string>> GetManufacturerNamesAsync();
+        Task<List<string>> GetNamesAsync();
         /// <summary>
         /// Получить список производителей материалов.
         /// </summary>
         /// <returns></returns>
-        Task<List<Manufacturer>> GetManufacturersAsync();
+        Task<List<Manufacturer>> GetAllAsync();
         /// <summary>
         /// Удалить выбранного производителя.
         /// </summary>
         /// <param name="id">ID производителя.</param>
-        Task RemoveManufacturerAsync(int id);
+        Task RemoveAsync(int id);
     }
 }

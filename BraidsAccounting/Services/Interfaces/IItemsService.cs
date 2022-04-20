@@ -18,7 +18,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// <returns></returns>
         bool ContainsManufacturer(string manufacturerName);
         Task EditAsync(Item item);
-        Task<Item?> GetItemAsync(string manufacturer, string article, string color);
-        Task<List<Item>> GetItemsAsync(bool onlyInStock);
+        Task<Item?> GetAsync(string manufacturer, string article, string color);
+        Task<List<Item>> GetAllAsync(bool onlyInStock);
     }
 }

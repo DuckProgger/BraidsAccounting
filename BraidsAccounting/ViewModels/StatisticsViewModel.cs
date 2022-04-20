@@ -13,15 +13,15 @@ namespace BraidsAccounting.ViewModels
 {
     internal class StatisticsViewModel : BindableBase
     {
-        private readonly IStatisticsService wastedItemsService;
+        private readonly IStatisticsService statisticsService;
         private readonly IServiceProvider serviceProvider;
 
         public StatisticsViewModel(
-            IStatisticsService wastedItemsService
+            IStatisticsService statisticsService
             , IServiceProvider serviceProvider
             )
         {
-            this.wastedItemsService = wastedItemsService;
+            this.statisticsService = statisticsService;
             this.serviceProvider = serviceProvider;
         }
 
@@ -72,10 +72,8 @@ namespace BraidsAccounting.ViewModels
                 Start = Start,
                 End = End
             };
-            WastedItems = new(await wastedItemsService.GetWastedItemFormsAsync(FilterOptions));
-            TotalExpenses = 0;
-            foreach (WastedItemForm? wastedItem in WastedItems)
-                TotalExpenses += wastedItem.Expense;
+            WastedItems = new(await statisticsService.GetWastedItemFormsAsync(FilterOptions));
+            TotalExpenses = await statisticsService.GetTotalExpensesAsync(FilterOptions);
         }
 
         #endregion

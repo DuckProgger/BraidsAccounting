@@ -16,6 +16,7 @@ namespace BraidsAccounting.DAL.Repositories
            .Register<IRepository<WastedItem>, WastedItemRepository>()
            .Register<IRepository<Manufacturer>, DbRepository<Manufacturer>>()
            .Register<IRepository<Employee>, DbRepository<Employee>>()
+           .Register<IRepository<Payment>, DbRepository<Payment>>()
             ;
     }
 }

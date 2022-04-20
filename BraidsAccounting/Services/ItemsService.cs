@@ -23,7 +23,7 @@ namespace BraidsAccounting.Services
         public bool ContainsManufacturer(string manufacturerName) =>
             catalogue.Items.Any(i => i.Manufacturer.Name == manufacturerName);
 
-        public async Task<List<Item>> GetItemsAsync(bool onlyInStock)
+        public async Task<List<Item>> GetAllAsync(bool onlyInStock)
         {
             if (onlyInStock) return await GetOnlyInStockCatalogue();
             return await GetCatalogue();
@@ -38,7 +38,7 @@ namespace BraidsAccounting.Services
                 .Where(i => i.StoreItems.Any(si => si.ItemId == i.Id))
                 .ToListAsync();
 
-        public async Task<Item?> GetItemAsync(string manufacturer, string article, string color) =>
+        public async Task<Item?> GetAsync(string manufacturer, string article, string color) =>
                await catalogue.Items.FirstOrDefaultAsync(i =>
                 i.Manufacturer.Name == manufacturer
                 && i.Article == article

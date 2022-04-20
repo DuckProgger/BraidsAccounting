@@ -133,7 +133,7 @@ namespace BraidsAccounting.ViewModels
             Service.Employee.Name = SelectedEmployee;
             try
             {
-                await serviceProvider.ProvideServiceAsync(Service);
+                await serviceProvider.AddAsync(Service);
                 CheckRunningOutItems(WastedItems);
                 Service = new();
                 WastedItems = new();
@@ -199,7 +199,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnInitialDataCommandExecuted()
         {
             var employeesService = ServiceLocator.GetService<IEmployeesService>();
-            var employees = await employeesService.GetEmployeesAsync();
+            var employees = await employeesService.GetAllAsync();
             Names = new(employees.Select(e => e.Name));
         }
 

@@ -18,6 +18,6 @@ namespace BraidsAccounting.Services.Interfaces
         /// Добавить выполненную работу.
         /// </summary>
         /// <param name="service"></param>
-        Task ProvideServiceAsync(Service service);
+        Task AddAsync(Service service);
     }
 }

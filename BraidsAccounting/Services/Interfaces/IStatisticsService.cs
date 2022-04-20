@@ -15,5 +15,12 @@ namespace BraidsAccounting.Services.Interfaces
         /// <param name="options">Параметры фильтрации.</param>
         /// <returns></returns>
         Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options);
+        /// <summary>
+        /// Получить общую сумму расходов для коллекции израсходованных материалов.
+        /// </summary>
+        /// <param name="itemForms"></param>
+        /// <returns></returns>
+        Task<decimal> GetTotalExpensesAsync(StatisticsFilterOptions options);
+
     }
 }

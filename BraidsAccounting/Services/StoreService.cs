@@ -42,7 +42,7 @@ namespace BraidsAccounting.Services
                 : throw new Exception("Такого производителя нет в базе.");
             // Найти материал в каталоге
             Item? existingItem = await catalogue
-                .GetItemAsync(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
+                .GetAsync(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
             // Такого материала нет в каталоге - добавить в каталог и на склад
             if (existingItem is null)
             {

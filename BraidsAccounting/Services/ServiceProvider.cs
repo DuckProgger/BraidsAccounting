@@ -31,10 +31,10 @@ namespace BraidsAccounting.Services
             this.employeesService = employeesService;
         }
 
-        public async Task ProvideServiceAsync(Service service)
+        public async Task AddAsync(Service service)
         {
             // Найти ID сотрудника в БД
-            service.Employee = await employeesService.GetEmployeeAsync(service.Employee.Name)
+            service.Employee = await employeesService.GetAsync(service.Employee.Name)
                 ?? throw new ArgumentException("Сотрудник не найден.", nameof(service.Employee));
 
             // Добавить услугу в БД

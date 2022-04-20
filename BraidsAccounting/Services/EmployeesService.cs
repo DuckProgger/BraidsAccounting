@@ -16,16 +16,16 @@ namespace BraidsAccounting.Services
             this.employees = employees;
         }
 
-        public async Task AddEmployeeAsync(Employee employee) =>
+        public async Task AddAsync(Employee employee) =>
             await employees.CreateAsync(employee);
 
-        public async Task EditEmployeeAsync(Employee employee) => 
+        public async Task EditAsync(Employee employee) => 
             await employees.EditAsync(employee);
 
-        public async Task<List<Employee>> GetEmployeesAsync() =>
+        public async Task<List<Employee>> GetAllAsync() =>
             await employees.Items.ToListAsync();
 
-        public async Task<Employee?> GetEmployeeAsync(string name) =>
+        public async Task<Employee?> GetAsync(string name) =>
             await employees.Items.FirstOrDefaultAsync(e => e.Name.Equals(name));
     }
 }

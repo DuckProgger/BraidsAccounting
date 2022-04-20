@@ -60,7 +60,7 @@ namespace BraidsAccounting.ViewModels
         private async void SetProperties(StoreItem item)
         {
             StoreItem = item;
-            Manufacturers = await manufacturersService.GetManufacturerNamesAsync();
+            Manufacturers = await manufacturersService.GetNamesAsync();
             SelectedManufacturer = Manufacturers.First(name => name == item.Item.Manufacturer.Name);
         }
 
@@ -76,7 +76,7 @@ namespace BraidsAccounting.ViewModels
         {
             try
             {
-                Manufacturer? existingManufacturer = await manufacturersService.GetManufacturerAsync(SelectedManufacturer);
+                Manufacturer? existingManufacturer = await manufacturersService.GetAsync(SelectedManufacturer);
                 if (existingManufacturer is null)
                 {
                     ErrorMessage.Message = "Выбранного производителя нет в каталоге";

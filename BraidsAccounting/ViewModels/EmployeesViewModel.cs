@@ -87,7 +87,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanGetEmployeesCommandExecute() => true;
         private async void OnGetEmployeesCommandExecuted()
         {
-            Employees = new(await employeesService.GetEmployeesAsync());
+            Employees = new(await employeesService.GetAllAsync());
             EmployeeList = new(Employees.Select(e => e.Name));
         }
 
@@ -164,12 +164,12 @@ namespace BraidsAccounting.ViewModels
                 switch (EmployeeInForm.Id)
                 {
                     case 0:
-                        await employeesService.AddEmployeeAsync(EmployeeInForm);
+                        await employeesService.AddAsync(EmployeeInForm);
                         Employees.Add(EmployeeInForm);
                         StatusMessage.Message = "Новый сотрудник добавлен";
                         break;
                     default:
-                        await employeesService.EditEmployeeAsync(EmployeeInForm);
+                        await employeesService.EditAsync(EmployeeInForm);
                         StatusMessage.Message = "Сотрудник изменён";
                         break;
                 }

@@ -97,8 +97,8 @@ namespace BraidsAccounting.ViewModels
         private bool CanGetManufacturersListCommandExecute() => true;
         private async void OnGetManufacturersListCommandExecuted()
         {
-            Manufacturers = new(await manufacturersService.GetManufacturersAsync());
-            ManufacturerList = new(await manufacturersService.GetManufacturerNamesAsync());
+            Manufacturers = new(await manufacturersService.GetAllAsync());
+            ManufacturerList = new(await manufacturersService.GetNamesAsync());
         }
 
         #endregion
@@ -117,12 +117,12 @@ namespace BraidsAccounting.ViewModels
                 switch (ManufacturerInForm.Id)
                 {
                     case 0:
-                        await manufacturersService.AddManufacturerAsync(ManufacturerInForm);
+                        await manufacturersService.AddAsync(ManufacturerInForm);
                         Manufacturers.Add(ManufacturerInForm);
                         StatusMessage.Message = "Новый производитель добавлен";
                         break;
                     default:
-                        await manufacturersService.EditManufacturerAsync(ManufacturerInForm);
+                        await manufacturersService.EditAsync(ManufacturerInForm);
                         StatusMessage.Message = "Производитель изменён";
                         break;
                 }
@@ -146,7 +146,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanRemoveManufacturerCommandExecute() => true;
         private async void OnRemoveManufacturerCommandExecuted()
         {
-            await manufacturersService.RemoveManufacturerAsync(SelectedManufacturer.Id);
+            await manufacturersService.RemoveAsync(SelectedManufacturer.Id);
             Manufacturers.Remove(SelectedManufacturer);
             StatusMessage.Message = "Производитель удалён";
             MDDialogHost.CloseDialogCommand.Execute(null, null);

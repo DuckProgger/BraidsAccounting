@@ -154,9 +154,9 @@ namespace BraidsAccounting.ViewModels
         private async Task LoadData()
         {
             CatalogueItems = new();
-            foreach (var item in await catalogue.GetItemsAsync(OnlyInStock))
+            foreach (var item in await catalogue.GetAllAsync(OnlyInStock))
                 CatalogueItems.Add(item);
-            Manufacturers = await manufacturersService.GetManufacturerNamesAsync();
+            Manufacturers = await manufacturersService.GetNamesAsync();
         }
 
         #endregion
