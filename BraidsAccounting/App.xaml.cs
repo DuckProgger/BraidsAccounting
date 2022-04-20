@@ -29,6 +29,7 @@ namespace BraidsAccounting
         {
             moduleCatalog
                 .AddModule(typeof(MainModule))
+                .AddModule(typeof(StatisticsModule))
                 ;
         }
 

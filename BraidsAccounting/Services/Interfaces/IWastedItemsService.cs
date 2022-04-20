@@ -7,20 +7,20 @@ namespace BraidsAccounting.Services.Interfaces
     /// <summary>
     /// Интерфейс, представляющий сервис статистики. 
     /// </summary>
-    internal interface IStatisticsService
+    internal interface IWastedItemsService
     {
         /// <summary>
         /// Получить список израсходованных материалов на основании фильтров, установленных в <paramref name = "options" />.
         /// </summary>
         /// <param name="options">Параметры фильтрации.</param>
         /// <returns></returns>
-        Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options);
+        Task<List<WastedItemForm>> GetWastedItemFormsAsync(WastedItemsFilterOptions options);
         /// <summary>
         /// Получить общую сумму расходов для коллекции израсходованных материалов.
         /// </summary>
         /// <param name="itemForms"></param>
         /// <returns></returns>
-        Task<decimal> GetTotalExpensesAsync(StatisticsFilterOptions options);
+        Task<decimal> GetTotalExpensesAsync(WastedItemsFilterOptions options);
 
     }
 }

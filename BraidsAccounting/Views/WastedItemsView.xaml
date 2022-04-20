@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="BraidsAccounting.Views.WastedItemsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:BraidsAccounting.Views"
+             xmlns:prism="http://prismlibrary.com/" 
+             xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
+             prism:ViewModelLocator.AutoWireViewModel="True"      
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <c:MoneyConverter x:Key="MoneyConverter"/>
+    </UserControl.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding InitializeDataCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <!--Фильтры-->
+            <RowDefinition Height="1.2*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="0.2*"/>
+        </Grid.RowDefinitions>
+        <!--Фильтры-->
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <!--Заголовок-->
+                <RowDefinition Height="0.5*"/>
+                <!--Контролы-->
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Фильтры" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"/>
+            <!--Контролы-->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <!--Управление фильтрами-->
+                    <ColumnDefinition/>
+                    <!--Кнопки-->
+                    <ColumnDefinition Width="0.5*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <!--Основные контролы-->
+                        <RowDefinition Height="1.5*"/>
+                        <!--Checkboxes-->
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!--Основные контролы-->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <!--Выбор сотрудника-->
+                            <ColumnDefinition/>
+                            <!--Выбор начала даты-->
+                            <ColumnDefinition/>
+                            <!--Выбор конца даты-->
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <!--Выбор сотрудника-->
+                        <StackPanel Grid.Column="0" >
+                            <TextBlock Text="Имя сотрудника" HorizontalAlignment="Center"/>
+                            <ComboBox Margin="5"
+                                      ItemsSource="{Binding Names}"
+                                      SelectedValue="{Binding FilterOptions.WorkerNameFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:WastedItemsView}}, 
+                                    Path=DataContext.EnableWorkerFilterCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </StackPanel>
+                        <!--Выбор начала даты-->
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Начало" HorizontalAlignment="Center"/>
+                            <DatePicker SelectedDate="{Binding Start, Mode=TwoWay}" Margin="5"/>
+                        </StackPanel>
+                        <!--Выбор конца даты-->
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Конец" HorizontalAlignment="Center"/>
+                            <DatePicker SelectedDate="{Binding End, Mode=TwoWay}" Margin="5"/>
+                        </StackPanel>
+                    </Grid>
+                    <!--Checkboxes-->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <!--Управление фильтром даты-->
+                        <TextBlock Grid.Column="0" Text="Фильтр даты" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="10,0,0,0" />
+                        <CheckBox Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnablePeriodFilter}" Margin="10,0,0,0"/>
+                        <!--Управление группировкой-->
+                        <TextBlock Grid.Row="1" Text="Сгруппировать" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="10,0,0,0"/>
+                        <CheckBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnableGrouping}" Margin="10,0,0,0"/>
+                    </Grid>
+                </Grid>
+                <!--Кнопки-->
+                <StackPanel Grid.Column="1">
+                    <Button Content="Сбросить" Command="{Binding ResetFiltersCommand}" Margin="5"/>
+                    <Button Content="Применить" Command="{Binding GetDataCommand}" Margin="5"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding WastedItems}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Manufacturer}"/>
+                    <GridViewColumn Header="Модель" DisplayMemberBinding="{Binding Article}"/>
+                    <GridViewColumn Header="Цвет" DisplayMemberBinding="{Binding Color}"/>
+                    <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding Count}"/>
+                    <GridViewColumn Header="Расход" DisplayMemberBinding="{Binding Expense, Converter={StaticResource MoneyConverter}}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
+            <TextBlock Text="Общие расходы: "/>
+            <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}" MinWidth="100"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

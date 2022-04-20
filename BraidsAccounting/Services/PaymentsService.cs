@@ -11,11 +11,11 @@ namespace BraidsAccounting.Services
     internal class PaymentsService : IPaymentsService
     {
         private readonly IRepository<Payment> paymentsRepository;
-        private readonly IStatisticsService statisticsService;
+        private readonly IWastedItemsService statisticsService;
 
         public PaymentsService(
             IRepository<Payment> paymentsRepository
-            , IStatisticsService statisticsService
+            , IWastedItemsService statisticsService
             )
         {
             this.paymentsRepository = paymentsRepository;
@@ -40,7 +40,7 @@ namespace BraidsAccounting.Services
         {
             // Получить общую сумму расходов на израсходованные
             // сотрудником материалы за всё время
-            StatisticsFilterOptions options = new()
+            WastedItemsFilterOptions options = new()
             {
                 EnableGrouping = false,
                 EnablePeriodFilter = false,

@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using BraidsAccounting.Modules;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Windows.Input;
@@ -22,7 +23,7 @@ namespace BraidsAccounting.ViewModels
             ??= new DelegateCommand<string>(OnNavigateToOtherViewCommandExecuted, CanNavigateToOtherViewCommandExecute);
         private bool CanNavigateToOtherViewCommandExecute(string viewName) => true;
         private void OnNavigateToOtherViewCommandExecuted(string viewName) =>
-            regionManager.RequestNavigate("ContentRegion", viewName);
+            regionManager.RequestNavigate(RegionNames.Main, viewName);
 
         #endregion
     }

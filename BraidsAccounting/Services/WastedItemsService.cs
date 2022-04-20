@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 namespace BraidsAccounting.Services
 {
     /// <summary>
-    /// Реализация сервиса <see cref = "IStatisticsService" />.
+    /// Реализация сервиса <see cref = "IWastedItemsService" />.
     /// </summary>
-    internal class StatisticsService : IStatisticsService
+    internal class WastedItemsService : IWastedItemsService
     {
         private readonly IRepository<WastedItem> wastedItems;
 
-        public StatisticsService(IRepository<WastedItem> wastedItems)
+        public WastedItemsService(IRepository<WastedItem> wastedItems)
         {
             this.wastedItems = wastedItems;
         }
-        public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(StatisticsFilterOptions options)
+        public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(WastedItemsFilterOptions options)
         {
             IQueryable<WastedItemForm> totalQuery;
             var baseQuery = GetFilteredQuery(options);
@@ -30,13 +30,13 @@ namespace BraidsAccounting.Services
             return await totalQuery.ToListAsync();
         }
 
-        public async Task<decimal> GetTotalExpensesAsync(StatisticsFilterOptions options)
+        public async Task<decimal> GetTotalExpensesAsync(WastedItemsFilterOptions options)
         {
             var baseQuery = GetFilteredQuery(options);
             return await baseQuery.SumAsync(w => w.Count * w.Item.Manufacturer.Price);
         }
 
-        private IQueryable<WastedItem> GetFilteredQuery(StatisticsFilterOptions options)
+        private IQueryable<WastedItem> GetFilteredQuery(WastedItemsFilterOptions options)
         {
             IQueryable<WastedItem>? baseQuery = wastedItems.Items;
             if (options.EnableWorkerFilter) AddWorkerFilter(ref baseQuery, options.WorkerNameFilter);

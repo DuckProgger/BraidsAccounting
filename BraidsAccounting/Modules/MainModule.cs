@@ -14,11 +14,11 @@ namespace BraidsAccounting.Modules
         {
             IRegionManager? regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager
-                 .RegisterViewWithRegion("ContentRegion", typeof(StoreView))
-                 .RegisterViewWithRegion("ContentRegion", typeof(ServiceView))
-                 .RegisterViewWithRegion("ContentRegion", typeof(ManufacturersView))
-                 .RegisterViewWithRegion("ContentRegion", typeof(StatisticsView))
-                 .RegisterViewWithRegion("ContentRegion", typeof(EmployeesView))
+                 .RegisterViewWithRegion(RegionNames.Main, typeof(StoreView))
+                 .RegisterViewWithRegion(RegionNames.Main, typeof(ServiceView))
+                 .RegisterViewWithRegion(RegionNames.Main, typeof(ManufacturersView))
+                 .RegisterViewWithRegion(RegionNames.Main, typeof(StatisticsView))
+                 .RegisterViewWithRegion(RegionNames.Main, typeof(EmployeesView))
             ;
 
         }
