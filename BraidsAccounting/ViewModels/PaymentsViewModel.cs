@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
@@ -32,6 +34,17 @@ namespace BraidsAccounting.ViewModels
         public Payment NewPayment { get; set; } = new();
         public decimal Debt { get; set; }
         public string DebtStatus { get; set; }
+        public bool HaveDebt => Debt > 0;
+        public bool NoDebt => Debt <= 0;
+        public bool NotSelectedEmployee => string.IsNullOrEmpty(SelectedEmployee?.Name);
+        /// <summary>
+        /// Выводимое сообщение о статусе.
+        /// </summary>
+        public MessageProvider StatusMessage { get; } = new(true);
+        /// <summary>
+        /// Выводимое сообщение об ошибке.
+        /// </summary>
+        public MessageProvider ErrorMessage { get; } = new(true);
 
         #region Command InitializeData - Команда загрузить начальные данные
 
@@ -55,11 +68,13 @@ namespace BraidsAccounting.ViewModels
             ??= new DelegateCommand(OnAddPaymentCommandExecuted, CanAddPaymentCommandExecute);
         private bool CanAddPaymentCommandExecute() => true;
         private async void OnAddPaymentCommandExecuted()
-        {
+        {            
             NewPayment.Employee = SelectedEmployee;
             await paymentsService.AddAsync(NewPayment);
             NewPayment = new();
             GetDebtCommand.Execute(null);
+            StatusMessage.Message= "Сумма успешно зачислена.";
+            MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
 
         #endregion
@@ -73,14 +88,38 @@ namespace BraidsAccounting.ViewModels
         private bool CanGetDebtCommandExecute() => true;
         private async void OnGetDebtCommandExecuted()
         {
-            if (SelectedEmployee is null || string.IsNullOrEmpty(SelectedEmployee.Name)) return;
+            if (SelectedEmployee is null || NotSelectedEmployee) return;
             Debt = await paymentsService.GetDebtAsync(SelectedEmployee.Name);
             DebtStatus = Debt switch
             {
-                > 0 => "Задолженность:",
-                < 0 => "Кредит:",
-                _ => "Задолженность отсутствует.",
+                > 0 => "Задолженность: ",
+                < 0 => "Кредит: ",
+                _ => "Задолженность отсутствует",
             };
+        }
+
+        #endregion
+
+        #region Command OpenDialog - Команда открыть диалог
+
+        private ICommand? _OpenDialogCommand;
+        /// <summary>Команда - открыть диалог</summary>
+        public ICommand OpenDialogCommand => _OpenDialogCommand
+            ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
+        private bool CanOpenDialogCommandExecute() => true;
+        private void OnOpenDialogCommandExecuted()
+        {
+            if (NewPayment.Amount <= 0)
+            {
+                ErrorMessage.Message = "Сумма должна быть положительной.";
+                return;
+            }
+            if (NotSelectedEmployee)
+            {
+                ErrorMessage.Message = "Не выбран сотрудник.";
+                return;
+            }
+            MDDialogHost.OpenDialogCommand.Execute(null, null);           
         }
 
         #endregion
