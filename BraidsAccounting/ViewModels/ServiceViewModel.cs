@@ -2,6 +2,7 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Models;
+using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
@@ -83,7 +84,7 @@ namespace BraidsAccounting.ViewModels
         /// <param name="catalogueItem"></param>
         private void AddWastedItemToService(Item? catalogueItem)
         {
-            if (catalogueItem is not null && regionManager.IsViewActive<ServiceView>("ContentRegion"))
+            if (catalogueItem is not null && regionManager.IsViewActive<ServiceView>(RegionNames.Main))
             {
                 if (WastedItems.FirstOrDefault(wi => wi.Equals(catalogueItem)) != null)
                 {

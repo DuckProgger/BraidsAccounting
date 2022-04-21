@@ -10,7 +10,8 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Braids Accounting"
-        Height="500" Width="900">
+        Height="500" Width="900"
+        Background="#FAFAFA">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>

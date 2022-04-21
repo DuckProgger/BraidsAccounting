@@ -10,7 +10,7 @@
              prism:ViewModelLocator.AutoWireViewModel="True"      
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="AliceBlue">
+             Background="#FAFAFA">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding InitializeDataCommand}"/>
@@ -28,9 +28,18 @@
                         <TextBlock Text="{Binding Converter={StaticResource EmployeeConverter}}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding GetDebtCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ComboBox>
             <TextBox Text="{Binding NewPayment.Amount}"/>
             <Button Command="{Binding AddPaymentCommand}"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding DebtStatus}"/>
+                <TextBlock Text="{Binding Debt}"/>
+            </StackPanel>
         </StackPanel>  
     </Grid>
 </UserControl>

@@ -31,6 +31,7 @@ namespace BraidsAccounting.ViewModels
         public Employee SelectedEmployee { get; set; }
         public Payment NewPayment { get; set; } = new();
         public decimal Debt { get; set; }
+        public string DebtStatus { get; set; }
 
         #region Command InitializeData - Команда загрузить начальные данные
 
@@ -41,7 +42,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanInitializeDataCommandExecute() => true;
         private async void OnInitializeDataCommandExecuted()
         {
-             Employees = await employeesService.GetAllAsync();
+            Employees = await employeesService.GetAllAsync();
         }
 
         #endregion
@@ -58,10 +59,30 @@ namespace BraidsAccounting.ViewModels
             NewPayment.Employee = SelectedEmployee;
             await paymentsService.AddAsync(NewPayment);
             NewPayment = new();
-            SelectedEmployee = new();
+            GetDebtCommand.Execute(null);
         }
 
         #endregion
 
+        #region Command GetDebt - Команда получить задолженность для выбранного сотрудника
+
+        private ICommand? _GetDebtCommand;
+        /// <summary>Команда - получить задолженность для выбранного сотрудника</summary>
+        public ICommand GetDebtCommand => _GetDebtCommand
+            ??= new DelegateCommand(OnGetDebtCommandExecuted, CanGetDebtCommandExecute);
+        private bool CanGetDebtCommandExecute() => true;
+        private async void OnGetDebtCommandExecuted()
+        {
+            if (SelectedEmployee is null || string.IsNullOrEmpty(SelectedEmployee.Name)) return;
+            Debt = await paymentsService.GetDebtAsync(SelectedEmployee.Name);
+            DebtStatus = Debt switch
+            {
+                > 0 => "Задолженность:",
+                < 0 => "Кредит:",
+                _ => "Задолженность отсутствует.",
+            };
+        }
+
+        #endregion
     }
 }

@@ -17,7 +17,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// </summary>
         /// <param name="employeeName"></param>
         /// <returns></returns>
-        Task<decimal> GetDebt(string employeeName);
+        Task<decimal> GetDebtAsync(string employeeName);
         /// <summary>
         /// Получить список платежей сотрудника.
         /// </summary>

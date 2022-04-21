@@ -10,46 +10,20 @@
              xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
              prism:ViewModelLocator.AutoWireViewModel="True"             
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding NavigateToOtherViewCommand}" CommandParameter="WastedItemsView"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="0.1*"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Menu Grid.Row="0" >
-            <Menu.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                    </Grid>
-                </ItemsPanelTemplate>
-            </Menu.ItemsPanel>
-            <MenuItem 
-                Name="Задолженность"
-                Grid.Column="0"                 
-                Command="{Binding NavigateToOtherViewCommand}" 
-                CommandParameter="PaymentsView">              
-                <MenuItem.Header>
-                    <TextBlock Text="Задолженность" Margin="-14,0,-198,0" TextAlignment="Center" />
-                </MenuItem.Header>
-            </MenuItem>
-            <MenuItem 
-                Grid.Column="1" 
-                Command="{Binding NavigateToOtherViewCommand}" 
-                CommandParameter="WastedItemsView">
-                <MenuItem.Header>
-                    <TextBlock Text="Израсходованные материалы" Margin="-14,0,-198,0" TextAlignment="Center" />
-                </MenuItem.Header>
-            </MenuItem>
-        </Menu>
-        <ContentControl Grid.Row="1" prism:RegionManager.RegionName="{x:Static mod:RegionNames.Statistics}" />
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#FAFAFA">
+    <Grid>       
+        <TabControl Background="#FAFAFA">
+            <TabItem  Header="Задолженность">
+                <TabItem.Content >
+                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Payments}" />
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Израсходованные материалы">
+                <TabItem.Content>
+                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.WastedItems}" />
+                </TabItem.Content>
+            </TabItem>                         
+        </TabControl>
     </Grid>
 </UserControl>

@@ -12,7 +12,8 @@
              mc:Ignorable="d"   
              Title="Добавление нового материала"
              WindowStartupLocation="CenterScreen"
-            Height="200" Width="500">
+             Height="200" Width="500"
+             Background="#FAFAFA">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadManufacturersCommand}"/>

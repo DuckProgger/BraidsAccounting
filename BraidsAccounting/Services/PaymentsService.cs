@@ -36,7 +36,7 @@ namespace BraidsAccounting.Services
                .Include(p => p.Employee)
                .Where(p => p.Employee.Name.Equals(employeeName));
 
-        public async Task<decimal> GetDebt(string employeeName)
+        public async Task<decimal> GetDebtAsync(string employeeName)
         {
             // Получить общую сумму расходов на израсходованные
             // сотрудником материалы за всё время

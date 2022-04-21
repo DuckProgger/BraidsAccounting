@@ -8,7 +8,8 @@
              mc:Ignorable="d" 
              WindowStartupLocation="CenterScreen"
              Title="Изменение материала"
-             Height="150" Width="400">
+             Height="150" Width="400"
+             Background="#FAFAFA">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
