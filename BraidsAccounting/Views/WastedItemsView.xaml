@@ -7,12 +7,15 @@
              xmlns:local="clr-namespace:BraidsAccounting.Views"
              xmlns:prism="http://prismlibrary.com/" 
              xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
-             prism:ViewModelLocator.AutoWireViewModel="True"      
+             xmlns:controls="clr-namespace:DataGridExtensionsSample.Controls"
+             prism:ViewModelLocator.AutoWireViewModel="True"   
+             xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#FAFAFA">
     <UserControl.Resources>
         <c:MoneyConverter x:Key="MoneyConverter"/>
+        <controls:FilterWithPopupControl x:Key="FilterWithPopupControl"/>
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -111,7 +114,21 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <ListView Grid.Row="1"
+        <DataGrid 
+            Grid.Row="1"
+            ItemsSource="{Binding WastedItems}"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            dgx:DataGridFilter.IsAutoFilterEnabled="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Количество" Binding="{Binding Count}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Расход" Binding="{Binding Expense, Converter={StaticResource MoneyConverter}}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--<ListView Grid.Row="1"
                   ItemsSource="{Binding WastedItems}">
             <ListView.View>
                 <GridView>
@@ -122,7 +139,7 @@
                     <GridViewColumn Header="Расход" DisplayMemberBinding="{Binding Expense, Converter={StaticResource MoneyConverter}}"/>
                 </GridView>
             </ListView.View>
-        </ListView>
+        </ListView>-->
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
             <TextBlock Text="Общие расходы: "/>
             <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}" MinWidth="100"/>

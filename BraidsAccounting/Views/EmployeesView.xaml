@@ -7,6 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -50,7 +51,7 @@
                 <RowDefinition Height="0.2*"/>
                 <RowDefinition Height="0.1*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <!--<Grid Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.5*"/>
                     <RowDefinition/>
@@ -65,17 +66,18 @@
                       SelectedValue="{Binding EmployeeFilter, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     </StackPanel>
                 </DockPanel>
-            </Grid>
+            </Grid>-->
 
             <DataGrid 
             Grid.Row="1" 
             ItemsSource="{Binding Collection}"
             SelectedValue="{Binding SelectedEmployee}"
             AutoGenerateColumns="False"
-            CanUserAddRows="False">
+            CanUserAddRows="False"
+                 dgx:DataGridFilter.IsAutoFilterEnabled="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Имя" Binding="{Binding Name}" IsReadOnly="True"/>
-                    <DataGridTemplateColumn>
+                    <DataGridTemplateColumn dgx:DataGridFilterColumn.IsFilterVisible="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

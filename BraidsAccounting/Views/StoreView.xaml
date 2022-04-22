@@ -7,17 +7,25 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/" 
+             xmlns:dgx="clr-namespace:DataGridExtensions;assembly=DataGridExtensions"
+             xmlns:controls="clr-namespace:DataGridExtensionsSample.Controls"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"              
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#FAFAFA">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
+            <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>            
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>        
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <ControlTemplate x:Key="MultipleChoiceFilter">
+            <dgx:MultipleChoiceFilter Filter="{Binding Path=Filter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dgx:DataGridFilterColumnControl}}"/>
+        </ControlTemplate>
+        <ControlTemplate x:Key="FilterWithPopupControl">
+            <controls:FilterWithPopupControl Filter="{Binding Path=Filter, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=dgx:DataGridFilterColumnControl}}"/>
+        </ControlTemplate>
     </UserControl.Resources>   
     <md:DialogHost>
         <md:DialogHost.DialogContent>
@@ -53,13 +61,14 @@
             Grid.Row="0" ItemsSource="{Binding Collection, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding SelectedStoreItem}"
                   AutoGenerateColumns="False"
-                  CanUserAddRows="False">
+                  CanUserAddRows="False"
+                      dgx:DataGridFilter.IsAutoFilterEnabled="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}" IsReadOnly="True" dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilter}"/>
                     <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Количество"  Binding="{Binding Count}" IsReadOnly="True"/>
-                    <DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Количество"  Binding="{Binding Count}" IsReadOnly="True" dgx:DataGridFilterColumn.Template="{StaticResource FilterWithPopupControl}"/>
+                    <DataGridTemplateColumn dgx:DataGridFilterColumn.IsFilterVisible="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
