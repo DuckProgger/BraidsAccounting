@@ -69,7 +69,7 @@
 
             <DataGrid 
             Grid.Row="1" 
-            ItemsSource="{Binding Employees}"
+            ItemsSource="{Binding Collection}"
             SelectedValue="{Binding SelectedEmployee}"
             AutoGenerateColumns="False"
             CanUserAddRows="False">

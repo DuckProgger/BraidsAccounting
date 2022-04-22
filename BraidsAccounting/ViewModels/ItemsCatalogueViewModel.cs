@@ -3,23 +3,18 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ItemsCatalogueViewModel : BindableBase, ISignaling
+    internal class ItemsCatalogueViewModel : FilterableBindableBase<FormItem>, ISignaling
     {
-        private CollectionView collectionView = null!;
         private readonly IEventAggregator eventAggregator;
         private readonly IManufacturersService manufacturersService;
         private readonly IViewService viewService;
@@ -28,18 +23,19 @@ namespace BraidsAccounting.ViewModels
         private string? _manufacturerFilter;
         private string? articleFilter;
         private ICommand? _LoadDataCommand;
-        private ObservableCollection<FormItem> catalogueItems = new();
-
-        public ObservableCollection<FormItem> CatalogueItems
+        public ItemsCatalogueViewModel(
+           IEventAggregator eventAggregator
+           , IManufacturersService manufacturersService
+           , IViewService viewService
+           , IItemsService catalogue
+           )
         {
-            get => catalogueItems;
-            set
-            {
-                catalogueItems = value;
-                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(catalogueItems);
-                collectionView.Filter = Filter;
-            }
+            this.eventAggregator = eventAggregator;
+            this.manufacturersService = manufacturersService;
+            this.viewService = viewService;
+            this.catalogue = catalogue;
         }
+
         /// <summary>
         /// Выбранный материал из каталога.
         /// </summary>
@@ -96,26 +92,9 @@ namespace BraidsAccounting.ViewModels
         public MessageProvider StatusMessage => throw new NotImplementedException();
         public MessageProvider WarningMessage => throw new NotImplementedException();
 
-        #endregion
+        #endregion       
 
-        public ItemsCatalogueViewModel(
-            IEventAggregator eventAggregator
-            , IManufacturersService manufacturersService
-            , IViewService viewService
-            , IItemsService catalogue
-            )
-        {
-            this.eventAggregator = eventAggregator;
-            this.manufacturersService = manufacturersService;
-            this.viewService = viewService;
-            this.catalogue = catalogue;
-        }
-        /// <summary>
-        /// Предикат фильтрации списка материалов со склада.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public bool Filter(object obj)
+        protected override bool Filter(object obj)
         {
             FormItem? item = (FormItem)obj;
             bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
@@ -158,9 +137,9 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            CatalogueItems = new();
-            foreach (var item in await catalogue.GetAllAsync(OnlyInStock))
-                CatalogueItems.Add(item);
+            Collection = new();
+            foreach (Item? item in await catalogue.GetAllAsync(OnlyInStock))
+                Collection.Add(item);
             Manufacturers = await manufacturersService.GetNamesAsync();
         }
 
@@ -171,7 +150,7 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _ResetFiltersCommand;
         /// <summary>Команда - сбросить фильтры</summary>
         public ICommand ResetFiltersCommand => _ResetFiltersCommand
-            ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);      
+            ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);
 
         private bool CanResetFiltersCommandExecute() => true;
         private void OnResetFiltersCommandExecuted()

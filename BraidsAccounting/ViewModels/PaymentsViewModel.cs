@@ -1,7 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;

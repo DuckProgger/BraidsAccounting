@@ -1,6 +1,6 @@
 ﻿using BraidsAccounting.Infrastructure;
 
-namespace BraidsAccounting.ViewModels.Interfaces
+namespace BraidsAccounting.Infrastructure
 {
     internal interface ISignaling
     {

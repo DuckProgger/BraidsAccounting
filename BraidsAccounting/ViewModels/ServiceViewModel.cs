@@ -5,7 +5,6 @@ using BraidsAccounting.Models;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Microsoft.EntityFrameworkCore;

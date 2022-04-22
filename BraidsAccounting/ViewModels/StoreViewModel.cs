@@ -3,33 +3,28 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
-using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class StoreViewModel : BindableBase, ISignaling
+    internal class StoreViewModel : FilterableBindableBase<StoreItem>, ISignaling
     {
         private IStoreService store;
         private readonly IEventAggregator eventAggregator;
         private readonly IContainerProvider container;
         private readonly IRegionManager regionManager;
         private readonly IViewService viewService;
-        private CollectionView? collectionView;
 
         public StoreViewModel(
             IStoreService store
@@ -51,18 +46,7 @@ namespace BraidsAccounting.ViewModels
         /// Выбранный материал со склада.
         /// </summary>
         public StoreItem SelectedStoreItem { get; set; } = null!;
-        /// <summary>
-        /// Коллекция всех материалов на складе.
-        /// </summary>
-        public ObservableCollection<StoreItem> StoreItems
-        {
-            get => storeItems;
-            set
-            {
-                storeItems = value;
-                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(storeItems);
-            }
-        }
+
         /// <summary>
         /// Общее количество материалов на складе.
         /// </summary>
@@ -87,6 +71,8 @@ namespace BraidsAccounting.ViewModels
                 StatusMessage.Message = "Операция выполнена";
             }
         }
+
+        protected override bool Filter(object obj) => true;
 
         #region Command EditItem - Команда редактировать предмет на складе
 
@@ -113,7 +99,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnRemoveItemCommandExecuted()
         {
             await store.RemoveItemAsync(SelectedStoreItem.Id);
-            storeItems.Remove(SelectedStoreItem);
+            Collection.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
             StatusMessage.Message = "Материал удалён со склада";
         }
@@ -134,9 +120,9 @@ namespace BraidsAccounting.ViewModels
             StatusMessage.Message = "Загружается список материалов на складе...";
             // Нужно обновить контекст, чтобы получать обновлённые данные
             store = ServiceLocator.GetService<IStoreService>();
-            StoreItems = new(await store.GetItemsAsync());
+            Collection = new(await store.GetItemsAsync());
             StatusMessage.Message = string.Empty;
-            TotalItems = storeItems.Sum(i => i.Count);
+            TotalItems = Collection.Sum(i => i.Count);
         }
 
         #endregion
@@ -144,11 +130,10 @@ namespace BraidsAccounting.ViewModels
         #region Command NavigateToOtherWindow - Команда перейти на другой экран
 
         private ICommand? _NavigateToOtherWindowCommand;
-        private ObservableCollection<StoreItem> storeItems = new();
 
         /// <summary>Команда - перейти на другой экран</summary>
         public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
-            ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);      
+            ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
 
         private bool CanNavigateToOtherWindowCommandExecute(string windowName) => true;
         private void OnNavigateToOtherWindowCommandExecuted(string windowName)
@@ -166,6 +151,6 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        #endregion        
+        #endregion
     }
 }

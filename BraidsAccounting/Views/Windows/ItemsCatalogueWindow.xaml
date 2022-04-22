@@ -78,7 +78,7 @@
             </Grid>
         </Grid>
         <ListView Grid.Row="1"
-                  ItemsSource="{Binding CatalogueItems}"
+                  ItemsSource="{Binding Collection}"
                   SelectedItem="{Binding SelectedItem}">
             <ListView.View>
                 <GridView>

@@ -1,7 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -15,29 +14,16 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    class EmployeesViewModel : BindableBase, ISignaling
+    class EmployeesViewModel : FilterableBindableBase<Employee>, ISignaling
     {
         private readonly IEmployeesService employeesService;
         private string? employeeFilter;
-        private CollectionView? collectionView;
-        private ObservableCollection<Employee> employees = null!;
-
 
         public EmployeesViewModel(IEmployeesService employeesService)
         {
             this.employeesService = employeesService;
         }
-
-        public ObservableCollection<Employee> Employees
-        {
-            get => employees;
-            set
-            {
-                employees = value;
-                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(employees);
-                collectionView.Filter = Filter;
-            }
-        }
+      
         public Employee SelectedEmployee { get; set; }
         public Employee EmployeeInForm { get; set; } = new();
 
@@ -66,7 +52,7 @@ namespace BraidsAccounting.ViewModels
 
         #endregion
 
-        public bool Filter(object obj)
+        protected override bool Filter(object obj)
         {
             Employee item = (Employee)obj;
             bool manufacturerCondition = string.IsNullOrEmpty(EmployeeFilter)
@@ -83,8 +69,8 @@ namespace BraidsAccounting.ViewModels
         private bool CanGetEmployeesCommandExecute() => true;
         private async void OnGetEmployeesCommandExecuted()
         {
-            Employees = new(await employeesService.GetAllAsync());
-            EmployeeList = new(Employees.Select(e => e.Name));
+            Collection = new(await employeesService.GetAllAsync());
+            EmployeeList = new(Collection.Select(e => e.Name));
         }
 
         #endregion
@@ -161,7 +147,7 @@ namespace BraidsAccounting.ViewModels
                 {
                     case 0:
                         await employeesService.AddAsync(EmployeeInForm);
-                        Employees.Add(EmployeeInForm);
+                        Collection.Add(EmployeeInForm);
                         StatusMessage.Message = "Новый сотрудник добавлен";
                         break;
                     default:

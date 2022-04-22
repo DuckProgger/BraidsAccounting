@@ -2,7 +2,6 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;

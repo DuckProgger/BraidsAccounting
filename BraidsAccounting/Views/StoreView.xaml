@@ -50,7 +50,7 @@
                 <RowDefinition Height="0.08*"/>
             </Grid.RowDefinitions>
             <DataGrid Name="List"
-            Grid.Row="0" ItemsSource="{Binding StoreItems, UpdateSourceTrigger=PropertyChanged}" 
+            Grid.Row="0" ItemsSource="{Binding Collection, UpdateSourceTrigger=PropertyChanged}" 
                   SelectedItem="{Binding SelectedStoreItem}"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False">

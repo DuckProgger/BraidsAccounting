@@ -69,7 +69,7 @@
 
             <DataGrid 
             Grid.Row="1" 
-            ItemsSource="{Binding Manufacturers}"
+            ItemsSource="{Binding Collection}"
             SelectedValue="{Binding SelectedManufacturer}"
             AutoGenerateColumns="False"
             CanUserAddRows="False">

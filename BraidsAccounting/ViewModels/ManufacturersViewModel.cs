@@ -1,36 +1,30 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.ViewModels.Interfaces;
 using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Data;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ManufacturersViewModel : BindableBase, ISignaling
+    internal class ManufacturersViewModel : FilterableBindableBase<Manufacturer>, ISignaling
     {
         private readonly IManufacturersService manufacturersService;
         private readonly IItemsService itemsService;
-        private CollectionView? collectionView;
-        private ObservableCollection<Manufacturer> manufacturers = null!;
         private string? _manufacturerFilter;
 
-        public ObservableCollection<Manufacturer> Manufacturers
+        public ManufacturersViewModel(
+           IManufacturersService manufacturersService,
+           IItemsService itemsService
+           )
         {
-            get => manufacturers;
-            set
-            {
-                manufacturers = value;
-                collectionView = (CollectionView)CollectionViewSource.GetDefaultView(manufacturers);
-                collectionView.Filter = Filter;
-            }
+            this.manufacturersService = manufacturersService;
+            this.itemsService = itemsService;
         }
+
         /// <summary>
         /// Выбранный производитель в представлении.
         /// </summary>
@@ -39,14 +33,6 @@ namespace BraidsAccounting.ViewModels
         /// Отображаемый в представлении прозводитель.
         /// </summary>
         public Manufacturer ManufacturerInForm { get; set; } = new();
-
-        #region Messages
-
-        public MessageProvider StatusMessage { get; } = new(true);       
-        public MessageProvider ErrorMessage { get; } = new(true);        
-        public MessageProvider WarningMessage { get; } = new();
-
-        #endregion
 
         /// <summary>
         /// Список производителей в представлении.
@@ -65,20 +51,15 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        public ManufacturersViewModel(
-            IManufacturersService manufacturersService,
-            IItemsService itemsService
-            )
-        {
-            this.manufacturersService = manufacturersService;
-            this.itemsService = itemsService;
-        }
-        /// <summary>
-        /// Предикат фильтрации списка производителей.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public bool Filter(object obj)
+        #region Messages
+
+        public MessageProvider StatusMessage { get; } = new(true);
+        public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider WarningMessage { get; } = new();
+
+        #endregion
+
+        protected override bool Filter(object obj)
         {
             Manufacturer item = (Manufacturer)obj;
             bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
@@ -95,7 +76,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanGetManufacturersListCommandExecute() => true;
         private async void OnGetManufacturersListCommandExecuted()
         {
-            Manufacturers = new(await manufacturersService.GetAllAsync());
+            Collection = new(await manufacturersService.GetAllAsync());
             ManufacturerList = new(await manufacturersService.GetNamesAsync());
         }
 
@@ -116,7 +97,7 @@ namespace BraidsAccounting.ViewModels
                 {
                     case 0:
                         await manufacturersService.AddAsync(ManufacturerInForm);
-                        Manufacturers.Add(ManufacturerInForm);
+                        Collection.Add(ManufacturerInForm);
                         StatusMessage.Message = "Новый производитель добавлен";
                         break;
                     default:
@@ -145,7 +126,7 @@ namespace BraidsAccounting.ViewModels
         private async void OnRemoveManufacturerCommandExecuted()
         {
             await manufacturersService.RemoveAsync(SelectedManufacturer.Id);
-            Manufacturers.Remove(SelectedManufacturer);
+            Collection.Remove(SelectedManufacturer);
             StatusMessage.Message = "Производитель удалён";
             MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
