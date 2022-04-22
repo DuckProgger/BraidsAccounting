@@ -5,6 +5,7 @@ using BraidsAccounting.Models;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ServiceViewModel : BindableBase
+    internal class ServiceViewModel : BindableBase, ISignaling
     {
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
@@ -64,18 +65,16 @@ namespace BraidsAccounting.ViewModels
         /// Выбранный сотрудник, оказавший услугу.
         /// </summary>
         public string SelectedEmployee { get; set; }
-        /// <summary>
-        /// Выводимое сообщение о статусе.
-        /// </summary>
+
+        #region Messages
+
         public MessageProvider StatusMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
+        
         public MessageProvider ErrorMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое предупреждение.
-        /// </summary>
+        
         public MessageProvider WarningMessage { get; } = new();
+
+        #endregion
 
         /// <summary>
         /// Добавляет выбранный материал в коллекцию израсходованных

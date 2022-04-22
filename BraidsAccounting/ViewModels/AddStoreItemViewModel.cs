@@ -1,7 +1,9 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
+using BraidsAccounting.Modules;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
@@ -14,7 +16,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class AddStoreItemViewModel : BindableBase
+    internal class AddStoreItemViewModel : BindableBase, ISignaling
     {
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
@@ -36,10 +38,14 @@ namespace BraidsAccounting.ViewModels
         /// </summary>
         public string SelectedManufacturer { get; set; } = null!;
         public int InStock { get; set; }
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
+
+        #region Messages
+
         public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider StatusMessage => throw new NotImplementedException();
+        public MessageProvider WarningMessage => throw new NotImplementedException();
+
+        #endregion
 
         public AddStoreItemViewModel(
                 IStoreService store
@@ -66,7 +72,7 @@ namespace BraidsAccounting.ViewModels
         /// <param name="item"></param>
         private void SetStoreItem(Item item)
         {
-            if (regionManager.IsViewActive<StoreView>("ContentRegion"))
+            if (regionManager.IsViewActive<StoreView>(RegionNames.Main))
             {
                 StoreItem = new()
                 {

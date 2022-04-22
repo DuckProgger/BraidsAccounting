@@ -3,6 +3,7 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
@@ -16,7 +17,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ItemsCatalogueViewModel : BindableBase
+    internal class ItemsCatalogueViewModel : BindableBase, ISignaling
     {
         private CollectionView collectionView = null!;
         private readonly IEventAggregator eventAggregator;
@@ -88,10 +89,14 @@ namespace BraidsAccounting.ViewModels
         /// Список производителей
         /// </summary>
         public List<string> Manufacturers { get; set; } = null!;
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
+
+        #region Messages
+
         public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider StatusMessage => throw new NotImplementedException();
+        public MessageProvider WarningMessage => throw new NotImplementedException();
+
+        #endregion
 
         public ItemsCatalogueViewModel(
             IEventAggregator eventAggregator
@@ -166,7 +171,8 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _ResetFiltersCommand;
         /// <summary>Команда - сбросить фильтры</summary>
         public ICommand ResetFiltersCommand => _ResetFiltersCommand
-            ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);
+            ??= new DelegateCommand(OnResetFiltersCommandExecuted, CanResetFiltersCommandExecute);      
+
         private bool CanResetFiltersCommandExecute() => true;
         private void OnResetFiltersCommandExecuted()
         {

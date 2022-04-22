@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -12,7 +13,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ManufacturersViewModel : BindableBase
+    internal class ManufacturersViewModel : BindableBase, ISignaling
     {
         private readonly IManufacturersService manufacturersService;
         private readonly IItemsService itemsService;
@@ -38,18 +39,15 @@ namespace BraidsAccounting.ViewModels
         /// Отображаемый в представлении прозводитель.
         /// </summary>
         public Manufacturer ManufacturerInForm { get; set; } = new();
-        /// <summary>
-        /// Выводимое сообщение о статусе.
-        /// </summary>
-        public MessageProvider StatusMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
-        public MessageProvider ErrorMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое предупреждение.
-        /// </summary>
+
+        #region Messages
+
+        public MessageProvider StatusMessage { get; } = new(true);       
+        public MessageProvider ErrorMessage { get; } = new(true);        
         public MessageProvider WarningMessage { get; } = new();
+
+        #endregion
+
         /// <summary>
         /// Список производителей в представлении.
         /// </summary>

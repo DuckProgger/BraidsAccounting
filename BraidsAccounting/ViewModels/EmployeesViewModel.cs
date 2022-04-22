@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -14,7 +15,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    class EmployeesViewModel : BindableBase
+    class EmployeesViewModel : BindableBase, ISignaling
     {
         private readonly IEmployeesService employeesService;
         private string? employeeFilter;
@@ -56,18 +57,14 @@ namespace BraidsAccounting.ViewModels
                 collectionView?.Refresh();
             }
         }
-        /// <summary>
-        /// Выводимое сообщение о статусе.
-        /// </summary>
-        public MessageProvider StatusMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
+
+        #region Messages
+
+        public MessageProvider StatusMessage { get; } = new(true);        
         public MessageProvider ErrorMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое предупреждение.
-        /// </summary>
         public MessageProvider WarningMessage { get; } = new();
+
+        #endregion
 
         public bool Filter(object obj)
         {
@@ -76,7 +73,6 @@ namespace BraidsAccounting.ViewModels
                 || item.Name.Contains(EmployeeFilter, StringComparison.OrdinalIgnoreCase);
             return manufacturerCondition;
         }
-
 
         #region Command GetEmployees - Команда получить всех сотрудников.
 

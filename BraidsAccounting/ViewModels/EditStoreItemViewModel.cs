@@ -2,6 +2,7 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
@@ -13,7 +14,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class EditStoreItemViewModel : BindableBase
+    internal class EditStoreItemViewModel : BindableBase, ISignaling
     {
         private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
@@ -32,10 +33,14 @@ namespace BraidsAccounting.ViewModels
         /// Выбранный производитель из списка.
         /// </summary>
         public string SelectedManufacturer { get; set; } = null!;
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
+
+        #region Messages
+
         public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider StatusMessage => throw new NotImplementedException();
+        public MessageProvider WarningMessage => throw new NotImplementedException();
+
+        #endregion
 
 
         public EditStoreItemViewModel(
@@ -70,7 +75,8 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _SaveChangesCommand;
         /// <summary>Команда - сохранить изменения товара со склада</summary>
         public ICommand SaveChangesCommand => _SaveChangesCommand
-            ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);
+            ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);      
+
         private bool CanSaveChangesCommandExecute() => true;
         private async void OnSaveChangesCommandExecuted()
         {

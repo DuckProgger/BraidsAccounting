@@ -3,6 +3,7 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
@@ -10,6 +11,7 @@ using Prism.Events;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +22,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class StoreViewModel : BindableBase
+    internal class StoreViewModel : BindableBase, ISignaling
     {
         private IStoreService store;
         private readonly IEventAggregator eventAggregator;
@@ -66,10 +68,12 @@ namespace BraidsAccounting.ViewModels
         /// </summary>
         public int TotalItems { get; private set; }
 
-        /// <summary>
-        /// Выводимое сообщение о статусе.
-        /// </summary>
+        #region Messages
         public MessageProvider StatusMessage { get; } = new(true);
+        public MessageProvider ErrorMessage => throw new NotImplementedException();
+        public MessageProvider WarningMessage => throw new NotImplementedException();
+
+        #endregion
 
         /// <summary>
         /// Устанавливает статус выполненной операции.
@@ -144,7 +148,8 @@ namespace BraidsAccounting.ViewModels
 
         /// <summary>Команда - перейти на другой экран</summary>
         public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
-            ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
+            ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);      
+
         private bool CanNavigateToOtherWindowCommandExecute(string windowName) => true;
         private void OnNavigateToOtherWindowCommandExecuted(string windowName)
         {

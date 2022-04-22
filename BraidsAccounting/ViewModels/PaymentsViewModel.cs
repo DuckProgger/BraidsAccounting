@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.ViewModels.Interfaces;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -14,7 +15,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class PaymentsViewModel : BindableBase
+    internal class PaymentsViewModel : BindableBase, ISignaling
     {
         private readonly IPaymentsService paymentsService;
         private readonly IEmployeesService employeesService;
@@ -37,14 +38,14 @@ namespace BraidsAccounting.ViewModels
         public bool HaveDebt => Debt > 0;
         public bool NoDebt => Debt <= 0;
         public bool NotSelectedEmployee => string.IsNullOrEmpty(SelectedEmployee?.Name);
-        /// <summary>
-        /// Выводимое сообщение о статусе.
-        /// </summary>
-        public MessageProvider StatusMessage { get; } = new(true);
-        /// <summary>
-        /// Выводимое сообщение об ошибке.
-        /// </summary>
+
+        #region Messages
+
+        public MessageProvider StatusMessage { get; } = new(true);        
         public MessageProvider ErrorMessage { get; } = new(true);
+        public MessageProvider WarningMessage => throw new NotImplementedException();
+
+        #endregion
 
         #region Command InitializeData - Команда загрузить начальные данные
 
@@ -106,6 +107,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>Команда - открыть диалог</summary>
         public ICommand OpenDialogCommand => _OpenDialogCommand
             ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
+
         private bool CanOpenDialogCommandExecute() => true;
         private void OnOpenDialogCommandExecuted()
         {
