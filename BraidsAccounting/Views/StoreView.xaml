@@ -57,17 +57,21 @@
                 <RowDefinition Height="0.08*"/>
                 <RowDefinition Height="0.08*"/>
             </Grid.RowDefinitions>
-            <DataGrid Name="List"
-            Grid.Row="0" ItemsSource="{Binding Collection, UpdateSourceTrigger=PropertyChanged}" 
-                  SelectedItem="{Binding SelectedStoreItem}"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                      dgx:DataGridFilter.IsAutoFilterEnabled="True">
+            <DataGrid 
+                Name="List"
+                Grid.Row="0" ItemsSource="{Binding Collection, UpdateSourceTrigger=PropertyChanged}" 
+                SelectedItem="{Binding SelectedStoreItem}"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.100">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}" IsReadOnly="True" dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilter}"/>
+                    <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}" IsReadOnly="True" 
+                                        dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilter}"/>
                     <DataGridTextColumn Header="Модель" Binding="{Binding Item.Article}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Цвет" Binding="{Binding Item.Color}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="Количество"  Binding="{Binding Count}" IsReadOnly="True" dgx:DataGridFilterColumn.Template="{StaticResource FilterWithPopupControl}"/>
+                    <DataGridTextColumn Header="Количество"  Binding="{Binding Count}" IsReadOnly="True" 
+                                        dgx:DataGridFilterColumn.Template="{StaticResource FilterWithPopupControl}"/>
                     <DataGridTemplateColumn dgx:DataGridFilterColumn.IsFilterVisible="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

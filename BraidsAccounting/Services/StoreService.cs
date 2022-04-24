@@ -16,17 +16,14 @@ namespace BraidsAccounting.Services
     internal class StoreService : IStoreService
     {
         private readonly IRepository<StoreItem> store;
-        private readonly IItemsService catalogue;
-        private readonly IRepository<Manufacturer> manufacturers;
+        private readonly ICatalogueService catalogue;
 
         public StoreService(
             IRepository<StoreItem> store,
-            IItemsService catalogue,
-            IRepository<Manufacturer> manufacturers)
+            ICatalogueService catalogue)
         {
             this.store = store;
             this.catalogue = catalogue;
-            this.manufacturers = manufacturers;
         }
 
         public async Task AddItemAsync(StoreItem? storeItem)
@@ -34,7 +31,8 @@ namespace BraidsAccounting.Services
             if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
             if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
             // Подгрузить из БД производителя с ценой, чтобы не создавать новую запись
-            Manufacturer? manufacturer = await GetManufacturerAsync(storeItem.Item.Manufacturer.Name);
+            var manufacturersService = ServiceLocator.GetService<IManufacturersService>();
+            Manufacturer? manufacturer = await manufacturersService.GetAsync(storeItem.Item.Manufacturer.Name);
             // Если такого производителя нет, то выдать ошибку,
             // потому что производителей надо добавлять в отдельном окне
             storeItem.Item.Manufacturer = manufacturer is not null
@@ -67,16 +65,6 @@ namespace BraidsAccounting.Services
           i.Item.Manufacturer.Name == manufacturer
           && i.Item.Article == article
           && i.Item.Color == color);
-
-
-        /// <summary>
-        /// Получить производителя по имени.
-        /// </summary>
-        /// <param name="name">Имя производителя.</param>
-        /// <returns></returns>
-        private async Task<Manufacturer?> GetManufacturerAsync(string name) =>
-           await manufacturers.Items.FirstOrDefaultAsync(
-                m => m.Name.ToUpper() == name.ToUpper());
 
         /// <summary>
         /// Добавить новый материал в каталог материалов и на склад.

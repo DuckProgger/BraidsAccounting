@@ -13,21 +13,21 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ItemsCatalogueViewModel : FilterableBindableBase<FormItem>, ISignaling
+    internal class SelectItemViewModel : FilterableBindableBase<FormItem>, ISignaling
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IManufacturersService manufacturersService;
         private readonly IViewService viewService;
-        private readonly IItemsService catalogue;
+        private readonly ICatalogueService catalogue;
         private string? _colorFilter;
         private string? _manufacturerFilter;
         private string? articleFilter;
         private ICommand? _LoadDataCommand;
-        public ItemsCatalogueViewModel(
+        public SelectItemViewModel(
            IEventAggregator eventAggregator
            , IManufacturersService manufacturersService
            , IViewService viewService
-           , IItemsService catalogue
+           , ICatalogueService catalogue
            )
         {
             this.eventAggregator = eventAggregator;
@@ -122,7 +122,7 @@ namespace BraidsAccounting.ViewModels
                 return;
             }
             eventAggregator.GetEvent<SelectItemEvent>().Publish(SelectedItem);
-            viewService.GetWindow<ItemsCatalogueWindow>().Close();
+            viewService.GetWindow<SelectItemWindow>().Close();
         }
 
         #endregion

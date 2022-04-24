@@ -21,9 +21,12 @@ namespace BraidsAccounting.Services
             this.manufacturers = manufacturers;
         }
 
-        public async Task<List<Manufacturer>> GetAllAsync() => await manufacturers.Items.ToListAsync();
-        public async Task<List<string>> GetNamesAsync() => await manufacturers.Items.Select(m => m.Name).ToListAsync();
-        public async Task<Manufacturer?> GetAsync(string name) => await manufacturers.Items.FirstOrDefaultAsync(m => m.Name == name);
+        public async Task<List<Manufacturer>> GetAllAsync() => 
+            await manufacturers.Items.ToListAsync();
+        public async Task<List<string>> GetNamesAsync() => 
+            await manufacturers.Items.Select(m => m.Name).ToListAsync();
+        public async Task<Manufacturer?> GetAsync(string name) => 
+            await manufacturers.Items.FirstOrDefaultAsync(m => m.Name.ToUpper() == name.ToUpper());
 
         public async Task AddAsync(Manufacturer? manufacturer)
         {

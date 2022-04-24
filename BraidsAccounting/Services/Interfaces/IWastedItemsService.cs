@@ -1,4 +1,5 @@
-﻿using BraidsAccounting.Models;
+﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,6 +22,6 @@ namespace BraidsAccounting.Services.Interfaces
         /// <param name="itemForms"></param>
         /// <returns></returns>
         Task<decimal> GetTotalExpensesAsync(WastedItemsFilterOptions options);
-
+        WastedItem? GetItem(string manufacturer, string article, string color);
     }
 }

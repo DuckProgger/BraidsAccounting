@@ -12,11 +12,11 @@
         Title="Braids Accounting"
         Height="500" Width="900"
         Background="#FAFAFA">
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>
+            <i:InvokeCommandAction Command="{Binding NavigateToOtherViewCommand}" CommandParameter="CatalogsView"/>
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     <DockPanel>
         <Menu IsMainMenu="True" >
             <Menu.ItemsPanel>
@@ -24,11 +24,11 @@
                     <VirtualizingStackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
-            <MenuItem Header="Склад" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StoreView"/>
+            <MenuItem Header="Справочники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="CatalogsView"/>
             <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
             <MenuItem Header="Статистика" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StatisticsView"/>
-            <MenuItem Header="Производители" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ManufacturersView"/>
-            <MenuItem Header="Сотрудники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="EmployeesView"/>
+            <!--<MenuItem Header="Производители" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ManufacturersView"/>-->
+            <!--<MenuItem Header="Сотрудники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="EmployeesView"/>-->
         </Menu>
         <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Main}" />
     </DockPanel>

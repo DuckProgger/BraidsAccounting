@@ -13,12 +13,12 @@ namespace BraidsAccounting.ViewModels
     internal class ManufacturersViewModel : FilterableBindableBase<Manufacturer>, ISignaling
     {
         private readonly IManufacturersService manufacturersService;
-        private readonly IItemsService itemsService;
+        private readonly ICatalogueService itemsService;
         private string? _manufacturerFilter;
 
         public ManufacturersViewModel(
            IManufacturersService manufacturersService,
-           IItemsService itemsService
+           ICatalogueService itemsService
            )
         {
             this.manufacturersService = manufacturersService;

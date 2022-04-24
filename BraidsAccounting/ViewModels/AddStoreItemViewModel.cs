@@ -71,7 +71,7 @@ namespace BraidsAccounting.ViewModels
         /// <param name="item"></param>
         private void SetStoreItem(Item item)
         {
-            if (regionManager.IsViewActive<StoreView>(RegionNames.Main))
+            if (regionManager.IsViewActive<StoreView>(RegionNames.Store))
             {
                 StoreItem = new()
                 {
@@ -122,7 +122,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<ItemsCatalogueWindow, AddStoreItemWindow>();
+        private void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<SelectItemWindow, AddStoreItemWindow>();
 
         #endregion
     }

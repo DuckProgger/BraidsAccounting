@@ -36,6 +36,13 @@ namespace BraidsAccounting.Services
             return await baseQuery.SumAsync(w => w.Count * w.Item.Manufacturer.Price);
         }
 
+        public WastedItem? GetItem(string manufacturer, string article, string color) =>
+            wastedItems.Items.FirstOrDefault(i =>
+          i.Item.Manufacturer.Name == manufacturer
+          && i.Item.Article == article
+          && i.Item.Color == color);
+
+
         private IQueryable<WastedItem> GetFilteredQuery(WastedItemsFilterOptions options)
         {
             IQueryable<WastedItem>? baseQuery = wastedItems.Items;

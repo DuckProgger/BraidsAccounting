@@ -10,7 +10,7 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"   
-             Title="Добавление нового материала"
+             Title="Добавление материала на склад"
              WindowStartupLocation="CenterScreen"
              Height="200" Width="500"
              Background="#FAFAFA">
@@ -52,14 +52,14 @@
                 <TextBox  
                     Padding="3"                           
                     Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
-                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}" />
+                    IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Grid.Column="2" >
                 <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"                         
                     Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
-                    Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
+                    IsReadOnly="True"/>
             </StackPanel>
             <StackPanel Grid.Column="3" >
                 <TextBlock Text="Количество" HorizontalAlignment="Center"/>

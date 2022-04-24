@@ -101,7 +101,7 @@ namespace BraidsAccounting.ViewModels
             await store.RemoveItemAsync(SelectedStoreItem.Id);
             Collection.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
-            StatusMessage.Message = "Материал удалён со склада";
+            StatusMessage.Message = "Материал успешно удалён со склада";
         }
 
         #endregion

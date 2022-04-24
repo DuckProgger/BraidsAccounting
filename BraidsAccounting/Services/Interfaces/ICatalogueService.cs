@@ -7,7 +7,7 @@ namespace BraidsAccounting.Services.Interfaces
     /// <summary>
     /// Интерфейс, представляющий сервис взаимодействия с материалами. 
     /// </summary>
-    internal interface IItemsService
+    internal interface ICatalogueService
     {
         Task<Item> AddAsync(Item item);
 
@@ -20,5 +20,6 @@ namespace BraidsAccounting.Services.Interfaces
         Task EditAsync(Item item);
         Task<Item?> GetAsync(string manufacturer, string article, string color);
         Task<List<Item>> GetAllAsync(bool onlyInStock);
+        Task RemoveAsync(Item item);
     }
 }

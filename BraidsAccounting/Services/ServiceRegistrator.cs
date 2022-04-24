@@ -16,7 +16,7 @@ namespace BraidsAccounting.Services
         public static IContainerRegistry AddServices(this IContainerRegistry services) => services
             .Register<IServiceProvider, ServiceProvider>()
             .Register<IStoreService, StoreService>()
-            .Register<IItemsService, ItemsService>()
+            .Register<ICatalogueService, CatalogueService>()
             .Register<IViewService, ViewService>()
             .Register<IManufacturersService, ManufacturersService>()
             .Register<IWastedItemsService, WastedItemsService>()
