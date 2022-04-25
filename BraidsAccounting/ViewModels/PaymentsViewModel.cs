@@ -28,7 +28,7 @@ namespace BraidsAccounting.ViewModels
             this.employeesService = employeesService;
         }
 
-        //public ObservableCollection<Payment> Payments { get; set; }
+        public string Title => "Задолженность";
         public List<Employee> Employees { get; set; }
         public Employee SelectedEmployee { get; set; }
         public Payment NewPayment { get; set; } = new();

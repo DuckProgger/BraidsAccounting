@@ -10,28 +10,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#FAFAFA">
+    <UserControl.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Header" Value="{Binding DataContext.Title}" />
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <TabControl Background="#FAFAFA">
-            <TabItem  Header="Склад">
-                <TabItem.Content >
-                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Store}" />
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="Каталог">
-                <TabItem.Content>
-                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Catalog}" />
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="Производители">
-                <TabItem.Content>
-                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Manufacturers}" />
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="Сотрудники">
-                <TabItem.Content>
-                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Employees}" />
-                </TabItem.Content>
-            </TabItem>
-        </TabControl>
+        <TabControl Background="#FAFAFA" prism:RegionManager.RegionName="{x:Static mod:RegionNames.Catalogs}" />
     </Grid>
 </UserControl>

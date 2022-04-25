@@ -24,6 +24,7 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             this.itemsService = itemsService;
         }
+        public string Title => "Производители";
 
         /// <summary>
         /// Выбранный производитель в представлении.

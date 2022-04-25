@@ -38,6 +38,7 @@ namespace BraidsAccounting.ViewModels
             this.regionManager = regionManager;
             eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
+        public string Title => "Каталог";
 
         public Item SelectedItem { get; set; }
 
@@ -51,7 +52,7 @@ namespace BraidsAccounting.ViewModels
         protected override bool Filter(object obj) => true;
         private void SetStatusMessage(bool success)
         {
-            if (regionManager.IsViewActive<CatalogueView>(RegionNames.Catalog) && success)
+            if (regionManager.IsViewActive<CatalogueView>(RegionNames.Catalogs) && success)
             {
                 LoadDataCommand.Execute(null);
                 StatusMessage.Message = "Операция выполнена";

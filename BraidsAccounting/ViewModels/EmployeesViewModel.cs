@@ -23,7 +23,7 @@ namespace BraidsAccounting.ViewModels
         {
             this.employeesService = employeesService;
         }
-      
+        public string Title => "Сотрудники";
         public Employee SelectedEmployee { get; set; }
         public Employee EmployeeInForm { get; set; } = new();
 

@@ -43,6 +43,8 @@ namespace BraidsAccounting.ViewModels
             eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
 
+        public string Title => "Склад";
+
         /// <summary>
         /// Выбранный материал со склада.
         /// </summary>
@@ -66,7 +68,7 @@ namespace BraidsAccounting.ViewModels
         /// <param name="success"></param>
         private void SetStatusMessage(bool success)
         {
-            if (regionManager.IsViewActive<StoreView>(RegionNames.Store) && success)
+            if (regionManager.IsViewActive<StoreView>(RegionNames.Catalogs) && success)
             {
                 LoadDataCommand.Execute(null);
                 StatusMessage.Message = "Операция выполнена";

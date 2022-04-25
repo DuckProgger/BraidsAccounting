@@ -12,18 +12,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#FAFAFA">
-    <Grid>       
-        <TabControl Background="#FAFAFA">
-            <TabItem  Header="Задолженность">
-                <TabItem.Content >
-                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Payments}" />
-                </TabItem.Content>
-            </TabItem>
-            <TabItem Header="Израсходованные материалы">
-                <TabItem.Content>
-                    <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.WastedItems}" />
-                </TabItem.Content>
-            </TabItem>                         
-        </TabControl>
+    <UserControl.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Header" Value="{Binding DataContext.Title}" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <TabControl Background="#FAFAFA" prism:RegionManager.RegionName="{x:Static mod:RegionNames.Statistics}" />
     </Grid>
 </UserControl>

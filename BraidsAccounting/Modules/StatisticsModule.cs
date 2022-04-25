@@ -11,8 +11,8 @@ namespace BraidsAccounting.Modules
         {
             IRegionManager? regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager
-                .RegisterViewWithRegion(RegionNames.WastedItems, typeof(WastedItemsView))
-                .RegisterViewWithRegion(RegionNames.Payments, typeof(PaymentsView))
+                .RegisterViewWithRegion(RegionNames.Statistics, typeof(WastedItemsView))
+                .RegisterViewWithRegion(RegionNames.Statistics, typeof(PaymentsView))
                 ;
         }
 

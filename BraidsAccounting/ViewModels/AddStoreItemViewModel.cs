@@ -71,7 +71,7 @@ namespace BraidsAccounting.ViewModels
         /// <param name="item"></param>
         private void SetStoreItem(Item item)
         {
-            if (regionManager.IsViewActive<StoreView>(RegionNames.Store))
+            if (regionManager.IsViewActive<StoreView>(RegionNames.Catalogs))
             {
                 StoreItem = new()
                 {

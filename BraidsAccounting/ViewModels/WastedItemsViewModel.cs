@@ -24,6 +24,7 @@ namespace BraidsAccounting.ViewModels
             this.statisticsService = statisticsService;
             this.serviceProvider = serviceProvider;
         }
+        public string Title => "Израсходованные материалы";
 
         /// <summary>
         /// Список израсходованных материалов в представлении.
