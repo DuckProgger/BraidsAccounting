@@ -4,12 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BraidsAccounting.Views.Windows"
+        xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
         xmlns:prism="http://prismlibrary.com/" 
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="EditItemWindow" 
         WindowStartupLocation="CenterScreen"
         Height="150" Width="400">
+    <Window.Resources>
+        <c:ManufacturerConverter x:Key="ManufacturerConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -28,20 +32,26 @@
                 <ComboBox 
                       ItemsSource="{Binding Manufacturers}"
                       SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                      SelectedIndex="0"/>
+                      SelectedIndex="0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource ManufacturerConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
             <StackPanel Grid.Column="1" >
                 <TextBlock Text="Модель" HorizontalAlignment="Center"/>
                 <TextBox  
                     Padding="3"            
-                    Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding ItemInForm.Article, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
             <StackPanel Grid.Column="2" >
                 <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"                         
-                    Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding ItemInForm.Color, UpdateSourceTrigger=PropertyChanged}"
                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>           
         </Grid>

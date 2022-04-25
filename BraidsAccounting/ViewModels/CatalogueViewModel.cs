@@ -1,14 +1,15 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Events;
+using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
+using Prism.Events;
+using Prism.Regions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
@@ -21,14 +22,21 @@ namespace BraidsAccounting.ViewModels
         private ICommand? _NavigateToOtherWindowCommand;
         private readonly IViewService viewService;
         private ICatalogueService catalogueService;
+        private readonly IEventAggregator eventAggregator;
+        private readonly IRegionManager regionManager;
 
         public CatalogueViewModel(
-            IViewService viewService,
-            ICatalogueService catalogueService
+            IViewService viewService
+            , ICatalogueService catalogueService
+            , IEventAggregator eventAggregator
+            , IRegionManager regionManager
             )
         {
             this.viewService = viewService;
             this.catalogueService = catalogueService;
+            this.eventAggregator = eventAggregator;
+            this.regionManager = regionManager;
+            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
 
         public Item SelectedItem { get; set; }
@@ -41,6 +49,29 @@ namespace BraidsAccounting.ViewModels
         #endregion
 
         protected override bool Filter(object obj) => true;
+        private void SetStatusMessage(bool success)
+        {
+            if (regionManager.IsViewActive<CatalogueView>(RegionNames.Catalog) && success)
+            {
+                LoadDataCommand.Execute(null);
+                StatusMessage.Message = "Операция выполнена";
+            }
+        }
+
+        #region Command EditItem - Команда редактировать предмет на складе
+
+        private ICommand? _EditItemCommand;
+        /// <summary>Команда - редактировать предмет на складе</summary>
+        public ICommand EditItemCommand => _EditItemCommand
+            ??= new DelegateCommand<string>(OnEditItemCommandExecuted, CanEditItemCommandExecute);
+        private bool CanEditItemCommandExecute(string viewName) => true;
+        private void OnEditItemCommandExecuted(string viewName)
+        {
+            OnNavigateToOtherWindowCommandExecuted(viewName);
+            eventAggregator.GetEvent<EditItemEvent>().Publish(SelectedItem);
+        }
+
+        #endregion
 
         #region Command LoadData - Команда загрузки данных со склада
 

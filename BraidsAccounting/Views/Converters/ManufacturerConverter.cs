@@ -5,15 +5,15 @@ using System.Windows.Data;
 
 namespace BraidsAccounting.Views.Converters
 {
-    internal class EmployeeConverter : IValueConverter
+    internal class ManufacturerConverter : IValueConverter
     {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not Employee) return null;
-            return ((Employee)value)?.Name ?? string.Empty;
+            if (value is not Manufacturer) return null;
+            return ((Manufacturer)value)?.Name ?? string.Empty;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
     }
 }

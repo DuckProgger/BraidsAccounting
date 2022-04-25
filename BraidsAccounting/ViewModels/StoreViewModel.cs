@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Events;
+using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
@@ -65,7 +66,7 @@ namespace BraidsAccounting.ViewModels
         /// <param name="success"></param>
         private void SetStatusMessage(bool success)
         {
-            if (success)
+            if (regionManager.IsViewActive<StoreView>(RegionNames.Store) && success)
             {
                 LoadDataCommand.Execute(null);
                 StatusMessage.Message = "Операция выполнена";
