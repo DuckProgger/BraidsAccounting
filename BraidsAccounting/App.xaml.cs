@@ -31,6 +31,7 @@ namespace BraidsAccounting
                 .AddModule(typeof(MainModule))
                 .AddModule(typeof(StatisticsModule))
                 .AddModule(typeof(CatalogsModule))
+                .AddModule(typeof(PopupModule))
                 ;
         }
 
@@ -40,8 +41,8 @@ namespace BraidsAccounting
             ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
             ViewModelLocationProvider.Register<EditStoreItemWindow, EditStoreItemViewModel>();
             ViewModelLocationProvider.Register<SelectItemWindow, SelectItemViewModel>();
-            ViewModelLocationProvider.Register<AddItemWindow, AddItemViewModel>();
-            ViewModelLocationProvider.Register<EditItemWindow, EditItemViewModel>();
+            //ViewModelLocationProvider.Register<AddItemWindow, AddItemViewModel>();
+            //ViewModelLocationProvider.Register<EditItemWindow, EditItemViewModel>();
         }
     }
 }

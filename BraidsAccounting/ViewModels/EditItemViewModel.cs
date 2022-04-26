@@ -6,6 +6,7 @@ using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class EditItemViewModel : BindableBase, ISignaling
+    internal class EditItemViewModel : BindableBase, ISignaling, INavigationAware
     {
         private ICommand? _SaveChangesCommand;
         private readonly ICatalogueService catalogueService;
@@ -34,19 +35,19 @@ namespace BraidsAccounting.ViewModels
             this.viewService = viewService;
             this.eventAggregator = eventAggregator;
             this.manufacturersService = manufacturersService;
-            eventAggregator.GetEvent<EditItemEvent>().Subscribe(SetProperties);
+            //eventAggregator.GetEvent<EditItemEvent>().Subscribe(SetProperties);
         }
 
-        /// <summary>
-        /// Устанавливает свойства при приёме сообщения.
-        /// </summary>
-        /// <param name="item"></param>
-        private async void SetProperties(Item item)
-        {
-            ItemInForm = item;
-            Manufacturers = await manufacturersService.GetAllAsync();
-            SelectedManufacturer = item.Manufacturer;
-        }
+        ///// <summary>
+        ///// Устанавливает свойства при приёме сообщения.
+        ///// </summary>
+        ///// <param name="item"></param>
+        //private async void SetProperties(Item item)
+        //{
+        //    ItemInForm = item;
+        //    Manufacturers = await manufacturersService.GetAllAsync();
+        //    SelectedManufacturer = item.Manufacturer;
+        //}
 
         /// <summary>
         /// Материал из каталога, обрабатываемый в форме.
@@ -67,7 +68,15 @@ namespace BraidsAccounting.ViewModels
         public MessageProvider StatusMessage => throw new NotImplementedException();
         public MessageProvider WarningMessage => throw new NotImplementedException();
 
-        #endregion      
+        #endregion
+
+        public void OnNavigatedTo(NavigationContext navigationContext) 
+        {
+            var item = navigationContext.Parameters["item"] as Item;
+            if (item is not null) ItemInForm = item;
+        }
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+        public void OnNavigatedFrom(NavigationContext navigationContext) { }
 
         #region Command SaveChanges - Команда сохранить изменения товара со склада
 
@@ -89,7 +98,7 @@ namespace BraidsAccounting.ViewModels
             {
                 ErrorMessage.Message = "Заполнены не все поля";
             }
-        }
+        }    
 
         #endregion
     }

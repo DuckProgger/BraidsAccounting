@@ -19,7 +19,7 @@ namespace BraidsAccounting.Services
             TOpenedWindow openedWindow = new();
             TClosedWindow? closedWindow = GetWindow<TClosedWindow>();
             // Открыть окно, которое было закрыто, при закрытии окна, которое было открыто
-            openedWindow.Closed += (s, e) => closedWindow.Show();
+            openedWindow.Closed += (s, e) => closedWindow.ShowDialog();
             openedWindow.Closed += (s, e) => action?.Invoke();
             closedWindow.Hide();
             openedWindow.Show();
