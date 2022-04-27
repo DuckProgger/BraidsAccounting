@@ -52,7 +52,7 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Материал из каталога, обрабатываемый в форме.
         /// </summary>
-        public Item ItemInForm { get; set; } = new();
+        public Item ItemInForm { get; set; } 
         /// <summary>
         /// Список производителей.
         /// </summary>
@@ -70,10 +70,15 @@ namespace BraidsAccounting.ViewModels
 
         #endregion
 
-        public void OnNavigatedTo(NavigationContext navigationContext) 
+        public async void OnNavigatedTo(NavigationContext navigationContext) 
         {
+            Manufacturers = await manufacturersService.GetAllAsync().ConfigureAwait(false);
             var item = navigationContext.Parameters["item"] as Item;
-            if (item is not null) ItemInForm = item;
+            if (item is not null)
+            {
+                ItemInForm = item;
+                SelectedManufacturer = item.Manufacturer;
+            }               
         }
         public bool IsNavigationTarget(NavigationContext navigationContext) => true;
         public void OnNavigatedFrom(NavigationContext navigationContext) { }
@@ -91,7 +96,7 @@ namespace BraidsAccounting.ViewModels
             {
                 ItemInForm.Manufacturer = SelectedManufacturer;
                 await catalogueService.EditAsync(ItemInForm);
-                viewService.GetWindow<EditItemWindow>().Close();
+                viewService.GetWindow<PopupWindow>().Close();
                 eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Prism.Regions;
+using System;
 using System.Windows;
 
 namespace BraidsAccounting.Services.Interfaces
@@ -12,7 +13,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// Открыть окно типа TWindowType.
         /// </summary>
         /// <typeparam name="TWindowType"></typeparam>
-        void ActivateWindow<TWindowType>() where TWindowType : Window, new();
+        void ShowWindow<TWindowType>() where TWindowType : Window, new();
         /// <summary>
         /// Открыть окно типа <typeparamref name = "TOpenedWindow"/> с последующим закрытием.
         /// При этом окно типа <typeparamref name = "TClosedWindow"/> будет закрыто и
@@ -22,7 +23,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// <typeparam name="TOpenedWindow">Тип открываемого окна.</typeparam>
         /// <typeparam name="TClosedWindow">Тип закрываемого окна.</typeparam>
         /// <param name="action"></param>
-        void ActivateWindowWithClosing<TOpenedWindow, TClosedWindow>(Action? action = null)
+        void ShowWindowWithClosing<TOpenedWindow, TClosedWindow>(Action? action = null)
               where TOpenedWindow : Window, new()
               where TClosedWindow : Window, new();
         /// <summary>
@@ -31,5 +32,7 @@ namespace BraidsAccounting.Services.Interfaces
         /// <typeparam name="T">Тип получаемого окна.</typeparam>
         /// <returns></returns>
         T GetWindow<T>() where T : Window;
+        void ShowPopupWindow(string viewName, Action<object>? action = null, NavigationParameters? parameters = null);
+        string GetUri();
     }
 }

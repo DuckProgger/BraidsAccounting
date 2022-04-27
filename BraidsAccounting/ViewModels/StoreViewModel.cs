@@ -144,10 +144,10 @@ namespace BraidsAccounting.ViewModels
             switch (windowName)
             {
                 case nameof(AddStoreItemWindow):
-                    viewService.ActivateWindowWithClosing<AddStoreItemWindow, MainWindow>(OnLoadDataCommandExecuted);
+                    viewService.ShowWindowWithClosing<AddStoreItemWindow, MainWindow>(OnLoadDataCommandExecuted);
                     break;
                 case nameof(EditStoreItemWindow):
-                    viewService.ActivateWindowWithClosing<EditStoreItemWindow, MainWindow>();
+                    viewService.ShowWindowWithClosing<EditStoreItemWindow, MainWindow>();
                     break;
                 default:
                     break;

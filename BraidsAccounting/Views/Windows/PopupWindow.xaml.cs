@@ -19,6 +19,7 @@ namespace BraidsAccounting.Views.Windows
     /// </summary>
     public partial class PopupWindow : Window
     {
+        public object Result { get; private set; } 
         public PopupWindow()
         {
             InitializeComponent();

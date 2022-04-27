@@ -49,7 +49,7 @@
                 <RowDefinition Height="0.2*"/>
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding Collection}"
-                      SelectedItem="{Binding SelectedItem}"
+                      SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
                   Grid.Row="0"
                   dgx:DataGridFilter.IsAutoFilterEnabled="True"
                   dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.100"

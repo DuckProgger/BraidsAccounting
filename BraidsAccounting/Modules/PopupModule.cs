@@ -21,6 +21,7 @@ namespace BraidsAccounting.Modules
         {
             containerRegistry.RegisterForNavigation<EditItemView>();
             containerRegistry.RegisterForNavigation<AddItemView>();
+            containerRegistry.RegisterForNavigation<CatalogueView>();
 
         }
     }

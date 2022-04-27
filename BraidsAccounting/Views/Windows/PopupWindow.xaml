@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:BraidsAccounting.Views.Windows"
         xmlns:mod="clr-namespace:BraidsAccounting.Modules"  
         xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
         Title="PopupWindow" 
         SizeToContent="WidthAndHeight"

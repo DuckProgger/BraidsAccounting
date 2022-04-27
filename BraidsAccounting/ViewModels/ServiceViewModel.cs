@@ -158,7 +158,7 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private void OnSelectStoreItemCommandExecuted() => viewService.ActivateWindowWithClosing<SelectItemWindow, MainWindow>();
+        private void OnSelectStoreItemCommandExecuted() => viewService.ShowWindowWithClosing<SelectItemWindow, MainWindow>();
 
         #endregion
 

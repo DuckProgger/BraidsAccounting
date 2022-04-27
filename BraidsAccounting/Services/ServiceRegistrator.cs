@@ -17,7 +17,7 @@ namespace BraidsAccounting.Services
             .Register<IServiceProvider, ServiceProvider>()
             .Register<IStoreService, StoreService>()
             .Register<ICatalogueService, CatalogueService>()
-            .Register<IViewService, ViewService>()
+            .RegisterSingleton<IViewService, ViewService>()
             .Register<IManufacturersService, ManufacturersService>()
             .Register<IWastedItemsService, WastedItemsService>()
             .Register<IEmployeesService, EmployeesService>()

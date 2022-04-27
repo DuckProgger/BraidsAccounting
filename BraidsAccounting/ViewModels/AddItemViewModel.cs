@@ -2,9 +2,11 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +67,7 @@ namespace BraidsAccounting.ViewModels
                 return;
             }
             await catalogueService.AddAsync(ItemInForm);
-            viewService.GetWindow<AddItemWindow>().Close();
+            viewService.GetWindow<PopupWindow>().Close();
 
         }
 
@@ -85,6 +87,27 @@ namespace BraidsAccounting.ViewModels
             var manufacturersService = ServiceLocator.GetService<IManufacturersService>();
             var employees = await manufacturersService.GetAllAsync();
             Manufacturers = new(employees.Select(e => e.Name));
+        }
+
+        #endregion
+
+        #region Command Test - Команда 
+
+        private ICommand? _TestCommand;
+        /// <summary>Команда - </summary>
+        public ICommand TestCommand => _TestCommand
+            ??= new DelegateCommand(OnTestCommandExecuted, CanTestCommandExecute);
+        private bool CanTestCommandExecute() => true;
+        private async void OnTestCommandExecuted()
+        {
+            var viewService = ServiceLocator.GetService<IViewService>();
+            viewService.ShowPopupWindow(nameof(CatalogueView));
+
+            //viewService.ShowPopupWindow<PopupWindow>(nameof(CatalogueView));
+
+            //var dialogService = ServiceLocator.GetService<IDialogService>();
+            //dialogService.ShowDialog("");
+
         }
 
         #endregion

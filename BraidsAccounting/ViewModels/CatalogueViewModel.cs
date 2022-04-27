@@ -59,21 +59,6 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        //#region Command EditItem - Команда редактировать предмет на складе
-
-        //private ICommand? _EditItemCommand;
-        ///// <summary>Команда - редактировать предмет на складе</summary>
-        //public ICommand EditItemCommand => _EditItemCommand
-        //    ??= new DelegateCommand<string>(OnEditItemCommandExecuted, CanEditItemCommandExecute);
-        //private bool CanEditItemCommandExecute(string viewName) => true;
-        //private void OnEditItemCommandExecuted(string viewName)
-        //{
-        //    OnNavigateToOtherWindowCommandExecuted(viewName);
-        //    eventAggregator.GetEvent<EditItemEvent>().Publish(SelectedItem);
-        //}
-
-        //#endregion
-
         #region Command LoadData - Команда загрузки данных со склада
 
         private ICommand? _LoadDataCommand;
@@ -103,38 +88,12 @@ namespace BraidsAccounting.ViewModels
         private bool CanNavigateToOtherWindowCommandExecute(string viewName) => true;
         private void OnNavigateToOtherWindowCommandExecuted(string viewName)
         {
-            //viewService.ActivateWindowWithClosing<PopupWindow, MainWindow>(OnLoadDataCommandExecuted);
-            //regionManager.RequestNavigate(RegionNames.Popup, viewName);
-
-
-            switch (viewName)
-            {
-                case nameof(AddItemView):
-                    regionManager.RequestNavigate(RegionNames.Popup, viewName);
-                    break;
-                case nameof(EditItemView):
-                    var parameters = new NavigationParameters();
-                    parameters.Add("item", SelectedItem);
-                    regionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
-                    break;
-                default:
-                    break;
-            }
-            viewService.ActivateWindowWithClosing<PopupWindow, MainWindow>(OnLoadDataCommandExecuted);
-
-
-            //switch (windowName)
-            //{
-            //    case nameof(AddItemWindow):
-            //        viewService.ActivateWindowWithClosing<AddItemWindow, MainWindow>(OnLoadDataCommandExecuted);
-            //        break;
-            //    case nameof(EditItemWindow):
-            //        viewService.ActivateWindowWithClosing<EditItemWindow, MainWindow>();
-            //        break;
-            //    default:
-            //        break;
-            //}
+            var parameters = new NavigationParameters();
+            if (SelectedItem is not null)
+                parameters.Add("item", SelectedItem);
+            viewService.ShowPopupWindow(viewName, o => OnLoadDataCommandExecuted(), parameters);
         }
+
 
         #endregion
 

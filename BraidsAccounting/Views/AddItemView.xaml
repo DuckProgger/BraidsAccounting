@@ -57,12 +57,13 @@
             <Button Content="Добавить" Command="{Binding AddItemCommand}"/>
         </Grid>
         <Grid Grid.Row="2">
-            <TextBlock
+            <Button Command="{Binding TestCommand}"/>
+            <!--<TextBlock
                            Foreground="DarkRed"
                            TextAlignment="Center"
                            DataContext="{Binding ErrorMessage}"
                            Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
         </Grid>
     </Grid>
 </UserControl>
