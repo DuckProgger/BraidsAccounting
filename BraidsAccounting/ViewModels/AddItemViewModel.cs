@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class AddItemViewModel : BindableBase, ISignaling
+    internal class AddItemViewModel : BindableBase, INotifying
     {
         private readonly ICatalogueService catalogueService;
         private readonly IViewService viewService;
@@ -41,9 +41,9 @@ namespace BraidsAccounting.ViewModels
         public string SelectedManufacturer { get; set; } = null!;
 
         #region Messages
-        public MessageProvider StatusMessage => throw new NotImplementedException();
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Status => throw new NotImplementedException();
+        public Notifier Error { get; } = new(true);
+        public Notifier Warning => throw new NotImplementedException();
         #endregion
 
         private static bool IsValidItem(Item item) =>
@@ -63,12 +63,11 @@ namespace BraidsAccounting.ViewModels
             ItemInForm.Manufacturer.Name = SelectedManufacturer;
             if (!IsValidItem(ItemInForm))
             {
-                ErrorMessage.Message = "Заполнены не все поля";
+                Error.Message = "Заполнены не все поля";
                 return;
             }
             await catalogueService.AddAsync(ItemInForm);
-            //viewService.GetWindow<PopupWindow>().Close();
-
+            //viewService.ClosePopupWindow();
         }
 
         #endregion

@@ -104,12 +104,28 @@
                 <TextBlock Text="{Binding TotalItems, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"/>
             </StackPanel>
             <Grid Grid.Row="3">
-                <TextBlock
+                <!--<TextBlock
                            Foreground="DarkGreen"
                            TextAlignment="Center"
-                           DataContext="{Binding StatusMessage}"
+                           DataContext="{Binding Status}"
                            Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
+                <!--<ListView ItemsSource="{Binding NewStatus}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>-->
+                <ListBox ItemsSource="{Binding NewStatus.Messages}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding}" Padding="0" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </Grid>
         </Grid>
     </md:DialogHost>

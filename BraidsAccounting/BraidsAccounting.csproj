@@ -47,4 +47,10 @@
 		<Folder Include="Templates\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Page Update="Resources\Messages.xaml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Page>
+	</ItemGroup>
+
 </Project>

@@ -34,9 +34,10 @@ namespace BraidsAccounting.Services.Interfaces
         //T GetWindow<T>() where T : Window;
         //void ShowPopupWindow(string viewName, Action<object>? action = null, NavigationParameters? parameters = null);
         //string GetUri();
-        void ClosePopupWindow();
-        void ShowPopupWindow(string viewName, NavigationParameters? parameters = null, Action? callback = null);
+        //void ClosePopupWindow();
+        void ShowPopupWindow(string viewName, NavigationParameters? parameters = null, Action<NavigationParameters?>? callback = null);
         void GoBack();
-        void GoBack(NavigationParameters parameters);
+        //void GoBack(NavigationParameters parameters);
+        void AddParameter(string name, object value);
     }
 }

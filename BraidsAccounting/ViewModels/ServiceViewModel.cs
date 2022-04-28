@@ -22,7 +22,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ServiceViewModel : BindableBase, ISignaling
+    internal class ServiceViewModel : BindableBase, INotifying
     {
         private readonly Services.Interfaces.IServiceProvider serviceProvider;
         private readonly IRegionManager regionManager;
@@ -66,11 +66,11 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider StatusMessage { get; } = new(true);
+        public Notifier Status { get; } = new(true);
         
-        public MessageProvider ErrorMessage { get; } = new(true);
+        public Notifier Error { get; } = new(true);
         
-        public MessageProvider WarningMessage { get; } = new();
+        public Notifier Warning { get; } = new();
 
         #endregion
 
@@ -85,13 +85,13 @@ namespace BraidsAccounting.ViewModels
             {
                 if (WastedItems.FirstOrDefault(wi => wi.Equals(catalogueItem)) != null)
                 {
-                    ErrorMessage.Message = "Выбранный материал уже есть в списке";
+                    Error.Message = "Выбранный материал уже есть в списке";
                     return;
                 }
                 FormItem formItem = catalogueItem;
                 if (formItem.MaxCount == 0)
                 {
-                    ErrorMessage.Message = "Выбранный материал отсутсвует на складе";
+                    Error.Message = "Выбранный материал отсутсвует на складе";
                     return;
                 }
                 WastedItems.Add(formItem);
@@ -135,15 +135,15 @@ namespace BraidsAccounting.ViewModels
                 CheckRunningOutItems(WastedItems);
                 Service = new();
                 WastedItems = new();
-                StatusMessage.Message = "Новая работа добавлена";
+                Status.Message = "Новая работа добавлена";
             }
             catch (ArgumentException)
             {
-                ErrorMessage.Message = "Не все поля заполнены";
+                Error.Message = "Не все поля заполнены";
             }
             catch (DbUpdateException)
             {
-                ErrorMessage.Message = "Не все поля заполнены";
+                Error.Message = "Не все поля заполнены";
             }
         }
 
@@ -171,7 +171,7 @@ namespace BraidsAccounting.ViewModels
         private bool CanOpenDialogCommandExecute() => true;
         private void OnOpenDialogCommandExecuted()
         {
-            WarningMessage.Message = WastedItems.Count == 0 ? "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!" : string.Empty;
+            Warning.Message = WastedItems.Count == 0 ? "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!" : string.Empty;
             MDDialogHost.OpenDialogCommand.Execute(null, null);
         }
 

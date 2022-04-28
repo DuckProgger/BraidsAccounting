@@ -10,7 +10,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class ManufacturersViewModel : FilterableBindableBase<Manufacturer>, ISignaling
+    internal class ManufacturersViewModel : FilterableBindableBase<Manufacturer>, INotifying
     {
         private readonly IManufacturersService manufacturersService;
         private readonly ICatalogueService itemsService;
@@ -54,9 +54,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider StatusMessage { get; } = new(true);
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider WarningMessage { get; } = new();
+        public Notifier Status { get; } = new(true);
+        public Notifier Error { get; } = new(true);
+        public Notifier Warning { get; } = new();
 
         #endregion
 
@@ -99,11 +99,11 @@ namespace BraidsAccounting.ViewModels
                     case 0:
                         await manufacturersService.AddAsync(ManufacturerInForm);
                         Collection.Add(ManufacturerInForm);
-                        StatusMessage.Message = "Новый производитель добавлен";
+                        Status.Message = "Новый производитель добавлен";
                         break;
                     default:
                         await manufacturersService.EditAsync(ManufacturerInForm);
-                        StatusMessage.Message = "Производитель изменён";
+                        Status.Message = "Производитель изменён";
                         break;
                 }
                 OnGetManufacturersListCommandExecuted();
@@ -111,7 +111,7 @@ namespace BraidsAccounting.ViewModels
             }
             catch (ArgumentException)
             {
-                ErrorMessage.Message = "Не все поля заполнены";
+                Error.Message = "Не все поля заполнены";
             }
         }
 
@@ -128,7 +128,7 @@ namespace BraidsAccounting.ViewModels
         {
             await manufacturersService.RemoveAsync(SelectedManufacturer.Id);
             Collection.Remove(SelectedManufacturer);
-            StatusMessage.Message = "Производитель удалён";
+            Status.Message = "Производитель удалён";
             MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
 
@@ -174,7 +174,7 @@ namespace BraidsAccounting.ViewModels
         private void OnOpenDialogCommandExecuted()
         {
             MDDialogHost.OpenDialogCommand.Execute(null, null);
-            WarningMessage.Message = itemsService.ContainsManufacturer(SelectedManufacturer.Name)
+            Warning.Message = itemsService.ContainsManufacturer(SelectedManufacturer.Name)
                 ? "В списке есть товары выбранной фирмы!"
                 : string.Empty;
         }

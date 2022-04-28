@@ -1,20 +1,18 @@
-﻿using BraidsAccounting.Infrastructure;
-
-namespace BraidsAccounting.Infrastructure
+﻿namespace BraidsAccounting.Infrastructure
 {
-    internal interface ISignaling
+    internal interface INotifying
     {
         /// <summary>
         /// Выводимое сообщение о статусе.
         /// </summary>
-        MessageProvider StatusMessage { get; }
+        Notifier Status { get; }
         /// <summary>
         /// Выводимое сообщение об ошибке.
         /// </summary>
-        MessageProvider ErrorMessage { get; }
+        Notifier Error { get; }
         /// <summary>
         /// Выводимое сообщение о предупреждении.
         /// </summary>
-        public MessageProvider WarningMessage { get; }
+        public Notifier Warning { get; }
     }
 }

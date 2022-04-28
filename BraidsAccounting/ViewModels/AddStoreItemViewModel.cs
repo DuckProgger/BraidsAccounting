@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class AddStoreItemViewModel : BindableBase, ISignaling, INavigationAware
+    internal class AddStoreItemViewModel : BindableBase, INotifying, INavigationAware
     {
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
@@ -39,9 +39,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider StatusMessage => throw new NotImplementedException();
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Error { get; } = new(true);
+        public Notifier Status => throw new NotImplementedException();
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion
 
@@ -105,12 +105,12 @@ namespace BraidsAccounting.ViewModels
             {
                 await store.AddItemAsync(StoreItem);
                 //viewService.GetWindow<AddStoreItemWindow>().Close();
-                viewService.ClosePopupWindow();
+                //viewService.ClosePopupWindow();
                 //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
             {
-                ErrorMessage.Message = "Заполнены не все поля";
+                Error.Message = "Заполнены не все поля";
             }
         }
 

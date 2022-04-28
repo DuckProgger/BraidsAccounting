@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class EditItemViewModel : BindableBase, ISignaling, INavigationAware
+    internal class EditItemViewModel : BindableBase, INotifying, INavigationAware
     {
         private ICommand? _SaveChangesCommand;
         private readonly ICatalogueService catalogueService;
@@ -35,18 +35,7 @@ namespace BraidsAccounting.ViewModels
             this.eventAggregator = eventAggregator;
             this.manufacturersService = manufacturersService;
             //eventAggregator.GetEvent<EditItemEvent>().Subscribe(SetProperties);
-        }
-
-        ///// <summary>
-        ///// Устанавливает свойства при приёме сообщения.
-        ///// </summary>
-        ///// <param name="item"></param>
-        //private async void SetProperties(Item item)
-        //{
-        //    ItemInForm = item;
-        //    Manufacturers = await manufacturersService.GetAllAsync();
-        //    SelectedManufacturer = item.Manufacturer;
-        //}
+        }       
 
         /// <summary>
         /// Материал из каталога, обрабатываемый в форме.
@@ -63,9 +52,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider StatusMessage => throw new NotImplementedException();
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Error { get; } = new(true);
+        public Notifier Status => throw new NotImplementedException();
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion
 
@@ -95,12 +84,13 @@ namespace BraidsAccounting.ViewModels
             {
                 ItemInForm.Manufacturer = SelectedManufacturer;
                 await catalogueService.EditAsync(ItemInForm);
+                //viewService.ClosePopupWindow();
                 //viewService.GetWindow<PopupWindow>().Close();
                 //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
             {
-                ErrorMessage.Message = "Заполнены не все поля";
+                Error.Message = "Заполнены не все поля";
             }
         }    
 

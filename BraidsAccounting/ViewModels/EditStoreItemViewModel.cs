@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class EditStoreItemViewModel : BindableBase, ISignaling, INavigationAware
+    internal class EditStoreItemViewModel : BindableBase, INotifying, INavigationAware
     {
         private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
@@ -35,9 +35,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider StatusMessage => throw new NotImplementedException();
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Error { get; } = new(true);
+        public Notifier Status => throw new NotImplementedException();
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion
 
@@ -92,18 +92,20 @@ namespace BraidsAccounting.ViewModels
                 Manufacturer? existingManufacturer = await manufacturersService.GetAsync(SelectedManufacturer);
                 if (existingManufacturer is null)
                 {
-                    ErrorMessage.Message = "Выбранного производителя нет в каталоге";
+                    Error.Message = "Выбранного производителя нет в каталоге";
                     return;
                 }
                 StoreItem.Item.ManufacturerId = existingManufacturer.Id;
                 await store.EditItemAsync(StoreItem);
-                viewService.ClosePopupWindow();
+                viewService.AddParameter("result", true);
+                viewService.GoBack();
+                //viewService.ClosePopupWindow();
                 //viewService.GetWindow<EditStoreItemWindow>().Close();
                 //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
             {
-                ErrorMessage.Message = "Заполнены не все поля";
+                Error.Message = "Заполнены не все поля";
             }
         }
 

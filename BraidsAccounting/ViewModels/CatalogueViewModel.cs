@@ -16,7 +16,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class CatalogueViewModel : FilterableBindableBase<Item>, ISignaling, INavigationAware
+    internal class CatalogueViewModel : FilterableBindableBase<Item>, INotifying, INavigationAware
     {
         private ICommand? _NavigateToOtherWindowCommand;
         private readonly IViewService viewService;
@@ -43,9 +43,9 @@ namespace BraidsAccounting.ViewModels
         public Item SelectedItem { get; set; }
 
         #region Messages
-        public MessageProvider StatusMessage { get; } = new(true);
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Status { get; } = new(true);
+        public Notifier Error { get; } = new(true);
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace BraidsAccounting.ViewModels
             if (regionManager.IsViewActive<CatalogueView>(RegionNames.Catalogs) && success)
             {
                 LoadDataCommand.Execute(null);
-                StatusMessage.Message = "Операция выполнена";
+                Status.Message = "Операция выполнена";
             }
         }
 
@@ -79,11 +79,11 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            StatusMessage.Message = "Загружается каталог материалов...";
+            Status.Message = "Загружается каталог материалов...";
             // Нужно обновить контекст, чтобы получать обновлённые данные
             catalogueService = ServiceLocator.GetService<ICatalogueService>();
             Collection = new(await catalogueService.GetAllAsync(false));
-            StatusMessage.Message = string.Empty;
+            Status.Message = string.Empty;
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace BraidsAccounting.ViewModels
             var parameters = new NavigationParameters();
             if (SelectedItem is not null)
                 parameters.Add("item", SelectedItem);
-            viewService.ShowPopupWindow(viewName, parameters);
+            //viewService.ShowPopupWindow(viewName, parameters, () => LoadDataCommand.Execute(null));
         }
 
 
@@ -119,11 +119,11 @@ namespace BraidsAccounting.ViewModels
             {
                 await catalogueService.RemoveAsync(SelectedItem);
                 Collection.Remove(SelectedItem);
-                StatusMessage.Message = "Материал успешно удалён из каталога.";
+                Status.Message = "Материал успешно удалён из каталога.";
             }
             catch (ArgumentException ex)
             {
-                ErrorMessage.Message = ex.Message;
+                Error.Message = ex.Message;
             }
             MDDialogHost.CloseDialogCommand.Execute(null, null);
         }

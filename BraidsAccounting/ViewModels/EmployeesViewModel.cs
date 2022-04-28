@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    class EmployeesViewModel : FilterableBindableBase<Employee>, ISignaling
+    class EmployeesViewModel : FilterableBindableBase<Employee>, INotifying
     {
         private readonly IEmployeesService employeesService;
         private string? employeeFilter;
@@ -46,9 +46,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider StatusMessage { get; } = new(true);        
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider WarningMessage { get; } = new();
+        public Notifier Status { get; } = new(true);        
+        public Notifier Error { get; } = new(true);
+        public Notifier Warning { get; } = new();
 
         #endregion
 
@@ -148,11 +148,11 @@ namespace BraidsAccounting.ViewModels
                     case 0:
                         await employeesService.AddAsync(EmployeeInForm);
                         Collection.Add(EmployeeInForm);
-                        StatusMessage.Message = "Новый сотрудник добавлен";
+                        Status.Message = "Новый сотрудник добавлен";
                         break;
                     default:
                         await employeesService.EditAsync(EmployeeInForm);
-                        StatusMessage.Message = "Сотрудник изменён";
+                        Status.Message = "Сотрудник изменён";
                         break;
                 }
                 OnGetEmployeesCommandExecuted();
@@ -160,7 +160,7 @@ namespace BraidsAccounting.ViewModels
             }
             catch (ArgumentException)
             {
-                ErrorMessage.Message = "Не все поля заполнены";
+                Error.Message = "Не все поля заполнены";
             }
         }
 

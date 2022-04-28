@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class SelectItemViewModel : BindableBase, ISignaling
+    internal class SelectItemViewModel : BindableBase, INotifying
     {
         private readonly IEventAggregator eventAggregator;
         //private readonly IManufacturersService manufacturersService;
@@ -81,9 +81,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider StatusMessage => throw new NotImplementedException();
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Error { get; } = new(true);
+        public Notifier Status => throw new NotImplementedException();
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion       
 
@@ -112,13 +112,13 @@ namespace BraidsAccounting.ViewModels
             SelectedItem = item;
             if (SelectedItem is null)
             {
-                ErrorMessage.Message = "Не выбран ни один товар";
+                Error.Message = "Не выбран ни один товар";
                 return;
             }
             var parameters = new NavigationParameters();
             if (SelectedItem is not null)
                 parameters.Add("item", SelectedItem);
-            viewService.GoBack(parameters);
+            //viewService.GoBack(parameters);
             //eventAggregator.GetEvent<SelectItemEvent>().Publish(SelectedItem);
             //viewService.GetWindow<SelectItemWindow>().Close();
         }

@@ -14,7 +14,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class PaymentsViewModel : BindableBase, ISignaling
+    internal class PaymentsViewModel : BindableBase, INotifying
     {
         private readonly IPaymentsService paymentsService;
         private readonly IEmployeesService employeesService;
@@ -40,9 +40,9 @@ namespace BraidsAccounting.ViewModels
 
         #region Messages
 
-        public MessageProvider StatusMessage { get; } = new(true);        
-        public MessageProvider ErrorMessage { get; } = new(true);
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Status { get; } = new(true);        
+        public Notifier Error { get; } = new(true);
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion
 
@@ -73,7 +73,7 @@ namespace BraidsAccounting.ViewModels
             await paymentsService.AddAsync(NewPayment);
             NewPayment = new();
             GetDebtCommand.Execute(null);
-            StatusMessage.Message= "Сумма успешно зачислена.";
+            Status.Message= "Сумма успешно зачислена.";
             MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
 
@@ -112,12 +112,12 @@ namespace BraidsAccounting.ViewModels
         {
             if (NewPayment.Amount <= 0)
             {
-                ErrorMessage.Message = "Сумма должна быть положительной.";
+                Error.Message = "Сумма должна быть положительной.";
                 return;
             }
             if (NotSelectedEmployee)
             {
-                ErrorMessage.Message = "Не выбран сотрудник.";
+                Error.Message = "Не выбран сотрудник.";
                 return;
             }
             MDDialogHost.OpenDialogCommand.Execute(null, null);           

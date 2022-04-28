@@ -17,7 +17,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class StoreViewModel : FilterableBindableBase<StoreItem>, ISignaling
+    internal class StoreViewModel : FilterableBindableBase<StoreItem>, INotifying
     {
         private IStoreService store;
         private readonly IEventAggregator eventAggregator;
@@ -53,10 +53,12 @@ namespace BraidsAccounting.ViewModels
         /// </summary>
         public int TotalItems { get; private set; }
 
+        public NewNotifier NewStatus { get; set; } = new(true);
+
         #region Messages
-        public MessageProvider StatusMessage { get; } = new(true);
-        public MessageProvider ErrorMessage => throw new NotImplementedException();
-        public MessageProvider WarningMessage => throw new NotImplementedException();
+        public Notifier Status { get; } = new(true);
+        public Notifier Error => throw new NotImplementedException();
+        public Notifier Warning => throw new NotImplementedException();
 
         #endregion
 
@@ -64,16 +66,16 @@ namespace BraidsAccounting.ViewModels
         /// Устанавливает статус выполненной операции.
         /// </summary>
         /// <param name="success"></param>
-        private void SetStatusMessage(bool success)
-        {
-            if (regionManager.IsViewActive<StoreView>(RegionNames.Catalogs) && success)
-            {
-                LoadDataCommand.Execute(null);
-                StatusMessage.Message = "Операция выполнена";
-            }
-        }
+        //private void SetStatusMessage(bool success)
+        //{
+        //    if (regionManager.IsViewActive<StoreView>(RegionNames.Catalogs) && success)
+        //    {
+        //        LoadDataCommand.Execute(null);
+        //        Status.Message = "Операция выполнена";
+        //    }
+        //}
 
-        protected override bool Filter(object obj) => true;      
+        protected override bool Filter(object obj) => true;
 
         #region Command RemoveItem - Команда удалить предмет со склада
 
@@ -87,7 +89,7 @@ namespace BraidsAccounting.ViewModels
             await store.RemoveItemAsync(SelectedStoreItem.Id);
             Collection.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
-            StatusMessage.Message = "Материал успешно удалён со склада";
+            Status.Message = "Материал успешно удалён со склада";
         }
 
         #endregion
@@ -103,11 +105,13 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            StatusMessage.Message = "Загружается список материалов на складе...";
+            var message = MessageContainer.Get("loadingItems");
+            NewStatus.Add(message);
             // Нужно обновить контекст, чтобы получать обновлённые данные
             store = ServiceLocator.GetService<IStoreService>();
             Collection = new(await store.GetItemsAsync());
-            StatusMessage.Message = string.Empty;
+            NewStatus.Remove(message);
+            Status.Message = string.Empty;
             TotalItems = Collection.Sum(i => i.Count);
         }
 
@@ -127,9 +131,19 @@ namespace BraidsAccounting.ViewModels
             var parameters = new NavigationParameters();
             if (viewName.Equals(nameof(EditStoreItemView)))
                 parameters.Add("item", SelectedStoreItem);
-            viewService.ShowPopupWindow(viewName, parameters, () => LoadDataCommand.Execute(null));
+            viewService.ShowPopupWindow(viewName, parameters, Foo);
         }
 
         #endregion
+
+        private void Foo(NavigationParameters? parameters)
+        {
+            if (parameters is not null)
+            {
+                var result = (bool)parameters["result"];
+                if (result) NewStatus.Add("Успешное выполнение операции");
+            }
+            LoadDataCommand.Execute(null);
+        }
     }
 }
