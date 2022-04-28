@@ -1,4 +1,4 @@
-﻿<Window x:Class="BraidsAccounting.Views.Windows.AddStoreItemWindow"
+﻿<UserControl x:Class="BraidsAccounting.Views.AddStoreItemView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,8 +10,6 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"   
-             Title="Добавление материала на склад"
-             WindowStartupLocation="CenterScreen"
              Height="200" Width="500"
              Background="#FAFAFA">
     <i:Interaction.Triggers>
@@ -19,9 +17,9 @@
             <i:InvokeCommandAction Command="{Binding LoadManufacturersCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Window.Resources>
+    <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    </Window.Resources>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -43,6 +41,7 @@
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
                 <ComboBox 
+                    IsReadOnly="True"
                       ItemsSource="{Binding Manufacturers}"
                       SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
                       SelectedIndex="0"/>
@@ -79,7 +78,7 @@
         <Grid Grid.Row="2">
             <Button Content="Добавить" Command="{Binding AddStoreItemCommand}"/>
         </Grid>
-        <Grid Grid.Row="3">            
+        <Grid Grid.Row="3">
             <TextBlock
                            Foreground="DarkRed"
                            TextAlignment="Center"
@@ -88,4 +87,4 @@
                            Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
     </Grid>
-</Window>
+</UserControl>

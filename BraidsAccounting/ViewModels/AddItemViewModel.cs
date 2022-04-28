@@ -67,7 +67,7 @@ namespace BraidsAccounting.ViewModels
                 return;
             }
             await catalogueService.AddAsync(ItemInForm);
-            viewService.GetWindow<PopupWindow>().Close();
+            //viewService.GetWindow<PopupWindow>().Close();
 
         }
 

@@ -1,11 +1,12 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
+using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,45 +14,37 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class SelectItemViewModel : FilterableBindableBase<FormItem>, ISignaling
+    internal class SelectItemViewModel : BindableBase, ISignaling
     {
         private readonly IEventAggregator eventAggregator;
-        private readonly IManufacturersService manufacturersService;
+        //private readonly IManufacturersService manufacturersService;
         private readonly IViewService viewService;
-        private readonly ICatalogueService catalogue;
-        private string? _colorFilter;
-        private string? _manufacturerFilter;
-        private string? articleFilter;
+        //private readonly ICatalogueService catalogue;
+        //private string? _colorFilter;
+        //private string? _manufacturerFilter;
+        //private string? articleFilter;
         private ICommand? _LoadDataCommand;
         public SelectItemViewModel(
            IEventAggregator eventAggregator
-           , IManufacturersService manufacturersService
+           //, IManufacturersService manufacturersService
            , IViewService viewService
-           , ICatalogueService catalogue
+           //, ICatalogueService catalogue
            )
         {
             this.eventAggregator = eventAggregator;
-            this.manufacturersService = manufacturersService;
+            //this.manufacturersService = manufacturersService;
             this.viewService = viewService;
-            this.catalogue = catalogue;
+            //this.catalogue = catalogue;
         }
 
         /// <summary>
         /// Выбранный материал из каталога.
         /// </summary>
-        public FormItem SelectedItem { get; set; } = null!;
+        public Item SelectedItem { get; set; } = null!;
         /// <summary>
         /// Значение, введённое в поле фильтра артикула.
         /// </summary>
-        public string? ArticleFilter
-        {
-            get => articleFilter;
-            set
-            {
-                articleFilter = value;
-                collectionView.Refresh();
-            }
-        }
+        //public string? ArticleFilter { get; set; }
         /// <summary>
         /// Флаг фильтрации отображаемых элементов каталога
         /// материалов - только в наличии.
@@ -60,27 +53,27 @@ namespace BraidsAccounting.ViewModels
         /// <summary>
         /// Значение, введённое в поле фильтра цвета.
         /// </summary>
-        public string? ColorFilter
-        {
-            get => _colorFilter;
-            set
-            {
-                _colorFilter = value;
-                collectionView.Refresh();
-            }
-        }
+        //public string? ColorFilter
+        //{
+        //    get => _colorFilter;
+        //    set
+        //    {
+        //        _colorFilter = value;
+        //        collectionView.Refresh();
+        //    }
+        //}
         /// <summary>
         /// Значение, введённое в поле фильтра производителя.
         /// </summary>
-        public string? ManufacturerFilter
-        {
-            get => _manufacturerFilter;
-            set
-            {
-                _manufacturerFilter = value;
-                collectionView?.Refresh();
-            }
-        }
+        //public string? ManufacturerFilter
+        //{
+        //    get => _manufacturerFilter;
+        //    set
+        //    {
+        //        _manufacturerFilter = value;
+        //        collectionView?.Refresh();
+        //    }
+        //}
         /// <summary>
         /// Список производителей
         /// </summary>
@@ -94,17 +87,17 @@ namespace BraidsAccounting.ViewModels
 
         #endregion       
 
-        protected override bool Filter(object obj)
-        {
-            FormItem? item = (FormItem)obj;
-            bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
-                || item.Manufacturer.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
-            bool articleCondition = string.IsNullOrEmpty(ArticleFilter)
-                || item.Article.Contains(ArticleFilter, StringComparison.OrdinalIgnoreCase);
-            bool colorCondition = string.IsNullOrEmpty(ColorFilter)
-               || item.Color.Contains(ColorFilter, StringComparison.OrdinalIgnoreCase);
-            return manufacturerCondition && articleCondition && colorCondition;
-        }
+        //protected override bool Filter(object obj)
+        //{
+        //    FormItem? item = (FormItem)obj;
+        //    bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
+        //        || item.Manufacturer.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
+        //    bool articleCondition = string.IsNullOrEmpty(ArticleFilter)
+        //        || item.Article.Contains(ArticleFilter, StringComparison.OrdinalIgnoreCase);
+        //    bool colorCondition = string.IsNullOrEmpty(ColorFilter)
+        //       || item.Color.Contains(ColorFilter, StringComparison.OrdinalIgnoreCase);
+        //    return manufacturerCondition && articleCondition && colorCondition;
+        //}
 
         #region Command Select - Команда выбрать товар
 
@@ -112,17 +105,22 @@ namespace BraidsAccounting.ViewModels
 
         /// <summary>Команда - выбрать товар</summary>
         public ICommand SelectCommand => _SelectCommand
-            ??= new DelegateCommand(OnSelectCommandExecuted, CanSelectCommandExecute);
-        private bool CanSelectCommandExecute() => true;
-        private void OnSelectCommandExecuted()
+            ??= new DelegateCommand<Item>(OnSelectCommandExecuted, CanSelectCommandExecute);
+        private bool CanSelectCommandExecute(Item item) => true;
+        private void OnSelectCommandExecuted(Item item)
         {
+            SelectedItem = item;
             if (SelectedItem is null)
             {
                 ErrorMessage.Message = "Не выбран ни один товар";
                 return;
             }
-            eventAggregator.GetEvent<SelectItemEvent>().Publish(SelectedItem);
-            viewService.GetWindow<SelectItemWindow>().Close();
+            var parameters = new NavigationParameters();
+            if (SelectedItem is not null)
+                parameters.Add("item", SelectedItem);
+            viewService.GoBack(parameters);
+            //eventAggregator.GetEvent<SelectItemEvent>().Publish(SelectedItem);
+            //viewService.GetWindow<SelectItemWindow>().Close();
         }
 
         #endregion
@@ -137,10 +135,10 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            Collection = new();
-            foreach (Item? item in await catalogue.GetAllAsync(OnlyInStock))
-                Collection.Add(item);
-            Manufacturers = await manufacturersService.GetNamesAsync();
+            //Collection = new();
+            //foreach (Item? item in await catalogue.GetAllAsync(OnlyInStock))
+            //    Collection.Add(item);
+            //Manufacturers = await manufacturersService.GetNamesAsync();
         }
 
         #endregion
@@ -155,11 +153,26 @@ namespace BraidsAccounting.ViewModels
         private bool CanResetFiltersCommandExecute() => true;
         private void OnResetFiltersCommandExecuted()
         {
-            ArticleFilter = string.Empty;
-            ColorFilter = string.Empty;
-            ManufacturerFilter = string.Empty;
+            //ArticleFilter = string.Empty;
+            //ColorFilter = string.Empty;
+            //ManufacturerFilter = string.Empty;
         }
 
         #endregion
+
+        #region Command GoBack - Команда перейти на предыдущий экран
+
+        private ICommand? _GoBackCommand;
+        /// <summary>Команда - перейти на предыдущий экран</summary>
+        public ICommand GoBackCommand => _GoBackCommand
+            ??= new DelegateCommand(OnGoBackCommandExecuted, CanGoBackCommandExecute);
+        private bool CanGoBackCommandExecute() => true;
+        private void OnGoBackCommandExecuted()
+        {
+            viewService.GoBack();
+        }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
@@ -15,7 +14,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class AddStoreItemViewModel : BindableBase, ISignaling
+    internal class AddStoreItemViewModel : BindableBase, ISignaling, INavigationAware
     {
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
@@ -61,7 +60,7 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             StoreItem.Item = new();
             StoreItem.Item.Manufacturer = new();
-            eventAggregator.GetEvent<SelectItemEvent>().Subscribe(SetStoreItem);
+            //eventAggregator.GetEvent<SelectItemEvent>().Subscribe(SetStoreItem);
 
         }
 
@@ -81,6 +80,18 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
+        public void OnNavigatedTo(NavigationContext navigationContext) 
+        {
+            var item = navigationContext.Parameters["item"] as Item;
+            if (item is not null)
+            {
+                SetStoreItem(item);
+                SelectedManufacturer = item.Manufacturer.Name;
+            }
+        }
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+        public void OnNavigatedFrom(NavigationContext navigationContext) { }
+
         #region Command AddStoreItem - Команда добавить товар на склад
 
         /// <summary>Команда - добавить товар на склад</summary>
@@ -93,8 +104,9 @@ namespace BraidsAccounting.ViewModels
             try
             {
                 await store.AddItemAsync(StoreItem);
-                viewService.GetWindow<AddStoreItemWindow>().Close();
-                eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
+                //viewService.GetWindow<AddStoreItemWindow>().Close();
+                viewService.ClosePopupWindow();
+                //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
             {
@@ -122,7 +134,12 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private void OnSelectStoreItemCommandExecuted() => viewService.ShowWindowWithClosing<SelectItemWindow, AddStoreItemWindow>();
+        private void OnSelectStoreItemCommandExecuted() =>
+            viewService.ShowPopupWindow(nameof(SelectItemView));
+      
+
+        //viewService.ShowPopupWindow(nameof(CatalogsView), o => SetStoreItem(o as Item));
+        //viewService.ShowWindowWithClosing<SelectItemWindow, AddStoreItemWindow>();
 
         #endregion
     }

@@ -20,9 +20,11 @@ namespace BraidsAccounting.Modules
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<EditItemView>();
+            containerRegistry.RegisterForNavigation<EditStoreItemView>();
             containerRegistry.RegisterForNavigation<AddItemView>();
+            containerRegistry.RegisterForNavigation<AddStoreItemView>();
             containerRegistry.RegisterForNavigation<CatalogueView>();
-
+            containerRegistry.RegisterForNavigation<SelectItemView>();
         }
     }
 }

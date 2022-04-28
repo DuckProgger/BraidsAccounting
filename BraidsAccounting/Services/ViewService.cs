@@ -17,97 +17,127 @@ namespace BraidsAccounting.Services
     /// </summary>
     internal class ViewService : IViewService
     {
-        public void ShowWindow<TWindowType>() where TWindowType : Window, new() => new TWindowType().Show();
+        //public void ShowWindow<TWindowType>() where TWindowType : Window, new() => new TWindowType().Show();
 
-        public void ShowWindowWithClosing<TOpenedWindow, TClosedWindow>(Action? action = null)
-            where TOpenedWindow : Window, new()
-            where TClosedWindow : Window, new()
-        {
-            TOpenedWindow openedWindow = new();
-            TClosedWindow? closedWindow = GetWindow<TClosedWindow>();
-            // Открыть окно, которое было закрыто, при закрытии окна, которое было открыто
-            openedWindow.Closed += (s, e) => closedWindow.Show();
-            openedWindow.Closed += (s, e) => action?.Invoke();
-            closedWindow.Hide();
-            openedWindow.Show();
-        }
+        //public void ShowWindowWithClosing<TOpenedWindow, TClosedWindow>(Action? action = null)
+        //    where TOpenedWindow : Window, new()
+        //    where TClosedWindow : Window, new()
+        //{
+        //    TOpenedWindow openedWindow = new();
+        //    TClosedWindow? closedWindow = GetWindow<TClosedWindow>();
+        //    // Открыть окно, которое было закрыто, при закрытии окна, которое было открыто
+        //    openedWindow.Closed += (s, e) => closedWindow.Show();
+        //    openedWindow.Closed += (s, e) => action?.Invoke();
+        //    closedWindow.Hide();
+        //    openedWindow.Show();
+        //}
 
-        public T GetWindow<T>() where T : Window =>
+        private static T GetWindow<T>() where T : Window =>
             Application.Current.Windows.OfType<T>().First();
 
-        //public void ShowPopupWindow<TCurrentWindow>(string viewName, Action? action = null, NavigationParameters? parameters = null)
-        //    where TCurrentWindow : Window, new()
+        private Stack<WindowInfo> windowsStack = new();
+        private IRegionNavigationJournal journal = null!;
+
+        //public ViewService()
         //{
-        //    if (string.IsNullOrEmpty(viewName))
-        //        throw new ArgumentNullException(nameof(viewName), "Название переключаемого представления не может быть пустым.");
-        //    ShowWindowWithClosing<PopupWindow, TCurrentWindow>(action);
-        //    var regionManager = ServiceLocator.GetService<IRegionManager>();
-        //    var scopedRegionManager = regionManager.CreateRegionManager();
-        //    RegionManager.SetRegionManager(GetWindow<PopupWindow>(), scopedRegionManager);
-        //    scopedRegionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
+        //    //windowsStack = new();
+        //    //var windowInfo = new WindowInfo()
+        //    //{
+        //    //    Window = GetWindow<MainWindow>(),
+        //    //    RegionManager = ServiceLocator.GetService<IRegionManager>(),
+        //    //    ViewName = nameof(MainWindow)
+        //    //};
+        //    //windowsStack.Push(windowInfo);
         //}
 
-        public void NavigateToPreviousWindow<TCurrentWindow, TPrevWindow>(NavigationParameters? parameters = null)
-              where TCurrentWindow : Window, new()
-        {
-            GetWindow<TCurrentWindow>().Close();
-            var regionManager = ServiceLocator.GetService<IRegionManager>();
-
-        }
-
-        //private static IEnumerable<T> GetWindows<T>() where T : Window =>
-        //    Application.Current.Windows.OfType<T>();
-
-        //private void ShowNestedPopupWindow<TClosedView>(Action? action = null)
-        //{
-        //    PopupWindow openedWindow = new();
-        //    var popupWindows = GetWindows<PopupWindow>();
-        //    var closedWindows = popupWindows
-        //        .Where(w => ((w.Content as Grid).Children[0] as ContentControl).Content.GetType() == typeof(TClosedView));
-        //    if (closedWindows.Count() > 1) throw new Exception("Открываемый тип представления уже используется.");
-        //    var currentWindow = closedWindows.First();
-        //    openedWindow.Closed += (s, e) => currentWindow.Show();
-        //    openedWindow.Closed += (s, e) => action?.Invoke();
-        //    currentWindow.Hide();
-        //    openedWindow.Show();
-        //    //DialogService
-        //}
-
-        private Stack<Window> windowsStack;
-        //private LinkedList<Window> windowsLl;
-
-
-        public ViewService()
-        {
-            windowsStack = new();
-            windowsStack.Push(GetWindow<MainWindow>());
-        }
-
-        public void ShowPopupWindow(string viewName, Action<object>? callback = null, NavigationParameters? parameters = null)
+        public void ShowPopupWindow(string viewName, NavigationParameters? parameters = null, Action? callback = null)
         {
             if (string.IsNullOrEmpty(viewName))
                 throw new ArgumentNullException(nameof(viewName), "Название переключаемого представления не может быть пустым.");
-            Window? closedWindow = windowsStack.Peek();
-            PopupWindow openedWindow = new();
-            windowsStack.Push(openedWindow);
-            openedWindow.Closed += (s, e) => closedWindow.Show();
-            openedWindow.Closed += (s, e) => callback?.Invoke(openedWindow.Result);
-            openedWindow.Closed += (s, e) => windowsStack.Pop();
-            closedWindow.Hide();
-            openedWindow.Show();
+            //var currentWindowInfo = windowsStack.Peek();
+            if (windowsStack.Count == 0)
+            {
+                CreatePopupWindow(viewName, parameters, callback);
+                return;
+            }
+            var currentWindowInfo = windowsStack.Peek();
+            WindowInfo newWindowInfo = new()
+            {
+                RegionManager = currentWindowInfo.RegionManager,
+                ViewName = viewName,
+            };
+            windowsStack.Push(newWindowInfo);
+            newWindowInfo.RegionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
+            journal = newWindowInfo.RegionManager.Regions[RegionNames.Popup].NavigationService.Journal;
+        }
+
+        private void CreatePopupWindow(string viewName, NavigationParameters? parameters = null, Action? callback = null)
+        {
+            var mainWindow = GetWindow<MainWindow>();
+            PopupWindow popupWindow = new();
+            popupWindow.Closed += (s, e) => mainWindow.Show();
+            popupWindow.Closed += (s, e) => ClearStackAndInvokeFirstCallback();
+            mainWindow.Hide();
+            popupWindow.Show();
             var regionManager = ServiceLocator.GetService<IRegionManager>();
             var scopedRegionManager = regionManager.CreateRegionManager();
-            RegionManager.SetRegionManager(openedWindow, scopedRegionManager);
-            scopedRegionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
+            RegionManager.SetRegionManager(popupWindow, scopedRegionManager);
+            var popupWindowInfo = new WindowInfo()
+            {
+                //Window = popupWindow,
+                RegionManager = scopedRegionManager,
+                ViewName = viewName,
+                Callback = callback
+            };
+            windowsStack.Push(popupWindowInfo);
+            popupWindowInfo.RegionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
+            journal = popupWindowInfo.RegionManager.Regions[RegionNames.Popup].NavigationService.Journal;
         }
 
-        public string GetUri()
+        public void GoBack()
         {
-            string uri = string.Empty;
-            foreach (var window in windowsStack)
-                uri += window.Title;
-            return uri;
+            windowsStack.Pop();
+            journal.GoBack();
         }
 
+        public void GoBack(NavigationParameters parameters)
+        {
+            var currentWindowInfo = windowsStack.Pop();
+            var prevViewName = windowsStack.Peek().ViewName;
+            currentWindowInfo.RegionManager.RequestNavigate(RegionNames.Popup, prevViewName, parameters);
+            currentWindowInfo.Callback?.Invoke();
+            //journal.GoBack();
+        }
+
+        private void ClearStackAndInvokeFirstCallback()
+        {
+            while (windowsStack.Count > 1)
+                windowsStack.Pop();
+            windowsStack.Pop().Callback?.Invoke();
+        }
+
+        //public string GetUri()
+        //{
+        //    string uri = string.Empty;
+        //    foreach (var windowInfo in windowsStack)
+        //        uri += windowInfo.Window.Title;
+        //    return uri;
+        //}
+
+        public void ClosePopupWindow()
+        {
+            var popupWindow = GetWindow<PopupWindow>();
+            popupWindow.Close();
+            //windowsStack.Peek().Window.Close();
+            //windowsStack.Clear();
+        }
+
+        private class WindowInfo
+        {
+            //public Window Window { get; set; } = null!;
+            public IRegionManager RegionManager { get; set; } = null!;
+            public string ViewName { get; set; } = null!;
+            public Action? Callback { get; set; }
+        }
     }
 }

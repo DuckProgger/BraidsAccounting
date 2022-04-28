@@ -1,6 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
@@ -96,8 +95,8 @@ namespace BraidsAccounting.ViewModels
             {
                 ItemInForm.Manufacturer = SelectedManufacturer;
                 await catalogueService.EditAsync(ItemInForm);
-                viewService.GetWindow<PopupWindow>().Close();
-                eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
+                //viewService.GetWindow<PopupWindow>().Close();
+                //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
             {

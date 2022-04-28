@@ -1,11 +1,11 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class EditStoreItemViewModel : BindableBase, ISignaling
+    internal class EditStoreItemViewModel : BindableBase, ISignaling, INavigationAware
     {
         private readonly IStoreService store;
         private readonly IManufacturersService manufacturersService;
@@ -53,7 +53,7 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             this.eventAggregator = eventAggregator;
             this.viewService = viewService;
-            eventAggregator.GetEvent<EditStoreItemEvent>().Subscribe(SetProperties);
+            //eventAggregator.GetEvent<EditStoreItemEvent>().Subscribe(SetProperties);
             this.store = store;
         }
 
@@ -67,6 +67,14 @@ namespace BraidsAccounting.ViewModels
             Manufacturers = await manufacturersService.GetNamesAsync();
             SelectedManufacturer = Manufacturers.First(name => name == item.Item.Manufacturer.Name);
         }
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            var item = navigationContext.Parameters["item"] as StoreItem;
+            if (item is not null)
+                SetProperties(item);
+        }
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+        public void OnNavigatedFrom(NavigationContext navigationContext) { }
 
 
         #region Command SaveChanges - Команда сохранить изменения товара со склада
@@ -89,8 +97,9 @@ namespace BraidsAccounting.ViewModels
                 }
                 StoreItem.Item.ManufacturerId = existingManufacturer.Id;
                 await store.EditItemAsync(StoreItem);
-                viewService.GetWindow<EditStoreItemWindow>().Close();
-                eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
+                viewService.ClosePopupWindow();
+                //viewService.GetWindow<EditStoreItemWindow>().Close();
+                //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
             }
             catch (ArgumentException)
             {

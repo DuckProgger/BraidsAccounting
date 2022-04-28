@@ -38,9 +38,9 @@ namespace BraidsAccounting
         protected override void ConfigureViewModelLocator()
         {
             base.ConfigureViewModelLocator();
-            ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
-            ViewModelLocationProvider.Register<EditStoreItemWindow, EditStoreItemViewModel>();
-            ViewModelLocationProvider.Register<SelectItemWindow, SelectItemViewModel>();
+            //ViewModelLocationProvider.Register<AddStoreItemWindow, AddStoreItemViewModel>();
+            //ViewModelLocationProvider.Register<EditStoreItemWindow, EditStoreItemViewModel>();
+            //ViewModelLocationProvider.Register<SelectItemWindow, SelectItemViewModel>();
             //ViewModelLocationProvider.Register<AddItemWindow, AddItemViewModel>();
             //ViewModelLocationProvider.Register<EditItemWindow, EditItemViewModel>();
         }

@@ -1,11 +1,9 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
-using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
@@ -40,7 +38,7 @@ namespace BraidsAccounting.ViewModels
             this.container = container;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
+            //eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
 
         public string Title => "Склад";
@@ -75,22 +73,7 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        protected override bool Filter(object obj) => true;
-
-        #region Command EditItem - Команда редактировать предмет на складе
-
-        private ICommand? _EditItemCommand;
-        /// <summary>Команда - редактировать предмет на складе</summary>
-        public ICommand EditItemCommand => _EditItemCommand
-            ??= new DelegateCommand<string>(OnEditItemCommandExecuted, CanEditItemCommandExecute);
-        private bool CanEditItemCommandExecute(string viewName) => true;
-        private void OnEditItemCommandExecuted(string viewName)
-        {
-            OnNavigateToOtherWindowCommandExecuted(viewName);
-            eventAggregator.GetEvent<EditStoreItemEvent>().Publish(SelectedStoreItem);
-        }
-
-        #endregion
+        protected override bool Filter(object obj) => true;      
 
         #region Command RemoveItem - Команда удалить предмет со склада
 
@@ -138,20 +121,13 @@ namespace BraidsAccounting.ViewModels
         public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
             ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
 
-        private bool CanNavigateToOtherWindowCommandExecute(string windowName) => true;
-        private void OnNavigateToOtherWindowCommandExecuted(string windowName)
+        private bool CanNavigateToOtherWindowCommandExecute(string viewName) => true;
+        private void OnNavigateToOtherWindowCommandExecuted(string viewName)
         {
-            switch (windowName)
-            {
-                case nameof(AddStoreItemWindow):
-                    viewService.ShowWindowWithClosing<AddStoreItemWindow, MainWindow>(OnLoadDataCommandExecuted);
-                    break;
-                case nameof(EditStoreItemWindow):
-                    viewService.ShowWindowWithClosing<EditStoreItemWindow, MainWindow>();
-                    break;
-                default:
-                    break;
-            }
+            var parameters = new NavigationParameters();
+            if (viewName.Equals(nameof(EditStoreItemView)))
+                parameters.Add("item", SelectedStoreItem);
+            viewService.ShowPopupWindow(viewName, parameters, () => LoadDataCommand.Execute(null));
         }
 
         #endregion

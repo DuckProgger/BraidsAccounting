@@ -3,6 +3,7 @@ using BraidsAccounting.Exceptions;
 using BraidsAccounting.Interfaces;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,6 @@ namespace BraidsAccounting.Services
             // Удалить материал из каталога
             await catalogue.RemoveAsync(item.Id);
         }
-
+       
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
@@ -17,13 +16,14 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class CatalogueViewModel : FilterableBindableBase<Item>, ISignaling
+    internal class CatalogueViewModel : FilterableBindableBase<Item>, ISignaling, INavigationAware
     {
         private ICommand? _NavigateToOtherWindowCommand;
         private readonly IViewService viewService;
         private ICatalogueService catalogueService;
         private readonly IEventAggregator eventAggregator;
         private readonly IRegionManager regionManager;
+        //private IRegionNavigationJournal journal;
 
         public CatalogueViewModel(
             IViewService viewService
@@ -36,7 +36,7 @@ namespace BraidsAccounting.ViewModels
             this.catalogueService = catalogueService;
             this.eventAggregator = eventAggregator;
             this.regionManager = regionManager;
-            eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
+            //eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
         public string Title => "Каталог";
 
@@ -57,6 +57,15 @@ namespace BraidsAccounting.ViewModels
                 LoadDataCommand.Execute(null);
                 StatusMessage.Message = "Операция выполнена";
             }
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            //journal = navigationContext.NavigationService.Journal;
+        }
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
         }
 
         #region Command LoadData - Команда загрузки данных со склада
@@ -91,7 +100,7 @@ namespace BraidsAccounting.ViewModels
             var parameters = new NavigationParameters();
             if (SelectedItem is not null)
                 parameters.Add("item", SelectedItem);
-            viewService.ShowPopupWindow(viewName, o => OnLoadDataCommandExecuted(), parameters);
+            viewService.ShowPopupWindow(viewName, parameters);
         }
 
 
@@ -120,6 +129,7 @@ namespace BraidsAccounting.ViewModels
         }
 
         #endregion
+
 
     }
 }

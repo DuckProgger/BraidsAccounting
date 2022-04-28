@@ -1,6 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Events;
 using BraidsAccounting.Models;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
@@ -40,7 +39,7 @@ namespace BraidsAccounting.ViewModels
             this.serviceProvider = serviceProvider;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            eventAggregator.GetEvent<SelectItemEvent>().Subscribe(AddWastedItemToService);
+            //eventAggregator.GetEvent<SelectItemEvent>().Subscribe(AddWastedItemToService);
         }
 
         /// <summary>
@@ -158,7 +157,8 @@ namespace BraidsAccounting.ViewModels
         public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
             ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
         private bool CanSelectStoreItemCommandExecute() => true;
-        private void OnSelectStoreItemCommandExecuted() => viewService.ShowWindowWithClosing<SelectItemWindow, MainWindow>();
+        private void OnSelectStoreItemCommandExecuted() { }
+            //viewService.ShowWindowWithClosing<SelectItemWindow, MainWindow>();
 
         #endregion
 
