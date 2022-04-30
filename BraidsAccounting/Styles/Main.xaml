@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:infrastructure="clr-namespace:BraidsAccounting.Infrastructure">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
@@ -34,5 +35,59 @@
         <Setter Property="MinWidth" Value="80" />
         <Setter Property="Margin" Value="5" />
     </Style>
+
+    <Style TargetType="{x:Type ListBoxItem}" x:Key="NotifierListBoxItemStyle">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Type}" Value="{x:Static infrastructure:MessageType.Error}">
+                <Setter Property="ListBoxItem.Background" Value="#F26064"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="{x:Static infrastructure:MessageType.Info}">
+                <Setter Property="ListBoxItem.Background" Value="#8CD6AD"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Type}" Value="{x:Static infrastructure:MessageType.Warning}">
+                <Setter Property="ListBoxItem.Background" Value="#FFFCCC"/>
+            </DataTrigger>
+        </Style.Triggers>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <Style TargetType="{x:Type Border}" x:Key="PaymentBorderStyle">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding HaveDebt}" Value="True">
+                <Setter Property="Background" Value="#F26064"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding NoDebt}" Value="True">
+                <Setter Property="Background" Value="#8CD6AD"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding NotSelectedEmployee}" Value="True">
+                <Setter Property="Background" Value="#FAFAFA"/>
+            </DataTrigger>
+        </Style.Triggers>
+        <Setter Property="CornerRadius" Value="5"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+    
+    <Style TargetType="{x:Type TextBlock}" x:Key="PaymentTextBlockStyle">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Debt}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+        </Style.Triggers>
+        <Setter Property="FontSize" Value="20"/>
+    </Style>
+
+
+    <!--<Style TargetType="{x:Type ListBox}" x:Key="NotifierListBoxStyle">
+        <Setter Property="texta"
+    </Style>-->
 
 </ResourceDictionary>

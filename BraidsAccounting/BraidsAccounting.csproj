@@ -44,12 +44,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Templates\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Page Update="Resources\Messages.xaml">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Page>
+	  <Page Update="Templates\Templates.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
 	  </Page>
 	</ItemGroup>
 

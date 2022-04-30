@@ -69,43 +69,15 @@
                     </i:Interaction.Triggers>
                 </ComboBox>
             </StackPanel>
-            <Border Grid.Row="1"
-                        CornerRadius="5"
-                        HorizontalAlignment="Center"
-                VerticalAlignment="Center" Padding="5">
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding HaveDebt}" Value="True">
-                                <Setter Property="Background" Value="#F26064"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding NoDebt}" Value="True">
-                                <Setter Property="Background" Value="#8CD6AD"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding NotSelectedEmployee}" Value="True">
-                                <Setter Property="Background" Value="#FAFAFA"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+            <Border Grid.Row="1" Style="{StaticResource PaymentBorderStyle}">
                 <StackPanel  HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock 
                         Text="{Binding DebtStatus}"
                         FontSize="20"/>
                     <TextBlock 
                         Text="{Binding Debt, Converter={StaticResource PositiveMoneyConverter}}"
-                        FontSize="20">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Debt}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
+                        Style="{StaticResource PaymentTextBlockStyle}">                        
                     </TextBlock>
-
                 </StackPanel>
             </Border>
             <StackPanel Grid.Row="2">
@@ -122,15 +94,15 @@
                            Text="{Binding Message}"
                            Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="Сумма пополнения" VerticalAlignment="Center"/>                   
+                    <TextBlock Text="Сумма пополнения" VerticalAlignment="Center"/>
                     <TextBox 
                         Text="{Binding NewPayment.Amount}" Width="150"
                         Style="{StaticResource MyMaterialDesignOutlinedTextBox}"
                         Padding="3"/>
-                </StackPanel>               
+                </StackPanel>
                 <Button 
                     Command="{Binding OpenDialogCommand}"
-                    Content="Пополнить"/>              
+                    Content="Пополнить"/>
             </StackPanel>
         </Grid>
     </md:DialogHost>

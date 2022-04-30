@@ -25,7 +25,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Button Content="Выбрать товар из каталога" Command="{Binding SelectStoreItemCommand}"/>
@@ -77,14 +77,7 @@
 
         <Grid Grid.Row="2">
             <Button Content="Добавить" Command="{Binding AddStoreItemCommand}"/>
-        </Grid>
-        <Grid Grid.Row="3">
-            <TextBlock
-                           Foreground="DarkRed"
-                           TextAlignment="Center"
-                           DataContext="{Binding ErrorMessage}"
-                           Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </Grid>
+        </Grid>       
+        <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
     </Grid>
 </UserControl>

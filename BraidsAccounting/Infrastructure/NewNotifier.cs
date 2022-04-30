@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -10,61 +11,60 @@ namespace BraidsAccounting.Infrastructure
     /// <summary>
     /// Класс для отображения информационной строки в представлении.
     /// </summary>
-    public class NewNotifier : INotifyPropertyChanged
+    internal class NewNotifier : INotifyPropertyChanged
     {
-        private readonly bool disappearing;
-        private readonly TimeSpan disappearingDelay;
-        private const double defaultDisappearingDelay = 3.0;
+        private readonly Dictionary<MessageType, MessageParameters> messagesParameters;
 
-        /// <summary>
-        /// Создаёт экземпляр <see cref = "Notifier" />.
-        /// </summary>
-        /// <param name="disappearing">Определяет требуется ли скрывать сообщение по 
-        /// истечении 3 сек.</param>
-        public NewNotifier(bool disappearing = false)
+        public NewNotifier()
         {
-            this.disappearing = disappearing;
-            disappearingDelay = TimeSpan.FromSeconds(defaultDisappearingDelay);
+            messagesParameters = new();
+            MessageParameters defaultParameters = new(true);
+            messagesParameters.Add(MessageType.Info, defaultParameters);
+            messagesParameters.Add(MessageType.Error, defaultParameters);
+            messagesParameters.Add(MessageType.Warning, defaultParameters);
+        }
+        public ObservableCollection<Message> Messages { get; } = new();
+
+        public void AddInfo(string text)
+        {
+            Message message = new()
+            {
+                Text = text,
+                Type = MessageType.Info
+            };
+            AddMessage(message);
+        }
+        public void AddError(string text)
+        {
+            Message message = new()
+            {
+                Text = text,
+                Type = MessageType.Error
+            };
+            AddMessage(message);
+        }
+        public void AddWarning(string text)
+        {
+            Message message = new()
+            {
+                Text = text,
+                Type = MessageType.Warning
+            };
+            AddMessage(message);
         }
 
-        /// <summary>
-        /// Создаёт экземпляр <see cref = "Notifier" />.
-        /// </summary>
-        /// <param name="disappearingDelay">Время задержки исчезания сообщения.</param>
-        /// <param name="disappearing">Определяет требуется ли скрывать сообщение по 
-        /// истечении времени, заданного в disappearingDelay.</param>
-        public NewNotifier(TimeSpan disappearingDelay, bool disappearing = false)
-        {
-            this.disappearing = disappearing;
-            this.disappearingDelay = disappearingDelay;
-        }
-
-        public ObservableCollection<string> Messages { get; } = new();
-
-        /// <summary>
-        /// Сообщение, которое нужно вывести на экран.
-        /// </summary>
-        //public string? Message
-        //{
-        //    get => _message;
-        //    set
-        //    {
-        //        _message = value;
-        //        OnPropertyChanged();
-        //        OnPropertyChanged(nameof(HasMessage));
-        //        if (disappearing)
-        //            RemoveMessage();
-        //    }
-        //}
-
-        public void Add(string message)
+        private void AddMessage(Message message)
         {
             Messages.Add(message);
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(HasMessage));
-            if (disappearing)
-                AutoRemove(message);
-        }
+            var parameters = messagesParameters[message.Type];
+            if (parameters.Disappearing)
+                AutoRemove(message, parameters.DisappearingDelay);
+        }      
+
+        public void SetMessageParams(MessageType type, MessageParameters parameters)
+        {
+            messagesParameters[type] = parameters;
+        }    
 
         /// <summary>
         /// Флаг наличия сообщения.
@@ -77,18 +77,37 @@ namespace BraidsAccounting.Infrastructure
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
         /// <summary>
-        /// Очистить сообщение.
+        /// Автоматически очистить сообщение через заданное время.
         /// </summary>
-        private async void AutoRemove(string message)
+        private async void AutoRemove(Message message, TimeSpan delay)
         {
-            await Task.Delay(disappearingDelay);
+            await Task.Delay(delay);
             Messages.Remove(message);
         }
 
-        public void Remove(string message)
+        public void Remove(string text)
         {
+            var message = Messages.First(m => m.Text.Equals(text));
             Messages.Remove(message);
         }
+    }
 
+    internal class MessageParameters
+    {
+        private const double defaultDisappearingDelay = 3.0;
+        public MessageParameters(bool disappearing, TimeSpan disappearingDelay)
+        {
+            Disappearing = disappearing;
+            DisappearingDelay = disappearingDelay;
+        }
+
+        public MessageParameters(bool disappearing)
+        {
+            Disappearing = disappearing;
+            DisappearingDelay = TimeSpan.FromSeconds(defaultDisappearingDelay);
+        }
+
+        public bool Disappearing { get; }
+        public TimeSpan DisappearingDelay { get; }
     }
 }

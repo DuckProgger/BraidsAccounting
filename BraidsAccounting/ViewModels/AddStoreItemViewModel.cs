@@ -3,10 +3,8 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
-using BraidsAccounting.Views.Windows;
 using Prism.Commands;
 using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
@@ -14,7 +12,7 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class AddStoreItemViewModel : BindableBase, INotifying, INavigationAware
+    internal class AddStoreItemViewModel : ViewModelBase
     {
         private ICommand? _AddStoreItemCommand;
         private readonly IStoreService store;
@@ -37,14 +35,6 @@ namespace BraidsAccounting.ViewModels
         public string SelectedManufacturer { get; set; } = null!;
         public int InStock { get; set; }
 
-        #region Messages
-
-        public Notifier Error { get; } = new(true);
-        public Notifier Status => throw new NotImplementedException();
-        public Notifier Warning => throw new NotImplementedException();
-
-        #endregion
-
         public AddStoreItemViewModel(
                 IStoreService store
             , IEventAggregator eventAggregator
@@ -60,8 +50,6 @@ namespace BraidsAccounting.ViewModels
             this.manufacturersService = manufacturersService;
             StoreItem.Item = new();
             StoreItem.Item.Manufacturer = new();
-            //eventAggregator.GetEvent<SelectItemEvent>().Subscribe(SetStoreItem);
-
         }
 
         /// <summary>
@@ -80,17 +68,15 @@ namespace BraidsAccounting.ViewModels
             }
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext) 
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var item = navigationContext.Parameters["item"] as Item;
+            Item? item = navigationContext.Parameters["item"] as Item;
             if (item is not null)
             {
                 SetStoreItem(item);
                 SelectedManufacturer = item.Manufacturer.Name;
             }
         }
-        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
-        public void OnNavigatedFrom(NavigationContext navigationContext) { }
 
         #region Command AddStoreItem - Команда добавить товар на склад
 
@@ -104,13 +90,12 @@ namespace BraidsAccounting.ViewModels
             try
             {
                 await store.AddItemAsync(StoreItem);
-                //viewService.GetWindow<AddStoreItemWindow>().Close();
-                //viewService.ClosePopupWindow();
-                //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
+                viewService.AddParameter(ParameterNames.AddItemResult, true);
+                viewService.GoBack();
             }
             catch (ArgumentException)
             {
-                Error.Message = "Заполнены не все поля";
+                Notifier.AddError(MessageContainer.Get("fieldsNotFilled"));
             }
         }
 
@@ -136,11 +121,14 @@ namespace BraidsAccounting.ViewModels
         private bool CanSelectStoreItemCommandExecute() => true;
         private void OnSelectStoreItemCommandExecuted() =>
             viewService.ShowPopupWindow(nameof(SelectItemView));
-      
+
+        //viewService.ShowPopupWindow(nameof(SelectItemView));
+
 
         //viewService.ShowPopupWindow(nameof(CatalogsView), o => SetStoreItem(o as Item));
         //viewService.ShowWindowWithClosing<SelectItemWindow, AddStoreItemWindow>();
 
         #endregion
+
     }
 }

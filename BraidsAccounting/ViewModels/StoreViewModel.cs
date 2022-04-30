@@ -1,6 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
@@ -8,7 +7,6 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Regions;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,7 +15,7 @@ using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class StoreViewModel : FilterableBindableBase<StoreItem>, INotifying
+    internal class StoreViewModel : ViewModelBase<StoreItem>
     {
         private IStoreService store;
         private readonly IEventAggregator eventAggregator;
@@ -38,7 +36,6 @@ namespace BraidsAccounting.ViewModels
             this.container = container;
             this.regionManager = regionManager;
             this.viewService = viewService;
-            //eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
         }
 
         public string Title => "Склад";
@@ -53,30 +50,6 @@ namespace BraidsAccounting.ViewModels
         /// </summary>
         public int TotalItems { get; private set; }
 
-        public NewNotifier NewStatus { get; set; } = new(true);
-
-        #region Messages
-        public Notifier Status { get; } = new(true);
-        public Notifier Error => throw new NotImplementedException();
-        public Notifier Warning => throw new NotImplementedException();
-
-        #endregion
-
-        /// <summary>
-        /// Устанавливает статус выполненной операции.
-        /// </summary>
-        /// <param name="success"></param>
-        //private void SetStatusMessage(bool success)
-        //{
-        //    if (regionManager.IsViewActive<StoreView>(RegionNames.Catalogs) && success)
-        //    {
-        //        LoadDataCommand.Execute(null);
-        //        Status.Message = "Операция выполнена";
-        //    }
-        //}
-
-        protected override bool Filter(object obj) => true;
-
         #region Command RemoveItem - Команда удалить предмет со склада
 
         private ICommand? _RemoveItemCommand;
@@ -89,7 +62,7 @@ namespace BraidsAccounting.ViewModels
             await store.RemoveItemAsync(SelectedStoreItem.Id);
             Collection.Remove(SelectedStoreItem);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
-            Status.Message = "Материал успешно удалён со склада";
+            Notifier.AddInfo(MessageContainer.Get("removeItemSuccess"));
         }
 
         #endregion
@@ -105,13 +78,12 @@ namespace BraidsAccounting.ViewModels
 
         private async Task LoadData()
         {
-            var message = MessageContainer.Get("loadingItems");
-            NewStatus.Add(message);
+            string? message = MessageContainer.Get("loadingItems");
+            Notifier.AddWarning(message);
             // Нужно обновить контекст, чтобы получать обновлённые данные
             store = ServiceLocator.GetService<IStoreService>();
             Collection = new(await store.GetItemsAsync());
-            NewStatus.Remove(message);
-            Status.Message = string.Empty;
+            Notifier.Remove(message);
             TotalItems = Collection.Sum(i => i.Count);
         }
 
@@ -128,22 +100,33 @@ namespace BraidsAccounting.ViewModels
         private bool CanNavigateToOtherWindowCommandExecute(string viewName) => true;
         private void OnNavigateToOtherWindowCommandExecuted(string viewName)
         {
-            var parameters = new NavigationParameters();
+            NavigationParameters? parameters = new NavigationParameters();
             if (viewName.Equals(nameof(EditStoreItemView)))
                 parameters.Add("item", SelectedStoreItem);
-            viewService.ShowPopupWindow(viewName, parameters, Foo);
+            viewService.ShowPopupWindow(viewName, parameters, (p) =>
+            {
+                if (p is not null) ResultNotifying(p);
+                LoadDataCommand.Execute(null);
+            });
         }
 
-        #endregion
+        #endregion          
 
-        private void Foo(NavigationParameters? parameters)
+        private void ResultNotifying(NavigationParameters parameters)
         {
-            if (parameters is not null)
+            bool result;
+            if (parameters.ContainsKey(ParameterNames.AddItemResult))
             {
-                var result = (bool)parameters["result"];
-                if (result) NewStatus.Add("Успешное выполнение операции");
+                result = (bool)parameters[ParameterNames.AddItemResult];
+                if (result) Notifier.AddInfo(MessageContainer.Get("addItemSuccess"));
+                return;
             }
-            LoadDataCommand.Execute(null);
+            if (parameters.ContainsKey(ParameterNames.EditItemResult))
+            {
+                result = (bool)parameters[ParameterNames.EditItemResult];
+                if (result) Notifier.AddInfo(MessageContainer.Get("editItemSuccess"));
+                return;
+            }
         }
     }
 }

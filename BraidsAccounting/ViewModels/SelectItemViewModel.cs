@@ -14,90 +14,28 @@ using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels
 {
-    internal class SelectItemViewModel : BindableBase, INotifying
+    internal class SelectItemViewModel : ViewModelBase
     {
-        private readonly IEventAggregator eventAggregator;
-        //private readonly IManufacturersService manufacturersService;
         private readonly IViewService viewService;
-        //private readonly ICatalogueService catalogue;
-        //private string? _colorFilter;
-        //private string? _manufacturerFilter;
-        //private string? articleFilter;
+
         private ICommand? _LoadDataCommand;
-        public SelectItemViewModel(
-           IEventAggregator eventAggregator
-           //, IManufacturersService manufacturersService
-           , IViewService viewService
-           //, ICatalogueService catalogue
-           )
+        public SelectItemViewModel(IViewService viewService)
         {
-            this.eventAggregator = eventAggregator;
-            //this.manufacturersService = manufacturersService;
             this.viewService = viewService;
-            //this.catalogue = catalogue;
         }
 
         /// <summary>
         /// Выбранный материал из каталога.
         /// </summary>
         public Item SelectedItem { get; set; } = null!;
-        /// <summary>
-        /// Значение, введённое в поле фильтра артикула.
-        /// </summary>
-        //public string? ArticleFilter { get; set; }
+
         /// <summary>
         /// Флаг фильтрации отображаемых элементов каталога
         /// материалов - только в наличии.
         /// </summary>
         public bool OnlyInStock { get; set; } = false;
-        /// <summary>
-        /// Значение, введённое в поле фильтра цвета.
-        /// </summary>
-        //public string? ColorFilter
-        //{
-        //    get => _colorFilter;
-        //    set
-        //    {
-        //        _colorFilter = value;
-        //        collectionView.Refresh();
-        //    }
-        //}
-        /// <summary>
-        /// Значение, введённое в поле фильтра производителя.
-        /// </summary>
-        //public string? ManufacturerFilter
-        //{
-        //    get => _manufacturerFilter;
-        //    set
-        //    {
-        //        _manufacturerFilter = value;
-        //        collectionView?.Refresh();
-        //    }
-        //}
-        /// <summary>
-        /// Список производителей
-        /// </summary>
+
         public List<string> Manufacturers { get; set; } = null!;
-
-        #region Messages
-
-        public Notifier Error { get; } = new(true);
-        public Notifier Status => throw new NotImplementedException();
-        public Notifier Warning => throw new NotImplementedException();
-
-        #endregion       
-
-        //protected override bool Filter(object obj)
-        //{
-        //    FormItem? item = (FormItem)obj;
-        //    bool manufacturerCondition = string.IsNullOrEmpty(ManufacturerFilter)
-        //        || item.Manufacturer.Contains(ManufacturerFilter, StringComparison.OrdinalIgnoreCase);
-        //    bool articleCondition = string.IsNullOrEmpty(ArticleFilter)
-        //        || item.Article.Contains(ArticleFilter, StringComparison.OrdinalIgnoreCase);
-        //    bool colorCondition = string.IsNullOrEmpty(ColorFilter)
-        //       || item.Color.Contains(ColorFilter, StringComparison.OrdinalIgnoreCase);
-        //    return manufacturerCondition && articleCondition && colorCondition;
-        //}
 
         #region Command Select - Команда выбрать товар
 
@@ -112,15 +50,14 @@ namespace BraidsAccounting.ViewModels
             SelectedItem = item;
             if (SelectedItem is null)
             {
-                Error.Message = "Не выбран ни один товар";
+                //Error.Message = "Не выбран ни один товар";
                 return;
             }
-            var parameters = new NavigationParameters();
-            if (SelectedItem is not null)
-                parameters.Add("item", SelectedItem);
-            //viewService.GoBack(parameters);
-            //eventAggregator.GetEvent<SelectItemEvent>().Publish(SelectedItem);
-            //viewService.GetWindow<SelectItemWindow>().Close();
+            //var parameters = new NavigationParameters();
+            //if (SelectedItem is not null)
+            //    parameters.Add("item", SelectedItem);
+            viewService.AddParameter("item", SelectedItem);
+            viewService.GoBack();
         }
 
         #endregion
