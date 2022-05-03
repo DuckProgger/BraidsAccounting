@@ -60,9 +60,14 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
     /// <summary>Команда - сохранить изменения</summary>
     public ICommand SaveCommand => _SaveCommand
         ??= new DelegateCommand(OnSaveCommandExecuted, CanSaveCommandExecute);
-    private bool CanSaveCommandExecute() => IsValidManufacturer(ManufacturerInForm);
+    private bool CanSaveCommandExecute() => true;
     private async void OnSaveCommandExecuted()
     {
+        if (!IsValidManufacturer(ManufacturerInForm))
+        {
+            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            return;
+        }
         switch (ManufacturerInForm.Id)
         {
             case 0:

@@ -57,28 +57,36 @@ internal class EditStoreItemViewModel : ViewModelBase
         if (item is not null)
             SetProperties(item);
     }
+
     private bool IsValidItem() =>
-      StoreItem.Count > 0 &&
+      IsValidCount(StoreItem.Count) &&
       !string.IsNullOrEmpty(SelectedManufacturer?.Name) &&
       !string.IsNullOrEmpty(StoreItem?.Item?.Color) &&
       !string.IsNullOrEmpty(StoreItem?.Item?.Article);
 
+    private static bool IsValidCount(int count) => count > 0;
 
     #region Command SaveChanges - Команда сохранить изменения товара со склада
 
     private ICommand? _SaveChangesCommand;
     /// <summary>Команда - сохранить изменения товара со склада</summary>
     public ICommand SaveChangesCommand => _SaveChangesCommand
-        ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute)
-        .ObservesProperty(() => StoreItem.Count)
-        .ObservesProperty(() => StoreItem.Item.Color)
-        .ObservesProperty(() => StoreItem.Item.Article)
-        .ObservesProperty(() => SelectedManufacturer);
+        ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);
 
-    private bool CanSaveChangesCommandExecute() => IsValidItem();
+    private bool CanSaveChangesCommandExecute() => true;
     private async void OnSaveChangesCommandExecuted()
     {
         StoreItem.Item.Manufacturer = SelectedManufacturer;
+        if (!IsValidCount(StoreItem.Count))
+        {
+            Notifier.AddError(MessageContainer.StoreItemInvalidCount);
+            return;
+        }
+        if (!IsValidItem())
+        {
+            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            return;
+        }
         await store.EditItemAsync(StoreItem);
         viewService.AddParameter(ParameterNames.EditItemResult, true);
         viewService.GoBack();

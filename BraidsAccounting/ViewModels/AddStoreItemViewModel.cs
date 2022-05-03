@@ -4,7 +4,6 @@ using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using Prism.Commands;
 using Prism.Regions;
-using System;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels;
@@ -36,11 +35,14 @@ internal class AddStoreItemViewModel : ViewModelBase
             InStock = store.GetItemCount(item.Manufacturer.Name, item.Article, item.Color);
         }
     }
+
     private static bool IsValidStoreItem(StoreItem storeItem) =>
-       storeItem.Count > 0 &&
+       IsValidCount(storeItem.Count) &&
        !string.IsNullOrEmpty(storeItem.Item?.Manufacturer?.Name) &&
        !string.IsNullOrEmpty(storeItem.Item?.Article) &&
        !string.IsNullOrEmpty(storeItem.Item?.Color);
+
+    private static bool IsValidCount(int count) => count > 0;
 
     #region Command AddStoreItem - Команда добавить товар на склад
 
@@ -48,14 +50,21 @@ internal class AddStoreItemViewModel : ViewModelBase
 
     /// <summary>Команда - добавить товар на склад</summary>
     public DelegateCommand AddStoreItemCommand => _AddStoreItemCommand
-        ??= new DelegateCommand(OnAddStoreItemCommandExecuted, CanAddStoreItemCommandExecute)
-        .ObservesProperty(() => StoreItem.Count)
-        .ObservesProperty(() => StoreItem.Item.Article)
-        .ObservesProperty(() => StoreItem.Item.Color)
-        .ObservesProperty(() => StoreItem.Item.Manufacturer);
-    private bool CanAddStoreItemCommandExecute() => IsValidStoreItem(StoreItem);
+        ??= new DelegateCommand(OnAddStoreItemCommandExecuted, CanAddStoreItemCommandExecute);
+
+    private bool CanAddStoreItemCommandExecute() => true;
     private async void OnAddStoreItemCommandExecuted()
     {
+        if (!IsValidCount(StoreItem.Count))
+        {
+            Notifier.AddError(MessageContainer.StoreItemInvalidCount);
+            return;
+        }
+        if (!IsValidStoreItem(StoreItem))
+        {
+            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            return;
+        }
         await store.AddItemAsync(StoreItem);
         viewService.AddParameter(ParameterNames.AddItemResult, true);
         viewService.GoBack();

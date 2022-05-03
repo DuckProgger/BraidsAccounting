@@ -4,6 +4,7 @@ using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using Prism.Regions;
+using System;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
@@ -63,7 +64,7 @@ internal class CatalogueViewModel : ViewModelBase<Item>
     {
         NavigationParameters? parameters = new NavigationParameters();
         if (SelectedItem is not null)
-            parameters.Add("item", SelectedItem);
+            parameters.Add(ParameterNames.SelectedItem, SelectedItem);
         viewService.ShowPopupWindow(viewName, parameters, (p) =>
         {
             if (p is not null) ResultNotifying(p);
@@ -82,9 +83,16 @@ internal class CatalogueViewModel : ViewModelBase<Item>
     private bool CanRemoveItemCommandExecute() => true;
     private async void OnRemoveItemCommandExecuted()
     {
-        await catalogueService.RemoveAsync(SelectedItem);
-        Collection.Remove(SelectedItem);
-        Notifier.AddWarning(MessageContainer.RemoveItemSuccess);
+        try
+        {
+            await catalogueService.RemoveAsync(SelectedItem);
+            Collection.Remove(SelectedItem);
+            Notifier.AddInfo(MessageContainer.RemoveItemSuccess);
+        }
+        catch (ArgumentException ex)
+        {
+            Notifier.AddError(ex.Message);
+        }
         MDDialogHost.CloseDialogCommand.Execute(null, null);
     }
 

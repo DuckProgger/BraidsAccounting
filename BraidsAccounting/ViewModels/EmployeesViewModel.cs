@@ -25,7 +25,7 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
     /// </summary>
     public ObservableCollection<string> EmployeeList { get; set; } = null!;
     private static bool IsValidEmployee(Employee employee) =>
-    !string.IsNullOrEmpty(employee.Name);
+        !string.IsNullOrEmpty(employee.Name);
 
     #region Command GetEmployees - Команда получить всех сотрудников.
 
@@ -77,9 +77,14 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
     /// <summary>Команда - сохранить изменения</summary>
     public ICommand SaveCommand => _SaveCommand
         ??= new DelegateCommand(OnSaveCommandExecuted, CanSaveCommandExecute);
-    private bool CanSaveCommandExecute() => IsValidEmployee(EmployeeInForm);
+    private bool CanSaveCommandExecute() => true;
     private async void OnSaveCommandExecuted()
     {
+        if (!IsValidEmployee(EmployeeInForm))
+        {
+            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            return;
+        }
         switch (EmployeeInForm.Id)
         {
             case 0:

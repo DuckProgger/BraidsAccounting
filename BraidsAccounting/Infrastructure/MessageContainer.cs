@@ -16,11 +16,13 @@ internal static class MessageContainer
     public const string RemoveStoreItemSuccess = "Материал успешно удалён со склада.";
     public const string AddStoreItemSuccess = "Материал успешно добавлен на склад.";
     public const string EditStoreItemSuccess = "Количество материала на складе успешно изменено.";
+    public const string StoreItemInvalidCount = "Количество материала должно быть больше нуля.";
     #endregion
 
     #region Employee
     public const string AddEmployeeSuccess = "Новый сотрудник успешно добавлен.";
     public const string EditEmployeeSuccess = "Сотрудник успешно изменён.";
+    public const string EmployeeNotSelected = "Не выбран сотрудник.";
     #endregion
 
     #region Manufacturer
@@ -34,10 +36,7 @@ internal static class MessageContainer
     #region Payment
     public const string AddPaymentSuccess = "Сумма успешно зачислена.";
     public const string AmountMustBePositive = "Сумма должна быть положительной.";
-    public const string EmployeeNotSelected = "Не выбран сотрудник.";
     #endregion
-
-    public const string FieldsNotFilled = "Не все поля заполнены.";
 
     #region Service
     public const string SelectedItemAlreadyExists = "Выбранный материал уже есть в списке.";
@@ -45,10 +44,14 @@ internal static class MessageContainer
     public const string AddServiceSuccess = "Услуга успешно добавлена.";
     public const string WastedItemNotSelected = "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!";
     public const string WastedItemInvalidCount = "Количество израходованного материала должно быть больше нуля.";
+    public const string InvalidServiceProfit = "Сумма прибыли должна быть положительной.";
     #endregion
 
     #region SelectItem
     public const string ItemNotSelected = "Не выбран ни один товар.";
     #endregion
+
+    public const string FieldsNotFilled = "Не все поля заполнены.";
+
 }
 

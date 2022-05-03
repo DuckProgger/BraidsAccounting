@@ -51,11 +51,16 @@ internal class CatalogueService : ICatalogueService
         IManufacturersService? manufacturersService = ServiceLocator.GetService<IManufacturersService>();
         Manufacturer? manufacturer = await manufacturersService.GetAsync(item.Manufacturer.Name);
         if (manufacturer == null) throw new ArgumentNullException(nameof(manufacturer), "Производитель не найден.");
+        TrimSpaces(item);
         item.Manufacturer = manufacturer;
         return await catalogue.CreateAsync(item);
     }
 
-    public async Task EditAsync(Item item) => await catalogue.EditAsync(item);
+    public async Task EditAsync(Item item)
+    {
+        TrimSpaces(item);
+        await catalogue.EditAsync(item);
+    }
 
     public async Task RemoveAsync(Item item)
     {
@@ -70,6 +75,12 @@ internal class CatalogueService : ICatalogueService
 
         // Удалить материал из каталога
         await catalogue.RemoveAsync(item.Id);
+    }
+
+    private static void TrimSpaces(Item item)
+    {
+        item.Article = item.Article.Trim();
+        item.Color = item.Color.Trim();
     }
 
 }

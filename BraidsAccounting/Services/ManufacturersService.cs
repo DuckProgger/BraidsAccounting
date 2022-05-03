@@ -32,16 +32,16 @@ internal class ManufacturersService : IManufacturersService
     public async Task AddAsync(Manufacturer? manufacturer)
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
-        if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
-            throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
+        //if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
+        //    throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
         await manufacturers.CreateAsync(manufacturer);
     }
 
     public async Task EditAsync(Manufacturer? manufacturer)
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
-        if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
-            throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
+        //if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
+        //    throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
         await manufacturers.EditAsync(manufacturer);
     }
 

@@ -61,11 +61,16 @@ internal class EditItemViewModel : ViewModelBase
     public ICommand SaveChangesCommand => _SaveChangesCommand
         ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);
 
-    private bool CanSaveChangesCommandExecute() => IsValidItem();
+    private bool CanSaveChangesCommandExecute() => true;
     private async void OnSaveChangesCommandExecuted()
     {
         try
         {
+            if (!IsValidItem())
+            {
+                Notifier.AddError(MessageContainer.FieldsNotFilled);
+                return;
+            }
             ItemInForm.Manufacturer = SelectedManufacturer;
             await catalogueService.EditAsync(ItemInForm);
             viewService.AddParameter(ParameterNames.EditItemResult, true);

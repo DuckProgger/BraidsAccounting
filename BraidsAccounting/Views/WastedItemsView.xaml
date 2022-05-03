@@ -116,7 +116,7 @@
         </Grid>
         <DataGrid 
             Grid.Row="1"
-            ItemsSource="{Binding WastedItems}"
+            ItemsSource="{Binding Collection}"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
             dgx:DataGridFilter.IsAutoFilterEnabled="True">

@@ -1,17 +1,16 @@
-﻿using BraidsAccounting.Models;
+﻿using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Models;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
-using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 using IServiceProvider = BraidsAccounting.Services.Interfaces.IServiceProvider;
 
 namespace BraidsAccounting.ViewModels;
 
-internal class WastedItemsViewModel : BindableBase
+internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
 {
     private readonly IWastedItemsService statisticsService;
     private readonly IServiceProvider serviceProvider;
@@ -26,10 +25,6 @@ internal class WastedItemsViewModel : BindableBase
     }
     public string Title => "Израсходованные материалы";
 
-    /// <summary>
-    /// Список израсходованных материалов в представлении.
-    /// </summary>
-    public ObservableCollection<WastedItemForm>? WastedItems { get; set; }
     /// <summary>
     /// Список имён сотрудников, которые когда-либо выполняли работу.
     /// </summary>
@@ -73,7 +68,7 @@ internal class WastedItemsViewModel : BindableBase
             Start = Start,
             End = End
         };
-        WastedItems = new(await statisticsService.GetWastedItemFormsAsync(FilterOptions));
+        Collection = new(await statisticsService.GetWastedItemFormsAsync(FilterOptions));
         TotalExpenses = await statisticsService.GetTotalExpensesAsync(FilterOptions);
     }
 
@@ -105,7 +100,7 @@ internal class WastedItemsViewModel : BindableBase
     {
         FilterOptions = new();
         InitializeDatePeriod();
-        WastedItems = null;
+        Collection = null;
         TotalExpenses = 0;
     }
 

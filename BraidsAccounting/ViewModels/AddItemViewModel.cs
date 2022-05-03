@@ -43,9 +43,14 @@ internal class AddItemViewModel : ViewModelBase
     /// <summary>Команда - добавить новый материал в каталог</summary>
     public ICommand AddItemCommand => _AddItemCommand
         ??= new DelegateCommand(OnAddItemCommandExecuted, CanAddItemCommandExecute);
-    private bool CanAddItemCommandExecute() => IsValidItem();
+    private bool CanAddItemCommandExecute() => true;
     private async void OnAddItemCommandExecuted()
     {
+        if (!IsValidItem())
+        {
+            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            return;
+        }
         ItemInForm.Manufacturer = SelectedManufacturer;
         await catalogueService.AddAsync(ItemInForm);
         viewService.AddParameter(ParameterNames.AddItemResult, true);

@@ -60,7 +60,6 @@ internal class ServiceViewModel : ViewModelBase
         {
             selectedEmployee = value;
             Service.Employee = value;
-            CreateServiceCommand.RaiseCanExecuteChanged();
         }
     }
 
@@ -101,9 +100,11 @@ internal class ServiceViewModel : ViewModelBase
         }
     }
 
-    private static bool IsValidService(Service service) =>
-        service.NetProfit >= 0 &&
-        service.Employee is not null;
+    private static bool IsValidEmployee(Employee employee) => employee is not null;
+
+    private static bool IsValidProfit(decimal profit) => profit >= 0;
+
+    private static bool IsValidWastedItemCount(decimal count) => count > 0;
 
     #region Command CreateService - Добавление сервиса
 
@@ -111,7 +112,7 @@ internal class ServiceViewModel : ViewModelBase
     /// <summary>Команда - Добавление сервиса</summary>
     public DelegateCommand CreateServiceCommand => _CreateServiceCommand
         ??= new(OnCreateServiceCommandExecuted, CanCreateServiceCommandExecute);
-    private bool CanCreateServiceCommandExecute() => IsValidService(Service);
+    private bool CanCreateServiceCommandExecute() => true;
     private async void OnCreateServiceCommandExecuted()
     {
         MDDialogHost.CloseDialogCommand.Execute(null, null);
@@ -163,11 +164,21 @@ internal class ServiceViewModel : ViewModelBase
     private bool CanOpenDialogCommandExecute() => true;
     private void OnOpenDialogCommandExecuted()
     {
+        if (!IsValidProfit(Service.Profit))
+        {
+            Notifier.AddError(MessageContainer.InvalidServiceProfit);
+            return;
+        }
+        if (!IsValidEmployee(Service.Employee))
+        {
+            Notifier.AddError(MessageContainer.EmployeeNotSelected);
+            return;
+        }
         Notifier.Remove(MessageContainer.WastedItemNotSelected);
         if (WastedItems.Count == 0)
             Notifier.AddWarning(MessageContainer.WastedItemNotSelected);
         foreach (var wastedItem in WastedItems)
-            if (wastedItem.Count < 1)
+            if (!IsValidWastedItemCount(wastedItem.Count))
             {
                 Notifier.AddError(MessageContainer.WastedItemInvalidCount);
                 return;
