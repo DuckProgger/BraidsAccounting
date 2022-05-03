@@ -1,16 +1,10 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BraidsAccounting.DAL.Entities
+namespace BraidsAccounting.DAL.Entities;
+
+public class Payment : Entity
 {
-    public class Payment : Entity
-    {
-        public decimal Amount { get; set; }
-        public DateTime DateTime { get; set; }
-        public Employee Employee { get; set; } = null!;
-    }
+    public decimal Amount { get; set; }
+    public DateTime DateTime { get; set; }
+    public Employee Employee { get; set; } = null!;
 }

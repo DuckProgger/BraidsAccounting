@@ -1,9 +1,8 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
 
-namespace BraidsAccounting.DAL.Entities
+namespace BraidsAccounting.DAL.Entities;
+
+public class Employee : Entity
 {
-    public class Employee : Entity
-    {
-        public string Name { get; set; } = null!;
-    }
+    public string Name { get; set; } = null!;
 }

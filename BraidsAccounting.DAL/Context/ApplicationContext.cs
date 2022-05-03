@@ -4,79 +4,78 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
 
-namespace BraidsAccounting.DAL.Context
+namespace BraidsAccounting.DAL.Context;
+
+public class ApplicationContext : DbContext
 {
-    public class ApplicationContext : DbContext
+    public DbSet<Item> Items { get; set; } = null!;
+    public DbSet<Service> Services { get; set; } = null!;
+    public DbSet<StoreItem> Store { get; set; } = null!;
+    public DbSet<WastedItem> WastedItems { get; set; } = null!;
+    public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
+    public DbSet<Employee> Employees { get; set; } = null!;
+    public DbSet<Payment> Payments { get; set; } = null!;
+
+
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        public DbSet<Item> Items { get; set; } = null!;
-        public DbSet<Service> Services { get; set; } = null!;
-        public DbSet<StoreItem> Store { get; set; } = null!;
-        public DbSet<WastedItem> WastedItems { get; set; } = null!;
-        public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
-        public DbSet<Employee> Employees { get; set; } = null!;
-        public DbSet<Payment> Payments { get; set; } = null!;
+        Database.EnsureCreated();
+    }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseSqlServer(GetConnectionString());
+    }
 
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
-        {
-            Database.EnsureCreated();
-        }
+    internal static string GetConnectionString()
+    {
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        // установка пути к текущему каталогу
+        builder.SetBasePath(Directory.GetCurrentDirectory());
+        // получаем конфигурацию из файла appsettings.json
+        builder.AddJsonFile("appsettings.json");
+        // создаем конфигурацию
+        IConfigurationRoot config = builder.Build();
+        // получаем строку подключения
+        return config.GetConnectionString("DefaultConnection");
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder
-                .UseSqlServer(GetConnectionString());
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder
+            .Entity<Service>(ServiceConfigure)
+            .Entity<Payment>(PaymentConfigure)
+            ;
+    }
 
-        internal static string GetConnectionString()
-        {
-            ConfigurationBuilder builder = new ConfigurationBuilder();
-            // установка пути к текущему каталогу
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-            // получаем конфигурацию из файла appsettings.json
-            builder.AddJsonFile("appsettings.json");
-            // создаем конфигурацию
-            IConfigurationRoot config = builder.Build();
-            // получаем строку подключения
-            return config.GetConnectionString("DefaultConnection");
-        }
+    private void ServiceConfigure(EntityTypeBuilder<Service> builder)
+    {       
+        builder
+          .Property(x => x.DateTime)
+          .HasDefaultValueSql("GETDATE()");
+    }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder
-                .Entity<Service>(ServiceConfigure)
-                .Entity<Payment>(PaymentConfigure)
-                ;
-        }
+    private void PaymentConfigure(EntityTypeBuilder<Payment> builder)
+    {
+        builder
+          .Property(x => x.DateTime)
+          .HasDefaultValueSql("GETDATE()");
+    }
+}   
 
-        private void ServiceConfigure(EntityTypeBuilder<Service> builder)
-        {       
-            builder
-              .Property(x => x.DateTime)
-              .HasDefaultValueSql("GETDATE()");
-        }
-
-        private void PaymentConfigure(EntityTypeBuilder<Payment> builder)
-        {
-            builder
-              .Property(x => x.DateTime)
-              .HasDefaultValueSql("GETDATE()");
-        }
-    }   
+/// <summary>
+/// Фабрика создания контекста для Dependency Injection.
+/// </summary>
+public class MyServiceFactory : IDesignTimeDbContextFactory<ApplicationContext>
+{
+    public static ApplicationContext CreateDbContext() =>
+        new ApplicationContext(
+            new DbContextOptionsBuilder<ApplicationContext>()
+            .UseSqlServer(ApplicationContext.GetConnectionString()).Options);
 
     /// <summary>
-    /// Фабрика создания контекста для Dependency Injection.
+    /// Создание экземпляра ApplicationContext.
     /// </summary>
-    public class MyServiceFactory : IDesignTimeDbContextFactory<ApplicationContext>
-    {
-        public static ApplicationContext CreateDbContext() =>
-            new ApplicationContext(
-                new DbContextOptionsBuilder<ApplicationContext>()
-                .UseSqlServer(ApplicationContext.GetConnectionString()).Options);
-
-        /// <summary>
-        /// Создание экземпляра ApplicationContext.
-        /// </summary>
-        public ApplicationContext CreateDbContext(string[] args) => CreateDbContext();
-    }
+    public ApplicationContext CreateDbContext(string[] args) => CreateDbContext();
 }

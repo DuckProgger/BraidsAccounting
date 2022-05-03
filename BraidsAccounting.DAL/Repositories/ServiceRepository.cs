@@ -2,20 +2,19 @@
 using BraidsAccounting.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BraidsAccounting.DAL.Repositories
+namespace BraidsAccounting.DAL.Repositories;
+
+/// <summary>
+/// Репозиторий для выполненных работ.
+/// </summary>
+internal class ServiceRepository : DbRepository<Service>
 {
-    /// <summary>
-    /// Репозиторий для выполненных работ.
-    /// </summary>
-    internal class ServiceRepository : DbRepository<Service>
+    public override IQueryable<Service> Items => base.Items
+        .Include(s => s.WastedItems)
+        .ThenInclude(ei => ei.Item)
+        .ThenInclude(i => i.Manufacturer)
+        ;
+    public ServiceRepository(ApplicationContext context) : base(context)
     {
-        public override IQueryable<Service> Items => base.Items
-            .Include(s => s.WastedItems)
-            .ThenInclude(ei => ei.Item)
-            .ThenInclude(i => i.Manufacturer)
-            ;
-        public ServiceRepository(ApplicationContext context) : base(context)
-        {
-        }
     }
 }

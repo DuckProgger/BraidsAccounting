@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BraidsAccounting.DAL.Entities.Base
+namespace BraidsAccounting.DAL.Entities.Base;
+
+public abstract class NamedEntity
 {
-    public abstract class NamedEntity
-    {
-        [Required]
-        public string Name { get; set; } = null!;
-    }
+    [Required]
+    public string Name { get; set; } = null!;
 }

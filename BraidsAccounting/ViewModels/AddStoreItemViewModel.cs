@@ -11,7 +11,6 @@ namespace BraidsAccounting.ViewModels;
 
 internal class AddStoreItemViewModel : ViewModelBase
 {
-    private ICommand? _AddStoreItemCommand;
     private readonly IStoreService store;
     private readonly IViewService viewService;
 
@@ -45,9 +44,15 @@ internal class AddStoreItemViewModel : ViewModelBase
 
     #region Command AddStoreItem - Команда добавить товар на склад
 
+    private DelegateCommand? _AddStoreItemCommand;
+
     /// <summary>Команда - добавить товар на склад</summary>
-    public ICommand AddStoreItemCommand => _AddStoreItemCommand
-        ??= new DelegateCommand(OnAddStoreItemCommandExecuted, CanAddStoreItemCommandExecute);
+    public DelegateCommand AddStoreItemCommand => _AddStoreItemCommand
+        ??= new DelegateCommand(OnAddStoreItemCommandExecuted, CanAddStoreItemCommandExecute)
+        .ObservesProperty(() => StoreItem.Count)
+        .ObservesProperty(() => StoreItem.Item.Article)
+        .ObservesProperty(() => StoreItem.Item.Color)
+        .ObservesProperty(() => StoreItem.Item.Manufacturer);
     private bool CanAddStoreItemCommandExecute() => IsValidStoreItem(StoreItem);
     private async void OnAddStoreItemCommandExecuted()
     {

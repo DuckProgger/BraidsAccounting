@@ -27,7 +27,7 @@ internal class EditStoreItemViewModel : ViewModelBase
     /// <summary>
     /// Выбранный производитель из списка.
     /// </summary>
-    
+
     public Manufacturer SelectedManufacturer { get; set; } = null!;
     public EditStoreItemViewModel(
      IStoreService store
@@ -58,9 +58,10 @@ internal class EditStoreItemViewModel : ViewModelBase
             SetProperties(item);
     }
     private bool IsValidItem() =>
-      !string.IsNullOrEmpty(SelectedManufacturer?.Name)
-     && !string.IsNullOrEmpty(StoreItem?.Item?.Color)
-     && !string.IsNullOrEmpty(StoreItem?.Item?.Article);
+      StoreItem.Count > 0 &&
+      !string.IsNullOrEmpty(SelectedManufacturer?.Name) &&
+      !string.IsNullOrEmpty(StoreItem?.Item?.Color) &&
+      !string.IsNullOrEmpty(StoreItem?.Item?.Article);
 
 
     #region Command SaveChanges - Команда сохранить изменения товара со склада
@@ -68,7 +69,11 @@ internal class EditStoreItemViewModel : ViewModelBase
     private ICommand? _SaveChangesCommand;
     /// <summary>Команда - сохранить изменения товара со склада</summary>
     public ICommand SaveChangesCommand => _SaveChangesCommand
-        ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute).ObservesProperty(() => StoreItem);
+        ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute)
+        .ObservesProperty(() => StoreItem.Count)
+        .ObservesProperty(() => StoreItem.Item.Color)
+        .ObservesProperty(() => StoreItem.Item.Article)
+        .ObservesProperty(() => SelectedManufacturer);
 
     private bool CanSaveChangesCommandExecute() => IsValidItem();
     private async void OnSaveChangesCommandExecuted()
