@@ -44,9 +44,10 @@
         </md:DialogHost.DialogContent>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="0.2*"/>
-                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <DataGrid ItemsSource="{Binding Collection}"
                       SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
@@ -84,26 +85,24 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Grid.Row="1" Content="Добавить новый материал" 
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+                <TextBlock Text="Только в наличии"/>
+                <CheckBox IsChecked="{Binding OnlyInStock, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Unchecked">
+                            <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </CheckBox>
+            </StackPanel>
+            <Button Grid.Row="2" Content="Добавить новый материал" 
                     Command="{Binding NavigateToOtherWindowCommand}"
-                    CommandParameter="AddItemView"/>
-            <Grid Grid.Row="2">
-                <StackPanel>
-                    <TextBlock
-                Foreground="DarkRed"
-                TextAlignment="Center"
-                DataContext="{Binding ErrorMessage}"
-                Text="{Binding Message}"
-                Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </StackPanel>
-                <TextBlock
-                Foreground="DarkGreen"
-                TextAlignment="Center"
-                DataContext="{Binding StatusMessage}"
-                Text="{Binding Message}"
-                Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-
-            </Grid>          
+                    CommandParameter="AddItemView"
+                    Margin="5"/>            
+            <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
         </Grid>
     </md:DialogHost>
 

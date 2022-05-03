@@ -1,99 +1,81 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.Views.Windows;
 using Prism.Commands;
-using Prism.Events;
-using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace BraidsAccounting.ViewModels
+namespace BraidsAccounting.ViewModels;
+
+internal class EditItemViewModel : ViewModelBase
 {
-    internal class EditItemViewModel : BindableBase, INotifying, INavigationAware
+    private ICommand? _SaveChangesCommand;
+    private readonly ICatalogueService catalogueService;
+    private readonly IViewService viewService;
+    private readonly IManufacturersService manufacturersService;
+
+    public EditItemViewModel(
+        ICatalogueService catalogueService
+        , IViewService viewService
+        , IManufacturersService manufacturersService
+        )
     {
-        private ICommand? _SaveChangesCommand;
-        private readonly ICatalogueService catalogueService;
-        private readonly IViewService viewService;
-        private readonly IEventAggregator eventAggregator;
-        private readonly IManufacturersService manufacturersService;
-
-        public EditItemViewModel(
-            ICatalogueService catalogueService
-            , IViewService viewService
-            , IEventAggregator eventAggregator
-            , IManufacturersService manufacturersService
-            )
-        {
-            this.catalogueService = catalogueService;
-            this.viewService = viewService;
-            this.eventAggregator = eventAggregator;
-            this.manufacturersService = manufacturersService;
-            //eventAggregator.GetEvent<EditItemEvent>().Subscribe(SetProperties);
-        }       
-
-        /// <summary>
-        /// Материал из каталога, обрабатываемый в форме.
-        /// </summary>
-        public Item ItemInForm { get; set; } 
-        /// <summary>
-        /// Список производителей.
-        /// </summary>
-        public List<Manufacturer>? Manufacturers { get; set; }
-        /// <summary>
-        /// Выбранный производитель из списка.
-        /// </summary>
-        public Manufacturer SelectedManufacturer { get; set; } = null!;
-
-        #region Messages
-
-        public Notifier Error { get; } = new(true);
-        public Notifier Status => throw new NotImplementedException();
-        public Notifier Warning => throw new NotImplementedException();
-
-        #endregion
-
-        public async void OnNavigatedTo(NavigationContext navigationContext) 
-        {
-            Manufacturers = await manufacturersService.GetAllAsync().ConfigureAwait(false);
-            var item = navigationContext.Parameters["item"] as Item;
-            if (item is not null)
-            {
-                ItemInForm = item;
-                SelectedManufacturer = item.Manufacturer;
-            }               
-        }
-        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
-        public void OnNavigatedFrom(NavigationContext navigationContext) { }
-
-        #region Command SaveChanges - Команда сохранить изменения товара со склада
-
-        /// <summary>Команда - сохранить изменения товара со склада</summary>
-        public ICommand SaveChangesCommand => _SaveChangesCommand
-            ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);
-
-        private bool CanSaveChangesCommandExecute() => true;
-        private async void OnSaveChangesCommandExecuted()
-        {
-            try
-            {
-                ItemInForm.Manufacturer = SelectedManufacturer;
-                await catalogueService.EditAsync(ItemInForm);
-                //viewService.ClosePopupWindow();
-                //viewService.GetWindow<PopupWindow>().Close();
-                //eventAggregator.GetEvent<ActionSuccessEvent>().Publish(true);
-            }
-            catch (ArgumentException)
-            {
-                Error.Message = "Заполнены не все поля";
-            }
-        }    
-
-        #endregion
+        this.catalogueService = catalogueService;
+        this.viewService = viewService;
+        this.manufacturersService = manufacturersService;
     }
+
+    /// <summary>
+    /// Материал из каталога, обрабатываемый в форме.
+    /// </summary>
+    public Item ItemInForm { get; set; } = null!;
+    /// <summary>
+    /// Список производителей.
+    /// </summary>
+    public List<Manufacturer>? Manufacturers { get; set; }
+    /// <summary>
+    /// Выбранный производитель из списка.
+    /// </summary>
+    public Manufacturer SelectedManufacturer { get; set; } = null!;
+
+    public override async void OnNavigatedTo(NavigationContext navigationContext)
+    {
+        Manufacturers = await manufacturersService.GetAllAsync().ConfigureAwait(false);
+        Item? item = navigationContext.Parameters[ParameterNames.SelectedItem] as Item;
+        if (item is not null)
+        {
+            SelectedManufacturer = item.Manufacturer;
+            ItemInForm = item;
+        }
+    }
+    private bool IsValidItem() =>
+        !string.IsNullOrEmpty(SelectedManufacturer?.Name)
+       && !string.IsNullOrEmpty(ItemInForm.Color)
+       && !string.IsNullOrEmpty(ItemInForm.Article);
+
+    #region Command SaveChanges - Команда сохранить изменения товара со склада
+
+    /// <summary>Команда - сохранить изменения товара со склада</summary>
+    public ICommand SaveChangesCommand => _SaveChangesCommand
+        ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);
+
+    private bool CanSaveChangesCommandExecute() => IsValidItem();
+    private async void OnSaveChangesCommandExecuted()
+    {
+        try
+        {
+            ItemInForm.Manufacturer = SelectedManufacturer;
+            await catalogueService.EditAsync(ItemInForm);
+            viewService.AddParameter(ParameterNames.EditItemResult, true);
+            viewService.GoBack();
+        }
+        catch (ArgumentException)
+        {
+            Notifier.AddError(MessageContainer.FieldsNotFilled);
+        }
+    }
+
+    #endregion
 }

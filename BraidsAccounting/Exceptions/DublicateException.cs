@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace BraidsAccounting.Exceptions
+namespace BraidsAccounting.Exceptions;
+
+internal class DublicateException : Exception
 {
-    internal class DublicateException : Exception
+    public DublicateException(string? message) : base(message)
     {
-        public DublicateException(string? message) : base(message)
-        {
-        }
     }
 }

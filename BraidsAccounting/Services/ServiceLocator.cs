@@ -1,17 +1,16 @@
 ﻿using Prism.Ioc;
 
-namespace BraidsAccounting.Services
+namespace BraidsAccounting.Services;
+
+/// <summary>
+/// Класс для получения требуемых сервисов.
+/// </summary>
+internal static class ServiceLocator
 {
     /// <summary>
-    /// Класс для получения требуемых сервисов.
+    /// Получить сервис типа <typeparamref name = "T"/>.
     /// </summary>
-    internal static class ServiceLocator
-    {
-        /// <summary>
-        /// Получить сервис типа <typeparamref name = "T"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T GetService<T>() => ContainerLocator.Container.Resolve<T>();
-    }
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static T GetService<T>() => ContainerLocator.Container.Resolve<T>();
 }

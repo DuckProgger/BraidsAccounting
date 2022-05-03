@@ -4,38 +4,45 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-            xmlns:local="clr-namespace:BraidsAccounting.Views.Windows"
+            xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"             
             xmlns:prism="http://prismlibrary.com/" 
             prism:ViewModelLocator.AutoWireViewModel="True"
             mc:Ignorable="d"
             Background="#FAFAFA"              
-             Height="150" Width="500">
-    <i:Interaction.Triggers>
+             Height="150" Width="600">
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding InitializeDataCommand}"/>
+            --><!--<i:InvokeCommandAction Command="{Binding InitializeDataCommand}"/>--><!--
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <c:ManufacturerConverter x:Key="ManufacturerConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="1.5*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
                 <ComboBox 
                       ItemsSource="{Binding Manufacturers}"
                       SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                      SelectedIndex="0"/>
+                      SelectedIndex="0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource ManufacturerConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
             <StackPanel Grid.Column="1" >
                 <TextBlock Text="Модель" HorizontalAlignment="Center"/>
@@ -54,16 +61,9 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <Button Content="Добавить" Command="{Binding AddItemCommand}"/>
+            <Button Content="Добавить" Command="{Binding AddItemCommand}"
+                    Margin="5"/>
         </Grid>
-        <Grid Grid.Row="2">
-            <Button Command="{Binding TestCommand}"/>
-            <!--<TextBlock
-                           Foreground="DarkRed"
-                           TextAlignment="Center"
-                           DataContext="{Binding ErrorMessage}"
-                           Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
-        </Grid>
+        <ListBox Grid.Row="2" Template="{StaticResource NotifierTemplate}"/>
     </Grid>
 </UserControl>

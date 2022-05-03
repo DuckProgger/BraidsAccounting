@@ -25,9 +25,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <!--Фильтры-->
-            <RowDefinition Height="1.2*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="0.2*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <!--Фильтры-->
         <Grid Grid.Row="0">
@@ -108,7 +108,7 @@
                     </Grid>
                 </Grid>
                 <!--Кнопки-->
-                <StackPanel Grid.Column="1">
+                <StackPanel Grid.Column="1" Margin="5">
                     <Button Content="Сбросить" Command="{Binding ResetFiltersCommand}" Margin="5"/>
                     <Button Content="Применить" Command="{Binding GetDataCommand}" Margin="5"/>
                 </StackPanel>
@@ -127,22 +127,10 @@
                 <DataGridTextColumn Header="Количество" Binding="{Binding Count}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Расход" Binding="{Binding Expense, Converter={StaticResource MoneyConverter}}" IsReadOnly="True"/>
             </DataGrid.Columns>
-        </DataGrid>
-        <!--<ListView Grid.Row="1"
-                  ItemsSource="{Binding WastedItems}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Производитель" DisplayMemberBinding="{Binding Manufacturer}"/>
-                    <GridViewColumn Header="Модель" DisplayMemberBinding="{Binding Article}"/>
-                    <GridViewColumn Header="Цвет" DisplayMemberBinding="{Binding Color}"/>
-                    <GridViewColumn Header="Количество" DisplayMemberBinding="{Binding Count}"/>
-                    <GridViewColumn Header="Расход" DisplayMemberBinding="{Binding Expense, Converter={StaticResource MoneyConverter}}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>-->
+        </DataGrid>        
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <TextBlock Text="Общие расходы: "/>
-            <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}" MinWidth="100"/>
+            <TextBlock Text="Общие расходы: " FontSize="16"/>
+            <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}" MinWidth="100" FontSize="16"/>
         </StackPanel>
     </Grid>
 </UserControl>

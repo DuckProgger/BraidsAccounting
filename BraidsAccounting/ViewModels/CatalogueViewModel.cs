@@ -1,135 +1,110 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
-using BraidsAccounting.Views;
-using BraidsAccounting.Views.Windows;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Regions;
-using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
 
-namespace BraidsAccounting.ViewModels
+namespace BraidsAccounting.ViewModels;
+
+internal class CatalogueViewModel : ViewModelBase<Item>
 {
-    internal class CatalogueViewModel : FilterableBindableBase<Item>, INotifying, INavigationAware
+    private ICommand? _NavigateToOtherWindowCommand;
+    private readonly IViewService viewService;
+    private ICatalogueService catalogueService;
+
+    public CatalogueViewModel(
+        IViewService viewService
+        , ICatalogueService catalogueService
+        )
     {
-        private ICommand? _NavigateToOtherWindowCommand;
-        private readonly IViewService viewService;
-        private ICatalogueService catalogueService;
-        private readonly IEventAggregator eventAggregator;
-        private readonly IRegionManager regionManager;
-        //private IRegionNavigationJournal journal;
-
-        public CatalogueViewModel(
-            IViewService viewService
-            , ICatalogueService catalogueService
-            , IEventAggregator eventAggregator
-            , IRegionManager regionManager
-            )
-        {
-            this.viewService = viewService;
-            this.catalogueService = catalogueService;
-            this.eventAggregator = eventAggregator;
-            this.regionManager = regionManager;
-            //eventAggregator.GetEvent<ActionSuccessEvent>().Subscribe(SetStatusMessage);
-        }
-        public string Title => "Каталог";
-
-        public Item SelectedItem { get; set; }
-
-        #region Messages
-        public Notifier Status { get; } = new(true);
-        public Notifier Error { get; } = new(true);
-        public Notifier Warning => throw new NotImplementedException();
-
-        #endregion
-
-        protected override bool Filter(object obj) => true;
-        private void SetStatusMessage(bool success)
-        {
-            if (regionManager.IsViewActive<CatalogueView>(RegionNames.Catalogs) && success)
-            {
-                LoadDataCommand.Execute(null);
-                Status.Message = "Операция выполнена";
-            }
-        }
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            //journal = navigationContext.NavigationService.Journal;
-        }
-        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
-        #region Command LoadData - Команда загрузки данных со склада
-
-        private ICommand? _LoadDataCommand;
-        /// <summary>Команда - загрузки данных со склада</summary>
-        public ICommand LoadDataCommand => _LoadDataCommand
-            ??= new DelegateCommand(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
-        private bool CanLoadDataCommandExecute() => true;
-        private async void OnLoadDataCommandExecuted() => await LoadData();
-
-        private async Task LoadData()
-        {
-            Status.Message = "Загружается каталог материалов...";
-            // Нужно обновить контекст, чтобы получать обновлённые данные
-            catalogueService = ServiceLocator.GetService<ICatalogueService>();
-            Collection = new(await catalogueService.GetAllAsync(false));
-            Status.Message = string.Empty;
-        }
-
-        #endregion
-
-        #region Command NavigateToOtherWindow - Команда перейти на другой экран       
-
-        /// <summary>Команда - перейти на другой экран</summary>
-        public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
-            ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
-
-        private bool CanNavigateToOtherWindowCommandExecute(string viewName) => true;
-        private void OnNavigateToOtherWindowCommandExecuted(string viewName)
-        {
-            var parameters = new NavigationParameters();
-            if (SelectedItem is not null)
-                parameters.Add("item", SelectedItem);
-            //viewService.ShowPopupWindow(viewName, parameters, () => LoadDataCommand.Execute(null));
-        }
-
-
-        #endregion
-
-        #region Command RemoveItem - Команда удалить материал из каталога
-
-        private ICommand? _RemoveItemCommand;
-        /// <summary>Команда - удалить материал из каталога</summary>
-        public ICommand RemoveItemCommand => _RemoveItemCommand
-            ??= new DelegateCommand(OnRemoveItemCommandExecuted, CanRemoveItemCommandExecute);
-        private bool CanRemoveItemCommandExecute() => true;
-        private async void OnRemoveItemCommandExecuted()
-        {
-            try
-            {
-                await catalogueService.RemoveAsync(SelectedItem);
-                Collection.Remove(SelectedItem);
-                Status.Message = "Материал успешно удалён из каталога.";
-            }
-            catch (ArgumentException ex)
-            {
-                Error.Message = ex.Message;
-            }
-            MDDialogHost.CloseDialogCommand.Execute(null, null);
-        }
-
-        #endregion
-
-
+        this.viewService = viewService;
+        this.catalogueService = catalogueService;
     }
+    public string Title => "Каталог";
+
+    public Item SelectedItem { get; set; }
+
+    /// <summary>
+    /// Флаг фильтрации отображаемых элементов каталога
+    /// материалов - только в наличии.
+    /// </summary>
+    public bool OnlyInStock { get; set; } 
+
+    #region Command LoadData - Команда загрузки данных со склада
+
+    private ICommand? _LoadDataCommand;
+    /// <summary>Команда - загрузки данных со склада</summary>
+    public ICommand LoadDataCommand => _LoadDataCommand
+        ??= new DelegateCommand(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
+    private bool CanLoadDataCommandExecute() => true;
+    private async void OnLoadDataCommandExecuted()
+    {
+        Notifier.AddInfo(MessageContainer.LoadingItems);
+        // Нужно обновить контекст, чтобы получать обновлённые данные
+        catalogueService = ServiceLocator.GetService<ICatalogueService>();
+        Collection = new(await catalogueService.GetAllAsync(OnlyInStock));
+        Notifier.Remove(MessageContainer.LoadingItems);
+    }
+
+    #endregion
+
+    #region Command NavigateToOtherWindow - Команда перейти на другой экран       
+
+    /// <summary>Команда - перейти на другой экран</summary>
+    public ICommand NavigateToOtherWindowCommand => _NavigateToOtherWindowCommand
+        ??= new DelegateCommand<string>(OnNavigateToOtherWindowCommandExecuted, CanNavigateToOtherWindowCommandExecute);
+
+    private bool CanNavigateToOtherWindowCommandExecute(string viewName) => true;
+    private void OnNavigateToOtherWindowCommandExecuted(string viewName)
+    {
+        NavigationParameters? parameters = new NavigationParameters();
+        if (SelectedItem is not null)
+            parameters.Add("item", SelectedItem);
+        viewService.ShowPopupWindow(viewName, parameters, (p) =>
+        {
+            if (p is not null) ResultNotifying(p);
+            LoadDataCommand.Execute(null);
+        });
+    }
+
+    #endregion
+
+    #region Command RemoveItem - Команда удалить материал из каталога
+
+    private ICommand? _RemoveItemCommand;
+    /// <summary>Команда - удалить материал из каталога</summary>
+    public ICommand RemoveItemCommand => _RemoveItemCommand
+        ??= new DelegateCommand(OnRemoveItemCommandExecuted, CanRemoveItemCommandExecute);
+    private bool CanRemoveItemCommandExecute() => true;
+    private async void OnRemoveItemCommandExecuted()
+    {
+        await catalogueService.RemoveAsync(SelectedItem);
+        Collection.Remove(SelectedItem);
+        Notifier.AddWarning(MessageContainer.RemoveItemSuccess);
+        MDDialogHost.CloseDialogCommand.Execute(null, null);
+    }
+
+    #endregion
+
+    private void ResultNotifying(NavigationParameters parameters)
+    {
+        bool result;
+        if (parameters.ContainsKey(ParameterNames.AddItemResult))
+        {
+            result = (bool)parameters[ParameterNames.AddItemResult];
+            if (result) Notifier.AddInfo(MessageContainer.AddItemSuccess);
+            return;
+        }
+        if (parameters.ContainsKey(ParameterNames.EditItemResult))
+        {
+            result = (bool)parameters[ParameterNames.EditItemResult];
+            if (result) Notifier.AddInfo(MessageContainer.EditItemSuccess);
+            return;
+        }
+    }
+
 }

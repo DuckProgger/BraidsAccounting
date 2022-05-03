@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="BraidsAccounting.Views.SelectItemView"
+﻿<UserControl x:Class="BraidsAccounting.Views.SelectStoreItemView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -31,9 +31,9 @@
                 Width="100" 
                 Command="{Binding GoBackCommand}"
                 Margin="5"/>
-        <local:CatalogueView Grid.Row="1" x:Name="Catalog" />
+        <local:StoreView Grid.Row="1" x:Name="Store" />
         <Button Grid.Row="2" Content="Выбрать" Command="{Binding SelectCommand}"
-                CommandParameter="{Binding ElementName=Catalog, Path=DataContext.SelectedItem}"
+                CommandParameter="{Binding ElementName=Store, Path=DataContext.SelectedStoreItem}"
                 Margin="5"/>
         <ListBox Grid.Row="4" Template="{StaticResource NotifierTemplate}"/>
     </Grid>

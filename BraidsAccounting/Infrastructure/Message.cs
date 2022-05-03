@@ -1,9 +1,14 @@
-﻿namespace BraidsAccounting.Infrastructure
+﻿namespace BraidsAccounting.Infrastructure;
+
+internal class Message
 {
-    internal class Message
+    public Message(string text, MessageType type)
     {
-        public string Text { get; set; } = null!;
-        public MessageType Type { get; set; }
+        Text = text;
+        Type = type;
     }
-    internal enum MessageType { Info, Error, Warning }
+
+    public string Text { get; } = null!;
+    public MessageType Type { get; }
 }
+internal enum MessageType { Info, Error, Warning }

@@ -8,7 +8,7 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d"
-        Title="PopupWindow" 
+        Title=""
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         Width="100" Height="100">

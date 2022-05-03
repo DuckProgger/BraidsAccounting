@@ -3,12 +3,11 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:local="clr-namespace:BraidsAccounting.Views.Windows"
             xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
             xmlns:prism="http://prismlibrary.com/" 
             prism:ViewModelLocator.AutoWireViewModel="True"
             mc:Ignorable="d"
-            Height="150" Width="400"
+            Height="150" Width="600"
              Background="#FAFAFA">
     <UserControl.Resources>
         <c:ManufacturerConverter x:Key="ManufacturerConverter"/>
@@ -16,22 +15,23 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition Height="0.6*"/>
-            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="1.5*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
                 <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
                 <ComboBox 
                       ItemsSource="{Binding Manufacturers}"
                       SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                      SelectedIndex="0">
+                      SelectedIndex="0"
+                    Margin="5">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Converter={StaticResource ManufacturerConverter}}"/>
@@ -54,17 +54,7 @@
                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
         </Grid>
-
-        <Grid Grid.Row="1">
-            <Button Content="Сохранить" Command="{Binding SaveChangesCommand}"/>
-        </Grid>
-        <Grid Grid.Row="2">
-            <TextBlock
-                           Foreground="DarkRed"
-                           TextAlignment="Center"
-                           DataContext="{Binding ErrorMessage}"
-                           Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        </Grid>
+        <Button Grid.Row="1" Content="Сохранить" Command="{Binding SaveChangesCommand}" Margin="5"/>
+        <ListBox Grid.Row="2" Template="{StaticResource NotifierTemplate}"/>
     </Grid>
 </UserControl>

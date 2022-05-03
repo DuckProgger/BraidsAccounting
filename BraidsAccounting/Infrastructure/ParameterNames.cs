@@ -1,10 +1,8 @@
-﻿namespace BraidsAccounting.Infrastructure
+﻿namespace BraidsAccounting.Infrastructure;
+
+internal static class ParameterNames
 {
-    internal static class ParameterNames
-    {
-        public const string AddItemResult = "AddItemResult";
-        public const string EditItemResult = "EditItemResult";
-        public const string SelectedItem = "SelectedItem";
-        public const string SelectedStoreItem = "SelectedStoreItem";
-    }
+    public const string AddItemResult = "AddItemResult";
+    public const string EditItemResult = "EditItemResult";
+    public const string SelectedItem = "SelectedItem";
 }

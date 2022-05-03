@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace BraidsAccounting.Exceptions
+namespace BraidsAccounting.Exceptions;
+
+internal class EntityNotFoundException : Exception
 {
-    internal class EntityNotFoundException : Exception
+    public EntityNotFoundException(string? message) : base(message)
     {
-        public EntityNotFoundException(string? message) : base(message)
-        {
-        }
     }
 }

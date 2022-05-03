@@ -3,62 +3,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:BraidsAccounting.Views"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:vm="clr-namespace:BraidsAccounting.ViewModels"  
              xmlns:prism="http://prismlibrary.com/" 
-             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"             
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"   
-             Height="200" Width="500"
+             Height="200" Width="700"
              Background="#FAFAFA">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadManufacturersCommand}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <c:ManufacturerConverter x:Key="ManufacturerConverter"/>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Button Content="Выбрать товар из каталога" Command="{Binding SelectStoreItemCommand}"/>
-        </Grid>
-        <Grid Grid.Row="1">
+        <Button Grid.Row="0" Content="Выбрать товар из каталога" Command="{Binding SelectStoreItemCommand}" Margin="5"/>
+        <Grid Grid.Row="1" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="0.7*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
+            <StackPanel Grid.Column="0" >
                 <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
-                <ComboBox 
+                <TextBox  
+                    Padding="3"                           
+                    Text="{Binding StoreItem.Item.Manufacturer, 
+                    UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ManufacturerConverter}}"
                     IsReadOnly="True"
-                      ItemsSource="{Binding Manufacturers}"
-                      SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                      SelectedIndex="0"/>
+                    Margin="5"/>
             </StackPanel>
             <StackPanel Grid.Column="1" >
                 <TextBlock Text="Модель" HorizontalAlignment="Center"/>
                 <TextBox  
                     Padding="3"                           
                     Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
-                    IsReadOnly="True"/>
+                    IsReadOnly="True"
+                    Margin="5"/>
             </StackPanel>
             <StackPanel Grid.Column="2" >
                 <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"                         
                     Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
-                    IsReadOnly="True"/>
+                    IsReadOnly="True"
+                    Margin="5"/>
             </StackPanel>
             <StackPanel Grid.Column="3" >
                 <TextBlock Text="Количество" HorizontalAlignment="Center"/>
@@ -74,10 +68,7 @@
                     Text="{Binding InStock, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" HorizontalAlignment="Center" Margin="5" />
             </StackPanel>
         </Grid>
-
-        <Grid Grid.Row="2">
-            <Button Content="Добавить" Command="{Binding AddStoreItemCommand}"/>
-        </Grid>       
+        <Button Grid.Row="2" Content="Добавить" Command="{Binding AddStoreItemCommand}" Margin="5"/>
         <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
     </Grid>
 </UserControl>

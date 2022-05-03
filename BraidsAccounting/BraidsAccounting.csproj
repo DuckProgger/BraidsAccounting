@@ -35,6 +35,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\SelectStoreItemView.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -44,10 +50,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Page Update="Resources\Messages.xaml">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Page>
 	  <Page Update="Templates\Templates.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="Views\SelectStoreItemView.xaml">
 	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	    <SubType>Designer</SubType>
 	  </Page>

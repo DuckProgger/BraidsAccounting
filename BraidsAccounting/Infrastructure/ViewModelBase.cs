@@ -3,24 +3,23 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace BraidsAccounting.Infrastructure
+namespace BraidsAccounting.Infrastructure;
+
+internal abstract class ViewModelBase : INotifyPropertyChanged, INavigationAware
 {
-    internal class ViewModelBase : INotifyPropertyChanged, INavigationAware
-    {
-        public NewNotifier Notifier { get; set; } = new();
+    public Notifier Notifier { get; set; } = new();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName] string prop = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    public void OnPropertyChanged([CallerMemberName] string prop = "") =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
 
-        public virtual void OnNavigatedTo(NavigationContext navigationContext) { }
-        public virtual bool IsNavigationTarget(NavigationContext navigationContext) => true;
-        public virtual void OnNavigatedFrom(NavigationContext navigationContext) { }
-    }
+    public virtual void OnNavigatedTo(NavigationContext navigationContext) { }
+    public virtual bool IsNavigationTarget(NavigationContext navigationContext) => true;
+    public virtual void OnNavigatedFrom(NavigationContext navigationContext) { }
+}
 
-    internal class ViewModelBase<T> : ViewModelBase
-    {
-        public ObservableCollection<T> Collection { get; set; } = new();
-    }
+internal class ViewModelBase<T> : ViewModelBase
+{
+    public ObservableCollection<T> Collection { get; set; } = new();
 }

@@ -49,11 +49,12 @@
         </md:DialogHost.DialogContent>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="0.3*"/>
-                <RowDefinition/>
-                <RowDefinition Height="0.4*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" >
+            <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="5">
                 <TextBlock Text="Сотрудник" HorizontalAlignment="Center"/>
                 <ComboBox ItemsSource="{Binding Employees}"
                       SelectedValue="{Binding SelectedEmployee, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
@@ -80,20 +81,8 @@
                     </TextBlock>
                 </StackPanel>
             </Border>
-            <StackPanel Grid.Row="2">
-                <TextBlock
-                           Foreground="DarkRed"
-                           TextAlignment="Center"
-                           DataContext="{Binding ErrorMessage}"
-                           Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <TextBlock
-                           Foreground="DarkGreen"
-                           TextAlignment="Center"
-                           DataContext="{Binding StatusMessage}"
-                           Text="{Binding Message}"
-                           Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel Grid.Row="2">               
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <TextBlock Text="Сумма пополнения" VerticalAlignment="Center"/>
                     <TextBox 
                         Text="{Binding NewPayment.Amount}" Width="150"
@@ -102,8 +91,10 @@
                 </StackPanel>
                 <Button 
                     Command="{Binding OpenDialogCommand}"
-                    Content="Пополнить"/>
+                    Content="Пополнить"
+                    Margin="5"/>
             </StackPanel>
+            <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
         </Grid>
     </md:DialogHost>
 </UserControl>

@@ -1,16 +1,10 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Models;
-using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
-using BraidsAccounting.Views.Windows;
-using Microsoft.EntityFrameworkCore;
 using Prism.Commands;
-using Prism.Events;
-using Prism.Mvvm;
-using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,188 +14,194 @@ using System.Windows;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
 
-namespace BraidsAccounting.ViewModels
+namespace BraidsAccounting.ViewModels;
+
+internal class ServiceViewModel : ViewModelBase
 {
-    internal class ServiceViewModel : BindableBase, INotifying
+    private readonly Services.Interfaces.IServiceProvider serviceProvider;
+    private readonly IViewService viewService;
+    private const int stockWarningThreshold = 2;
+    private Employee? selectedEmployee;
+
+    public ServiceViewModel(
+        Services.Interfaces.IServiceProvider serviceProvider
+        , IViewService viewService
+        )
     {
-        private readonly Services.Interfaces.IServiceProvider serviceProvider;
-        private readonly IRegionManager regionManager;
-        private readonly IViewService viewService;
-        private const int stockWarningThreshold = 2;
-
-        public ServiceViewModel(
-            Services.Interfaces.IServiceProvider serviceProvider
-            , IEventAggregator eventAggregator
-            , IRegionManager regionManager
-            , IViewService viewService
-            )
-        {
-            this.serviceProvider = serviceProvider;
-            this.regionManager = regionManager;
-            this.viewService = viewService;
-            //eventAggregator.GetEvent<SelectItemEvent>().Subscribe(AddWastedItemToService);
-        }
-
-        /// <summary>
-        /// Выполненная работа, заполненная в представлении
-        /// </summary>
-        public Service Service { get; set; } = new();
-        /// <summary>
-        /// Список израсходованных материалов выполненной работы.
-        /// </summary>
-        public ObservableCollection<FormItem> WastedItems { get; set; } = new();
-        /// <summary>
-        /// Выбранный материал в представлении, который будет добавлен
-        /// в список израсходованных материалов.
-        /// </summary>
-        public FormItem SelectedWastedItem { get; set; } = new();
-        /// <summary>
-        /// Список имён сотрудников, которые когда-либо выполняли работу.
-        /// </summary>
-        public List<string>? Names { get; set; }
-        /// <summary>
-        /// Выбранный сотрудник, оказавший услугу.
-        /// </summary>
-        public string SelectedEmployee { get; set; }
-
-        #region Messages
-
-        public Notifier Status { get; } = new(true);
-        
-        public Notifier Error { get; } = new(true);
-        
-        public Notifier Warning { get; } = new();
-
-        #endregion
-
-        /// <summary>
-        /// Добавляет выбранный материал в коллекцию израсходованных
-        /// материалов выполненной работы
-        /// </summary>
-        /// <param name="catalogueItem"></param>
-        private void AddWastedItemToService(Item? catalogueItem)
-        {
-            if (catalogueItem is not null && regionManager.IsViewActive<ServiceView>(RegionNames.Main))
-            {
-                if (WastedItems.FirstOrDefault(wi => wi.Equals(catalogueItem)) != null)
-                {
-                    Error.Message = "Выбранный материал уже есть в списке";
-                    return;
-                }
-                FormItem formItem = catalogueItem;
-                if (formItem.MaxCount == 0)
-                {
-                    Error.Message = "Выбранный материал отсутсвует на складе";
-                    return;
-                }
-                WastedItems.Add(formItem);
-            }
-        }
-        private void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
-        {
-            var runningOutItems = wastedItems.Where(i => i.MaxCount - i.Count <= stockWarningThreshold).ToArray();
-            if (runningOutItems.Length > 0)
-            {
-                StringBuilder sb = new();
-                sb.Append("Заканчиваются следующие материалы:");
-                sb.Append(Environment.NewLine);
-                foreach (var item in runningOutItems)
-                {
-                    sb.Append($"{item.Manufacturer} {item.Article} {item.Color} осталось {item.MaxCount - item.Count} шт.");
-                    sb.Append(Environment.NewLine);
-                }
-                MessageBox.Show(sb.ToString(), "ВНИМАНИЕ!");
-            }
-        }
-
-        #region Command CreateService - Добавление сервиса
-
-        private ICommand? _CreateServiceCommand;
-        /// <summary>Команда - Добавление сервиса</summary>
-        public ICommand CreateServiceCommand => _CreateServiceCommand
-            ??= new DelegateCommand(OnCreateServiceCommandExecuted, CanCreateServiceCommandExecute);
-        private bool CanCreateServiceCommandExecute() => true;
-        private async void OnCreateServiceCommandExecuted()
-        {
-            MDDialogHost.CloseDialogCommand.Execute(null, null);
-            Service.WastedItems = new();
-            foreach (FormItem? item in WastedItems)
-                Service.WastedItems.Add(item);
-            Service.Employee = new();
-            Service.Employee.Name = SelectedEmployee;
-            try
-            {
-                await serviceProvider.AddAsync(Service);
-                CheckRunningOutItems(WastedItems);
-                Service = new();
-                WastedItems = new();
-                Status.Message = "Новая работа добавлена";
-            }
-            catch (ArgumentException)
-            {
-                Error.Message = "Не все поля заполнены";
-            }
-            catch (DbUpdateException)
-            {
-                Error.Message = "Не все поля заполнены";
-            }
-        }
-
-        #endregion
-
-        #region Command SelectStoreItem - Команда выбрать товар со склада
-
-        private ICommand? _SelectStoreItemCommand;
-
-        /// <summary>Команда - выбрать товар со склада</summary>
-        public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
-            ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
-        private bool CanSelectStoreItemCommandExecute() => true;
-        private void OnSelectStoreItemCommandExecuted() { }
-            //viewService.ShowWindowWithClosing<SelectItemWindow, MainWindow>();
-
-        #endregion
-
-        #region Command OpenDialog - Команда открыть диалог
-
-        private ICommand? _OpenDialogCommand;
-        /// <summary>Команда - открыть диалог</summary>
-        public ICommand OpenDialogCommand => _OpenDialogCommand
-            ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
-        private bool CanOpenDialogCommandExecute() => true;
-        private void OnOpenDialogCommandExecuted()
-        {
-            Warning.Message = WastedItems.Count == 0 ? "НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!" : string.Empty;
-            MDDialogHost.OpenDialogCommand.Execute(null, null);
-        }
-
-        #endregion
-
-        #region Command RemoveWastedItem - Команда удалить использованный материал
-
-        private ICommand? _RemoveWastedItemCommand;
-        /// <summary>Команда - удалить использованный материал</summary>
-        public ICommand RemoveWastedItemCommand => _RemoveWastedItemCommand
-            ??= new DelegateCommand(OnRemoveWastedItemCommandExecuted, CanRemoveWastedItemCommandExecute);
-        private bool CanRemoveWastedItemCommandExecute() => true;
-        private void OnRemoveWastedItemCommandExecuted() => WastedItems.Remove(SelectedWastedItem);
-
-        #endregion
-
-        #region Command InitializeData - Команда заполнить форму начальными данными
-
-        private ICommand? _InitializeDataCommand;
-        /// <summary>Команда - заполнить форму начальными данными</summary>
-        public ICommand InitializeDataCommand => _InitializeDataCommand
-            ??= new DelegateCommand(OnInitialDataCommandExecuted, CanInitialDataCommandExecute);
-        private bool CanInitialDataCommandExecute() => true;
-        private async void OnInitialDataCommandExecuted()
-        {
-            var employeesService = ServiceLocator.GetService<IEmployeesService>();
-            var employees = await employeesService.GetAllAsync();
-            Names = new(employees.Select(e => e.Name));
-        }
-
-        #endregion
+        this.serviceProvider = serviceProvider;
+        this.viewService = viewService;
+        Notifier.SetMessageParams(MessageType.Warning, new(false));
     }
+
+    /// <summary>
+    /// Выполненная работа, заполненная в представлении
+    /// </summary>
+    public Service Service { get; set; } = new();
+    /// <summary>
+    /// Список израсходованных материалов выполненной работы.
+    /// </summary>
+    public ObservableCollection<FormItem> WastedItems { get; set; } = new();
+    /// <summary>
+    /// Выбранный материал в представлении, который будет добавлен
+    /// в список израсходованных материалов.
+    /// </summary>
+    public FormItem SelectedWastedItem { get; set; } = new();
+    /// <summary>
+    /// Список имён сотрудников, которые когда-либо выполняли работу.
+    /// </summary>
+    public List<Employee>? Employees { get; set; }
+    /// <summary>
+    /// Выбранный сотрудник, оказавший услугу.
+    /// </summary>
+    public Employee SelectedEmployee
+    {
+        get => selectedEmployee;
+        set
+        {
+            selectedEmployee = value;
+            Service.Employee = value;
+            CreateServiceCommand.RaiseCanExecuteChanged();
+        }
+    }
+
+    /// <summary>
+    /// Добавляет выбранный материал в коллекцию израсходованных
+    /// материалов выполненной работы
+    /// </summary>
+    /// <param name="storeItem"></param>
+    private void AddWastedItemToService(StoreItem storeItem)
+    {
+        if (WastedItems.Any(wi => wi.Equals(storeItem)))
+        {
+            Notifier.AddError(MessageContainer.SelectedItemAlreadyExists);
+            return;
+        }
+        FormItem formItem = storeItem.Item;
+        if (formItem.MaxCount == 0)
+        {
+            Notifier.AddError(MessageContainer.SelectedItemOutOfStock);
+            return;
+        }
+        WastedItems.Add(formItem);
+    }
+    private void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
+    {
+        FormItem[]? runningOutItems = wastedItems.Where(i => i.MaxCount - i.Count <= stockWarningThreshold).ToArray();
+        if (runningOutItems.Length > 0)
+        {
+            StringBuilder sb = new();
+            sb.Append("Заканчиваются следующие материалы:");
+            sb.Append(Environment.NewLine);
+            foreach (FormItem? item in runningOutItems)
+            {
+                sb.Append($"{item.Manufacturer} {item.Article} {item.Color} осталось {item.MaxCount - item.Count} шт.");
+                sb.Append(Environment.NewLine);
+            }
+            MessageBox.Show(sb.ToString(), "ВНИМАНИЕ!");
+        }
+    }
+
+    private static bool IsValidService(Service service) =>
+        service.NetProfit >= 0 &&
+        service.Employee is not null;
+
+    #region Command CreateService - Добавление сервиса
+
+    private DelegateCommand? _CreateServiceCommand;
+    /// <summary>Команда - Добавление сервиса</summary>
+    public DelegateCommand CreateServiceCommand => _CreateServiceCommand
+        ??= new(OnCreateServiceCommandExecuted, CanCreateServiceCommandExecute);
+    private bool CanCreateServiceCommandExecute() => IsValidService(Service);
+    private async void OnCreateServiceCommandExecuted()
+    {
+        MDDialogHost.CloseDialogCommand.Execute(null, null);
+        Service.WastedItems = new();
+        foreach (FormItem? item in WastedItems)
+            Service.WastedItems.Add(item);
+        try
+        {
+            await serviceProvider.AddAsync(Service);
+            CheckRunningOutItems(WastedItems);
+            Service = new();
+            WastedItems = new();
+            Notifier.AddInfo(MessageContainer.AddServiceSuccess);
+        }
+        catch (Exception ex)
+        {
+            Notifier.AddError(ex.Message);
+        }
+    }
+
+    #endregion
+
+    #region Command SelectStoreItem - Команда выбрать товар со склада
+
+    private ICommand? _SelectStoreItemCommand;
+
+    /// <summary>Команда - выбрать товар со склада</summary>
+    public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
+        ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
+    private bool CanSelectStoreItemCommandExecute() => true;
+    private void OnSelectStoreItemCommandExecuted() =>
+        viewService.ShowPopupWindow(nameof(SelectStoreItemView), null, (p) =>
+        {
+            StoreItem? item = p?[ParameterNames.SelectedItem] as StoreItem;
+            if (item is not null)
+            {
+                AddWastedItemToService(item);
+            }
+        });
+
+    #endregion
+
+    #region Command OpenDialog - Команда открыть диалог
+
+    private ICommand? _OpenDialogCommand;
+    /// <summary>Команда - открыть диалог</summary>
+    public ICommand OpenDialogCommand => _OpenDialogCommand
+        ??= new DelegateCommand(OnOpenDialogCommandExecuted, CanOpenDialogCommandExecute);
+    private bool CanOpenDialogCommandExecute() => true;
+    private void OnOpenDialogCommandExecuted()
+    {
+        Notifier.Remove(MessageContainer.WastedItemNotSelected);
+        if (WastedItems.Count == 0)
+            Notifier.AddWarning(MessageContainer.WastedItemNotSelected);
+        foreach (var wastedItem in WastedItems)
+            if (wastedItem.Count < 1)
+            {
+                Notifier.AddError(MessageContainer.WastedItemInvalidCount);
+                return;
+            }
+        MDDialogHost.OpenDialogCommand.Execute(null, null);
+    }
+
+    #endregion
+
+    #region Command RemoveWastedItem - Команда удалить использованный материал
+
+    private ICommand? _RemoveWastedItemCommand;
+    /// <summary>Команда - удалить использованный материал</summary>
+    public ICommand RemoveWastedItemCommand => _RemoveWastedItemCommand
+        ??= new DelegateCommand(OnRemoveWastedItemCommandExecuted, CanRemoveWastedItemCommandExecute);
+    private bool CanRemoveWastedItemCommandExecute() => true;
+    private void OnRemoveWastedItemCommandExecuted() => WastedItems.Remove(SelectedWastedItem);
+
+    #endregion
+
+    #region Command InitializeData - Команда заполнить форму начальными данными
+
+    private ICommand? _InitializeDataCommand;
+
+    /// <summary>Команда - заполнить форму начальными данными</summary>
+    public ICommand InitializeDataCommand => _InitializeDataCommand
+        ??= new DelegateCommand(OnInitialDataCommandExecuted, CanInitialDataCommandExecute);
+    private bool CanInitialDataCommandExecute() => true;
+    private async void OnInitialDataCommandExecuted()
+    {
+        IEmployeesService? employeesService = ServiceLocator.GetService<IEmployeesService>();
+        Employees = new(await employeesService.GetAllAsync());
+    }
+
+    #endregion
 }
+

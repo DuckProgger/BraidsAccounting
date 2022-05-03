@@ -6,55 +6,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BraidsAccounting.Services
+namespace BraidsAccounting.Services;
+
+internal class PaymentsService : IPaymentsService
 {
-    internal class PaymentsService : IPaymentsService
+    private readonly IRepository<Payment> paymentsRepository;
+    private readonly IWastedItemsService statisticsService;
+
+    public PaymentsService(
+        IRepository<Payment> paymentsRepository
+        , IWastedItemsService statisticsService
+        )
     {
-        private readonly IRepository<Payment> paymentsRepository;
-        private readonly IWastedItemsService statisticsService;
+        this.paymentsRepository = paymentsRepository;
+        this.statisticsService = statisticsService;
+    }
 
-        public PaymentsService(
-            IRepository<Payment> paymentsRepository
-            , IWastedItemsService statisticsService
-            )
+    public async Task AddAsync(Payment payment) =>
+      await paymentsRepository.CreateAsync(payment);
+
+    public async Task<List<Payment>> GetRangeAsync(string employeeName) =>
+        await GetFilteredQuery(employeeName).ToListAsync();
+
+    public async Task<decimal> GetTotalAmountAsync(string employeeName) =>
+        await GetFilteredQuery(employeeName).SumAsync(p => p.Amount);
+
+    private IQueryable<Payment> GetFilteredQuery(string employeeName) =>
+        paymentsRepository.Items
+           .Include(p => p.Employee)
+           .Where(p => p.Employee.Name.Equals(employeeName));
+
+    public async Task<decimal> GetDebtAsync(string employeeName)
+    {
+        // Получить общую сумму расходов на израсходованные
+        // сотрудником материалы за всё время
+        WastedItemsFilterOptions options = new()
         {
-            this.paymentsRepository = paymentsRepository;
-            this.statisticsService = statisticsService;
-        }
+            EnableGrouping = false,
+            EnablePeriodFilter = false,
+            EnableWorkerFilter = true,
+            WorkerNameFilter = employeeName
+        };
+        decimal expenses = await statisticsService.GetTotalExpensesAsync(options);
 
-        public async Task AddAsync(Payment payment) =>
-          await paymentsRepository.CreateAsync(payment);
+        // Получить общую сумму пополнений сотрудника
+        decimal payments = await GetTotalAmountAsync(employeeName);
 
-        public async Task<List<Payment>> GetRangeAsync(string employeeName) =>
-            await GetFilteredQuery(employeeName).ToListAsync();
-
-        public async Task<decimal> GetTotalAmountAsync(string employeeName) =>
-            await GetFilteredQuery(employeeName).SumAsync(p => p.Amount);
-
-        private IQueryable<Payment> GetFilteredQuery(string employeeName) =>
-            paymentsRepository.Items
-               .Include(p => p.Employee)
-               .Where(p => p.Employee.Name.Equals(employeeName));
-
-        public async Task<decimal> GetDebtAsync(string employeeName)
-        {
-            // Получить общую сумму расходов на израсходованные
-            // сотрудником материалы за всё время
-            WastedItemsFilterOptions options = new()
-            {
-                EnableGrouping = false,
-                EnablePeriodFilter = false,
-                EnableWorkerFilter = true,
-                WorkerNameFilter = employeeName
-            };
-            decimal expenses = await statisticsService.GetTotalExpensesAsync(options);
-
-            // Получить общую сумму пополнений сотрудника
-            decimal payments = await GetTotalAmountAsync(employeeName);
-
-            // Итоговая задолженность есть разница между
-            // суммой расходов и суммой пополнений
-            return expenses - payments;
-        }
+        // Итоговая задолженность есть разница между
+        // суммой расходов и суммой пополнений
+        return expenses - payments;
     }
 }
