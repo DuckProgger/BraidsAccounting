@@ -10,6 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Back.png" />
 	  <None Remove="Resources\Delete.png" />
 	  <None Remove="Resources\Edit.png" />
 	</ItemGroup>
@@ -40,6 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Resource Include="Resources\Back.png" />
 	  <Resource Include="Resources\Delete.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Resource>

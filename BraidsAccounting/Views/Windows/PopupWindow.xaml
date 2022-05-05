@@ -11,8 +11,14 @@
         Title=""
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
-        Width="100" Height="100">
+        Width="100" Height="100"
+        Background="#FAFAFA">
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Popup}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button Template="{StaticResource GoBackButton}"/>
+        <ContentControl Grid.Row="1" prism:RegionManager.RegionName="{x:Static mod:RegionNames.Popup}" />
     </Grid>
 </Window>

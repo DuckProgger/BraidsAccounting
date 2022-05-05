@@ -46,5 +46,17 @@
             <Image Source="../Resources/Delete.png"/>
         </Button>
     </ControlTemplate>
-    
+
+
+    <ControlTemplate TargetType="Button" x:Key="GoBackButton">
+        <Button HorizontalAlignment="Left" 
+                Height="20" 
+                Width="60" 
+                Command="{Binding GoBackCommand}"
+                Margin="5"
+                Style="{StaticResource MaterialDesignOutlinedButton}">
+            <Image Source="../Resources/Back.png"/>
+        </Button>
+    </ControlTemplate>
+
 </ResourceDictionary>
