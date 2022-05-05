@@ -38,13 +38,10 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Редактирать" 
-                                        Command="{Binding 
-                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EmployeesView}}, 
-                                                Path=DataContext.FillFormCommand}"
-                                        Visibility="{Binding IsMouseOver,
-                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
-                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <Button Template="{StaticResource EditButton}"
+                                    Command="{Binding 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:EmployeesView}},   
+                                    Path=DataContext.FillFormCommand}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

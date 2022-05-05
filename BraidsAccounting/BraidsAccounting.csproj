@@ -10,6 +10,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Delete.png" />
+	  <None Remove="Resources\Edit.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="Resources\Icon.ico" />
 	</ItemGroup>
 
@@ -32,6 +37,15 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\BraidsAccounting.DAL\BraidsAccounting.DAL.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Delete.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Edit.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	</ItemGroup>
 
 	<ItemGroup>

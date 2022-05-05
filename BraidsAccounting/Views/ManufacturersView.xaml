@@ -60,20 +60,14 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="Редактирать" 
+                                    <Button Template="{StaticResource EditButton}"
                                         Command="{Binding 
                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ManufacturersView}}, 
-                                                Path=DataContext.FillFormCommand}"
-                                        Visibility="{Binding IsMouseOver,
-                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
-                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <Button Content="Удалить"
+                                                Path=DataContext.FillFormCommand}"/>
+                                    <Button Template="{StaticResource DeleteButton}"
                                          Command="{Binding 
                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ManufacturersView}}, 
-                                                Path=DataContext.RemoveManufacturerCommand}"
-                                        Visibility="{Binding IsMouseOver,
-                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
-                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                Path=DataContext.RemoveManufacturerCommand}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

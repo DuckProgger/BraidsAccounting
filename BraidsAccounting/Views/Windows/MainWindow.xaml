@@ -4,19 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mod="clr-namespace:BraidsAccounting.Modules"        
-        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"  
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="Braids Accounting"
-        Height="500" Width="900"
+        Height="500" Width="1000"
         Background="#FAFAFA">
-    <!--<i:Interaction.Triggers>
-        <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding NavigateToOtherViewCommand}" CommandParameter="CatalogsView"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>-->
     <DockPanel>
         <Menu IsMainMenu="True" >
             <Menu.ItemsPanel>
@@ -27,11 +21,8 @@
             <MenuItem Header="Справочники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="CatalogsView"/>
             <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
             <MenuItem Header="Статистика" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StatisticsView"/>
-            <!--<MenuItem Header="Производители" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ManufacturersView"/>-->
-            <!--<MenuItem Header="Сотрудники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="EmployeesView"/>-->
         </Menu>
         <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Main}" />
-        <!--<ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Popup}" />-->
     </DockPanel>
 </Window>
 

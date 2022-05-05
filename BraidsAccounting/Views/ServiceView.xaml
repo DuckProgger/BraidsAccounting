@@ -100,13 +100,10 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Удалить"
+                                        <Button Template="{StaticResource DeleteButton}"
                                             Command="{Binding 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ServiceView}}, 
-                                    Path=DataContext.RemoveWastedItemCommand}"                                
-                                            Visibility="{Binding IsMouseOver,
-                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
-                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    Path=DataContext.RemoveWastedItemCommand}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

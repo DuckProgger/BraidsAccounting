@@ -66,19 +66,15 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="Редактирать" 
+                                    <Button 
                                         Command="{Binding 
                                     RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:CatalogueView}}, 
                                     Path=DataContext.NavigateToOtherWindowCommand}"
                                         CommandParameter="EditItemView"
-                                        Visibility="{Binding IsMouseOver,
-                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
-                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <Button Content="Удалить"
+                                        Template="{StaticResource EditButton}"/>
+                                    <Button 
                                         Command="{x:Static md:DialogHost.OpenDialogCommand}"
-                                        Visibility="{Binding IsMouseOver,
-                                 RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridRow}, 
-                                 Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        Template="{StaticResource DeleteButton}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
