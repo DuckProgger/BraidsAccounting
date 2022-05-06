@@ -1,5 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
-using BraidsAccounting.Interfaces;
+using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

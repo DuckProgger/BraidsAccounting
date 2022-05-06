@@ -19,6 +19,6 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Button Template="{StaticResource GoBackButton}"/>
-        <ContentControl Grid.Row="1" prism:RegionManager.RegionName="{x:Static mod:RegionNames.Popup}" />
+        <ContentControl x:Name="ContentView" Grid.Row="1" prism:RegionManager.RegionName="{x:Static mod:RegionNames.Popup}" />
     </Grid>
 </Window>

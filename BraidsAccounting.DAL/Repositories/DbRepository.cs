@@ -1,5 +1,5 @@
 ﻿using BraidsAccounting.DAL.Context;
-using BraidsAccounting.Interfaces;
+using BraidsAccounting.DAL.Entities.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace BraidsAccounting.DAL.Repositories;
@@ -34,7 +34,7 @@ internal class DbRepository<T> : IRepository<T> where T : class, IEntity, new()
     }
 
     public T Create(T item)
-    {          
+    {
         if (CreateInternal(item)) return item;
         SaveChanges();
         return item;
@@ -123,4 +123,5 @@ internal class DbRepository<T> : IRepository<T> where T : class, IEntity, new()
     private void SaveChanges() => context.SaveChanges();
 
     private async Task SaveChangesAsync(CancellationToken cancel) => await context.SaveChangesAsync(cancel).ConfigureAwait(false);
+
 }

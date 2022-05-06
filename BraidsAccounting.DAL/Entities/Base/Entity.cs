@@ -1,6 +1,4 @@
-﻿using BraidsAccounting.Interfaces;
-
-namespace BraidsAccounting.DAL.Entities.Base;
+﻿namespace BraidsAccounting.DAL.Entities.Base;
 
 public abstract class Entity : IEntity
 {

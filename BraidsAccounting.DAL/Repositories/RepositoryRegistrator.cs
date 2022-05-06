@@ -1,5 +1,4 @@
 ﻿using BraidsAccounting.DAL.Entities;
-using BraidsAccounting.Interfaces;
 using Prism.Ioc;
 
 namespace BraidsAccounting.DAL.Repositories;

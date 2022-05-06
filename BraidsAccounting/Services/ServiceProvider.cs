@@ -1,12 +1,10 @@
 ﻿using BraidsAccounting.DAL.Entities;
-using BraidsAccounting.Interfaces;
-using BraidsAccounting.Models;
+using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;

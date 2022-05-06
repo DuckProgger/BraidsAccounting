@@ -2,7 +2,6 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
-using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels;
@@ -40,17 +39,6 @@ internal class SelectItemViewModel : ViewModelBase
         viewService.AddParameter(ParameterNames.SelectedItem, SelectedItem);
         viewService.GoBack();
     }
-
-    #endregion
-
-    #region Command GoBack - Команда перейти на предыдущий экран
-
-    private ICommand? _GoBackCommand;
-    /// <summary>Команда - перейти на предыдущий экран</summary>
-    public ICommand GoBackCommand => _GoBackCommand
-        ??= new DelegateCommand(OnGoBackCommandExecuted, CanGoBackCommandExecute);
-    private bool CanGoBackCommandExecute() => true;
-    private void OnGoBackCommandExecuted() => viewService.GoBack();
 
     #endregion
 
