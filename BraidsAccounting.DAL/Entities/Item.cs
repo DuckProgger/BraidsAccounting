@@ -8,7 +8,7 @@ namespace BraidsAccounting.DAL.Entities;
 ///  Материал, используемый для выполнения работ.
 /// </summary>
 [Description("Материал из каталога")]
-public class Item : Entity, IEquatable<Item>
+public record Item : Entity, IEquatable<Item>
 {
     /// <summary>
     /// Артикул.
@@ -29,9 +29,10 @@ public class Item : Entity, IEquatable<Item>
     public Manufacturer Manufacturer { get; set; } = null!;
     public List<StoreItem> StoreItems { get; set; } = null!;
 
-    public bool Equals(Item? other)
+    public virtual bool Equals(Item? other)
     {
-        if (other is null || other.Article is null || other.Color is null) throw new ArgumentNullException(nameof(other));
+        //if (other is null || other.Article is null || other.Color is null) throw new ArgumentNullException(nameof(other));
+        if (other is null || other.Article is null || other.Color is null) return false;
         return Article.ToUpper() == other.Article.ToUpper()
           && Color.ToUpper() == other.Color.ToUpper()
           && Manufacturer.Equals(other.Manufacturer);

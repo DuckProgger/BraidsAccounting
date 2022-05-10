@@ -18,6 +18,7 @@ internal class MainModule : IModule
              .RegisterViewWithRegion(RegionNames.Main, typeof(CatalogsView))
              .RegisterViewWithRegion(RegionNames.Main, typeof(ServiceView))
              .RegisterViewWithRegion(RegionNames.Main, typeof(StatisticsView))
+             .RegisterViewWithRegion(RegionNames.Main, typeof(HistoryView))
         ;
 
     }
@@ -26,5 +27,6 @@ internal class MainModule : IModule
         containerRegistry.RegisterForNavigation<CatalogsView>();
         containerRegistry.RegisterForNavigation<ServiceView>();
         containerRegistry.RegisterForNavigation<StatisticsView>();
+        containerRegistry.RegisterForNavigation<HistoryView>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
+using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,17 +13,20 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "IStoreService" />.
 /// </summary>
-internal class StoreService : IStoreService
+internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
 {
     private readonly IRepository<StoreItem> store;
     private readonly ICatalogueService catalogue;
+    private readonly IHistoryService historyService;
 
     public StoreService(
-        IRepository<StoreItem> store,
-        ICatalogueService catalogue)
+        IRepository<StoreItem> store
+        , ICatalogueService catalogue
+        , IHistoryService historyService)
     {
         this.store = store;
         this.catalogue = catalogue;
+        this.historyService = historyService;
     }
 
     public async Task AddItemAsync(StoreItem? storeItem)
@@ -74,6 +78,7 @@ internal class StoreService : IStoreService
         Item newItem = await catalogue.AddAsync(addedItem.Item);
         addedItem.Item = newItem;
         await store.CreateAsync(addedItem);
+        await historyService.WriteCreateOperationAsync(addedItem.GetEtityData(this));
     }
 
     /// <summary>
@@ -85,6 +90,7 @@ internal class StoreService : IStoreService
     {
         storeItem.Item = item;
         await store.CreateAsync(storeItem);
+        await historyService.WriteCreateOperationAsync(storeItem.GetEtityData(this));
     }
 
     public async Task<List<StoreItem>> GetItemsAsync() => await store.Items.ToListAsync();
@@ -96,14 +102,17 @@ internal class StoreService : IStoreService
             if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
             StoreItem? existingStoreItem = await store.Items.FirstAsync(si => si.Item.Id == wastedItem.Item.Id);
             if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
-            existingStoreItem.Count -= wastedItem.Count;
-            switch (existingStoreItem.Count)
+            var newStoreItem = existingStoreItem with { };
+            newStoreItem.Count -= wastedItem.Count;
+            switch (newStoreItem.Count)
             {
                 case > 0:
-                    await store.EditAsync(existingStoreItem);
+                    await store.EditAsync(newStoreItem);
+                    await historyService.WriteUpdateOperationAsync(existingStoreItem.GetEtityData(this), newStoreItem.GetEtityData(this));
                     break;
                 case 0:
-                    await store.RemoveAsync(existingStoreItem.Id);
+                    await store.RemoveAsync(newStoreItem.Id);
+                    await historyService.WriteDeleteOperationAsync(newStoreItem.GetEtityData(this));
                     break;
                 default:
                     throw new Exception("Указанного количества товара нет на складе");
@@ -115,11 +124,19 @@ internal class StoreService : IStoreService
     {
         if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
         if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
+        var existingStoreItem = store.Get(storeItem.Id);
         await store.EditAsync(storeItem);
         await catalogue.EditAsync(storeItem.Item);
+        await historyService.WriteUpdateOperationAsync(existingStoreItem.GetEtityData(this), storeItem.GetEtityData(this));
+
     }
 
-    public async Task RemoveItemAsync(int id) => await store.RemoveAsync(id);
+    public async Task RemoveItemAsync(int id)
+    {
+        var existingStoreItem = await store.GetAsync(id);
+        await store.RemoveAsync(id);
+        await historyService.WriteDeleteOperationAsync(existingStoreItem.GetEtityData(this));
+    }
 
     public int GetItemCount(string manufacturer, string article, string color)
     {
@@ -130,4 +147,11 @@ internal class StoreService : IStoreService
 
     public bool ContainsItem(Item item) =>
         store.Items.Any(si => si.Item.Equals(item));
+
+    public IEntityDataBuilder<StoreItem> ConfigureEntityData(IEntityDataBuilder<StoreItem> builder, StoreItem entity) =>
+        builder
+        .AddInfo(s => s.Item.Manufacturer.Name, entity.Item.Manufacturer.Name)
+        .AddInfo(s => s.Item.Article, entity.Item.Article)
+        .AddInfo(s => s.Item.Color, entity.Item.Color)
+        .AddInfo(s => s.Count, entity.Count);
 }

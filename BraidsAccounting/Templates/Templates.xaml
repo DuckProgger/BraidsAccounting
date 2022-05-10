@@ -6,9 +6,8 @@
     </ResourceDictionary.MergedDictionaries>
 
     <ControlTemplate TargetType="ListBox" x:Key="NotifierTemplate">
-        <ListBox Grid.Row="3" 
-                     ItemsSource="{Binding Notifier.Messages}" 
-                     ItemContainerStyle="{StaticResource NotifierListBoxItemStyle}">
+        <ListBox  ItemsSource="{Binding Notifier.Messages}" 
+                  ItemContainerStyle="{StaticResource NotifierListBoxItemStyle}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Text}" Padding="0" />

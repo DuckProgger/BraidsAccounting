@@ -19,22 +19,14 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Button HorizontalAlignment="Left" 
-                Content="Назад" 
-                Padding="0"
-                Height="20" 
-                Width="100" 
-                Command="{Binding GoBackCommand}"
-                Margin="5"/>
-        <local:StoreView Grid.Row="1" x:Name="Store" />
-        <Button Grid.Row="2" Content="Выбрать" Command="{Binding SelectCommand}"
+        <local:StoreView Grid.Row="0" x:Name="Store" />
+        <Button Grid.Row="1" Content="Выбрать" Command="{Binding SelectCommand}"
                 CommandParameter="{Binding ElementName=Store, Path=DataContext.SelectedStoreItem}"
                 Margin="5"/>
-        <ListBox Grid.Row="4" Template="{StaticResource NotifierTemplate}"/>
+        <ListBox Grid.Row="2" Template="{StaticResource NotifierTemplate}"/>
     </Grid>
 </UserControl>

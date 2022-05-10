@@ -1,11 +1,12 @@
-﻿using System;
+﻿using BraidsAccounting.DAL.Entities.Base;
+using System;
 using System.Linq.Expressions;
 
 namespace BraidsAccounting.Infrastructure;
 
-internal interface IEntityDataBuilder
+internal interface IEntityDataBuilder<TEntity> where TEntity : IEntity
 {
-    IEntityDataBuilder AddInfo<T>(Expression<Func<T>> expression, object value);
+    IEntityDataBuilder<TEntity> AddInfo<TProperty>(Expression<Func<TEntity, TProperty>> expression, TProperty value);
     EntityData GetPropertyDatas();
 }
 

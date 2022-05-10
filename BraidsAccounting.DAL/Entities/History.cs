@@ -2,7 +2,7 @@
 
 namespace BraidsAccounting.DAL.Entities;
 
-public class History : Entity
+public record History : Entity
 {
     public string Message { get; set; } = null!;
     /// <summary>

@@ -1,38 +1,35 @@
-﻿using BraidsAccounting.Services;
+﻿using BraidsAccounting.DAL.Entities.Base;
+using BraidsAccounting.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace BraidsAccounting.Infrastructure;
-internal class EntityDataBuilder : IEntityDataBuilder
+internal class EntityDataBuilder<TEntity> : IEntityDataBuilder<TEntity> where TEntity : IEntity
 {
-    private Type? entityType;
-    private EntityData propertyDatas = null!;
+    private readonly EntityData propertyDatas;
 
-    public IEntityDataBuilder AddInfo<T>(Expression<Func<T>> expression, object value)
+    public EntityDataBuilder()
     {
-        Expression propertyExpression = expression.Body;
+        string entityLocalizedName = DescriptionService.Get<TEntity>();
+        propertyDatas = new(entityLocalizedName);
+    }
 
-        // Найти имя корневой сущности
-        if (entityType is null)
-        {
-            entityType = GetEntityType(propertyExpression);
-            string entityLocalizedName = DescriptionService.Get(entityType);
-            propertyDatas = new(entityLocalizedName);
-        }
+    public IEntityDataBuilder<TEntity> AddInfo<TProperty>(Expression<Func<TEntity, TProperty>> expression, TProperty value)
+    {
+        if (value is null) return this;
+        Expression propertyExpression = expression.Body;
+        MemberExpression memberExpression = (MemberExpression)propertyExpression;
 
         // Получить имя свойства
-        MemberExpression memberExpression = (MemberExpression)propertyExpression;
-        string propertyName = GetPropertyName(memberExpression);
+        string propertyName = ((PropertyInfo)memberExpression.Member).Name;
 
-        // Получить тип сущности, в которой находится свойство
-        memberExpression = (MemberExpression)memberExpression.Expression;
-        Type propertyOwnerType = GetPropertyOwnerType(memberExpression);
+        // Получить тип сущности, в которой находится свойство       
+        Type propertyOwnerType = memberExpression.Expression.Type;
 
         // Получить локализованное имя свойства
-        string propertyLocalizedName = propertyOwnerType.Equals(entityType)
-          ? DescriptionService.Get(entityType, propertyName)
+        string propertyLocalizedName = propertyOwnerType.Equals(typeof(TEntity))
+          ? DescriptionService.Get<TEntity>(propertyName)
           : $"{DescriptionService.Get(propertyOwnerType)}_{DescriptionService.Get(propertyOwnerType, propertyName)}";
 
         // Заполнить данные о свойстве
@@ -43,37 +40,11 @@ internal class EntityDataBuilder : IEntityDataBuilder
 
     public EntityData GetPropertyDatas() => propertyDatas;
 
-    private static Type GetEntityType(Expression propertyExpression)
+    public static EntityData GetEntityData(Func<IEntityDataBuilder<TEntity>, IEntityDataBuilder<TEntity>> configuration)
     {
-        Stack<Type> chainTypes = new();
-        while (propertyExpression is MemberExpression temp)
-        {
-            propertyExpression = temp.Expression;
-            if (temp.Member is PropertyInfo propertyInfo)
-            {
-                chainTypes.Push(propertyInfo.PropertyType);
-                continue;
-            }
-            if (temp.Member is FieldInfo fieldInfo)
-            {
-                chainTypes.Push(fieldInfo.FieldType);
-                continue;
-            }
-        }
-        return chainTypes.Pop();
+        var builder = new EntityDataBuilder<TEntity>();
+        configuration.Invoke(builder);
+        return builder.GetPropertyDatas();
     }
-
-    private static string GetPropertyName(MemberExpression propertyExpression) =>
-        (propertyExpression.Member as PropertyInfo).Name;
-
-    private static Type GetPropertyOwnerType(MemberExpression propertyExpression)
-    {
-        if (propertyExpression.Member is PropertyInfo propertyInfo)
-            return propertyInfo.PropertyType;
-        if (propertyExpression.Member is FieldInfo fieldInfo)
-            return fieldInfo.FieldType;
-        throw new ArgumentException("Недопустимый член");
-    }
-
 }
 

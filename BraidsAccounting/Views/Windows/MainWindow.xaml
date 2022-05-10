@@ -21,6 +21,7 @@
             <MenuItem Header="Справочники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="CatalogsView"/>
             <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
             <MenuItem Header="Статистика" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StatisticsView"/>
+            <MenuItem Header="История" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="HistoryView"/>
         </Menu>
         <ContentControl prism:RegionManager.RegionName="{x:Static const:RegionNames.Main}" />
     </DockPanel>

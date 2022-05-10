@@ -23,4 +23,6 @@ internal interface IWastedItemsService
     /// <returns></returns>
     Task<decimal> GetTotalExpensesAsync(WastedItemsFilterOptions options);
     WastedItem? GetItem(string manufacturer, string article, string color);
+    Task AddRangeAsync(IEnumerable<WastedItem> items);
+
 }

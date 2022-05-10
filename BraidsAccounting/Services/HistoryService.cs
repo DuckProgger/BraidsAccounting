@@ -2,6 +2,8 @@
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +18,9 @@ namespace BraidsAccounting.Services
             this.historyRepository = historyRepository;
         }
 
+        public async Task<List<History>> GetAllAsync() =>
+           await historyRepository.Items.ToListAsync();
+
         public async Task WriteCreateOperationAsync(EntityData createdEntityData)
         {
             StringBuilder sb = new();
@@ -27,8 +32,11 @@ namespace BraidsAccounting.Services
             sb.Append(createdEntityData.EntityName);
 
             // Получение названий и значений свойств
-            sb.Append("\". Значения: ");
-            FillProperties(sb, createdEntityData);
+            if (createdEntityData.Count > 0)
+            {
+                sb.Append("\". Значения: ");
+                FillProperties(sb, createdEntityData);
+            }
             sb.Append('.');
 
             await AddHistoryAsync(sb.ToString());
@@ -45,8 +53,11 @@ namespace BraidsAccounting.Services
             sb.Append(deletedEntityData.EntityName);
 
             // Получение названий и значений свойств
-            sb.Append("\". Значения: ");
-            FillProperties(sb, deletedEntityData);
+            if (deletedEntityData.Count > 0)
+            {
+                sb.Append("\". Значения: ");
+                FillProperties(sb, deletedEntityData);
+            }
             sb.Append('.');
 
             await AddHistoryAsync(sb.ToString());
@@ -62,13 +73,18 @@ namespace BraidsAccounting.Services
             sb.Append(previousEntityData.EntityName);
 
             // Получение названий и значений старых свойств сущности
-            sb.Append("\". Прошлые значения: ");
-            FillProperties(sb, previousEntityData);
-
+            if (previousEntityData.Count > 0)
+            {
+                sb.Append("\". Прошлые значения: ");
+                FillProperties(sb, previousEntityData);
+            }
             // Получение названий и значений новых свойств сущности
-            sb.Append("\". Новые значения: ");
-            FillProperties(sb, newEntityData);
-            sb.Append('.');
+            if (newEntityData.Count > 0)
+            {
+                sb.Append("\". Новые значения: ");
+                FillProperties(sb, newEntityData);
+                sb.Append('.');
+            }
 
             await AddHistoryAsync(sb.ToString());
         }

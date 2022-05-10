@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
+using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,24 +10,27 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;
 
-internal class ServiceProvider : Interfaces.IServiceProvider
+internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Service>
 {
     private readonly IRepository<Service> services;
     private readonly IStoreService store;
-    private readonly IRepository<WastedItem> wastedItemsRepository;
+    private readonly IRepository<WastedItem> wastedItemsService;
     private readonly IEmployeesService employeesService;
+    private readonly IHistoryService historyService;
 
     public ServiceProvider(
         IRepository<Service> services
         , IStoreService store
-        , IRepository<WastedItem> wastedItemsRepository
+        , IRepository<WastedItem> wastedItemsService
         , IEmployeesService employeesService
+        , IHistoryService historyService
         )
     {
         this.services = services;
         this.store = store;
-        this.wastedItemsRepository = wastedItemsRepository;
+        this.wastedItemsService = wastedItemsService;
         this.employeesService = employeesService;
+        this.historyService = historyService;
     }
 
     public async Task AddAsync(Service service)
@@ -38,9 +42,11 @@ internal class ServiceProvider : Interfaces.IServiceProvider
         // Добавить услугу в БД
         CalculateNetProfit(service);
         var newService = await services.CreateAsync(service);
+        await historyService.WriteCreateOperationAsync(service.GetEtityData(this));
 
         BindWastedItemsToService(newService);
-        wastedItemsRepository.CreateRange(newService.WastedItems);
+        //await wastedItemsService.AddRangeAsync(newService.WastedItems);
+        await wastedItemsService.CreateRangeAsync(newService.WastedItems);
 
         // Убрать использованные товары со склада
         await store.RemoveItemsAsync(service.WastedItems);
@@ -56,7 +62,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider
         return await services.Items.Select(s => s.Employee.Name).Distinct().ToListAsync();
     }
 
-    private void BindWastedItemsToService(Service s)
+    private static void BindWastedItemsToService(Service s)
     {
         foreach (var wastedItem in s.WastedItems)
         {
@@ -73,4 +79,9 @@ internal class ServiceProvider : Interfaces.IServiceProvider
         service.NetProfit = service.Profit - expenses;
     }
 
+    IEntityDataBuilder<Service> IHistoryTracer<Service>.ConfigureEntityData(IEntityDataBuilder<Service> builder, Service entity) =>
+        builder.AddInfo(s => s.Employee.Name, entity.Employee.Name)
+        .AddInfo(s => s.Profit, entity.Profit)
+        .AddInfo(s => s.NetProfit, entity.NetProfit)
+        .AddInfo(s => s.DateTime, entity.DateTime);
 }

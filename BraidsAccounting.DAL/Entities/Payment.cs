@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace BraidsAccounting.DAL.Entities;
 
 [Description("Платёж")]
-public class Payment : Entity
+public record Payment : Entity
 {
     [Description("Сумма")]
     public decimal Amount { get; set; }

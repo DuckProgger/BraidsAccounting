@@ -13,7 +13,7 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "IWastedItemsService" />.
 /// </summary>
-internal class WastedItemsService : IWastedItemsService
+internal class WastedItemsService : IWastedItemsService/*, IHistoryTracer<WastedItem>*/
 {
     private readonly IRepository<WastedItem> wastedItems;
 
@@ -21,6 +21,10 @@ internal class WastedItemsService : IWastedItemsService
     {
         this.wastedItems = wastedItems;
     }
+
+    public async Task AddRangeAsync(IEnumerable<WastedItem> items) =>
+        await wastedItems.CreateRangeAsync(items);
+
     public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(WastedItemsFilterOptions options)
     {
         IQueryable<WastedItemForm> totalQuery;
@@ -119,4 +123,11 @@ internal class WastedItemsService : IWastedItemsService
                 Expense = Math.Round(g.Sum(w => w.Count * w.Item.Manufacturer.Price), 2)
             });
     }
+
+    //IEntityDataBuilder<WastedItem> IHistoryTracer<WastedItem>.ConfigureEntityData(IEntityDataBuilder<WastedItem> builder, WastedItem entity) =>
+    //    builder
+    //    .AddInfo(w => w.Item.Manufacturer.Name, entity.Item.Manufacturer.Name)
+    //    .AddInfo(w => w.Item.Article, entity.Item.Article)
+    //    .AddInfo(w => w.Item.Color, entity.Item.Color)
+    //    .AddInfo(w => w.Count, entity.Count);
 }

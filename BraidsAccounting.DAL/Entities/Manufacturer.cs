@@ -7,7 +7,7 @@ namespace BraidsAccounting.DAL.Entities;
 /// Данные производителя материала.
 /// </summary>
 [Description("Производитель")]
-public class Manufacturer : Entity, IEquatable<Manufacturer>
+public record Manufacturer : Entity, IEquatable<Manufacturer>
 {
     /// <summary>
     /// Название производителя.
@@ -23,9 +23,10 @@ public class Manufacturer : Entity, IEquatable<Manufacturer>
     public decimal Price { get; set; }
     public List<Item> Items { get; set; } = null!;
 
-    public bool Equals(Manufacturer? other)
+    public virtual bool Equals(Manufacturer? other)
     {
-        if (other is null || other.Name is null) throw new ArgumentNullException(nameof(other));
+        //if (other is null || other.Name is null) throw new ArgumentNullException(nameof(other));
+        if (other is null || other.Name is null) return false;
         return Name.ToUpper() == other.Name.ToUpper();
     }
 

@@ -7,7 +7,7 @@ namespace BraidsAccounting.DAL.Entities;
 /// Израсходованный материал.
 /// </summary>
 [Description("Израсходованный материал")]
-public class WastedItem : Entity
+public record WastedItem : Entity
 {
     public int ServiceId { get; set; }
     /// <summary>

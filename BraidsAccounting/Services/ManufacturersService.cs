@@ -1,5 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Entities.Base;
 using BraidsAccounting.DAL.Repositories;
+using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +15,15 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "IManufacturersService" />.
 /// </summary>
-internal class ManufacturersService : IManufacturersService
+internal class ManufacturersService : IManufacturersService, IHistoryTracer<Manufacturer>
 {
     private readonly IRepository<Manufacturer> manufacturers;
+    private readonly IHistoryService historyService;
 
-    public ManufacturersService(IRepository<Manufacturer> manufacturers)
+    public ManufacturersService(IRepository<Manufacturer> manufacturers, IHistoryService historyService)
     {
         this.manufacturers = manufacturers;
+        this.historyService = historyService;
     }
 
     public async Task<List<Manufacturer>> GetAllAsync() =>
@@ -32,24 +36,28 @@ internal class ManufacturersService : IManufacturersService
     public async Task AddAsync(Manufacturer? manufacturer)
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
-        //if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
-        //    throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
         await manufacturers.CreateAsync(manufacturer);
+        await historyService.WriteCreateOperationAsync(manufacturer.GetEtityData(this));
     }
 
     public async Task EditAsync(Manufacturer? manufacturer)
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
-        //if (string.IsNullOrEmpty(manufacturer.Name) || manufacturer.Price <= 0)
-        //    throw new ArgumentOutOfRangeException(nameof(manufacturer.Name));
+        var existingManufacturer = manufacturers.Get(manufacturer.Id) with { };
         await manufacturers.EditAsync(manufacturer);
+        await historyService.WriteUpdateOperationAsync(existingManufacturer.GetEtityData(this), manufacturer.GetEtityData(this));
     }
 
     public async Task RemoveAsync(int id)
     {
         var catalogue = ServiceLocator.GetService<ICatalogueService>();
-        if (catalogue.ContainsManufacturer(id)) 
+        if (catalogue.ContainsManufacturer(id))
             throw new ArgumentException(Messages.ManufacturerUsedInCatalogue, nameof(id));
+        var existingManufacturer = await manufacturers.GetAsync(id);
         await manufacturers.RemoveAsync(id);
+        await historyService.WriteDeleteOperationAsync(existingManufacturer.GetEtityData(this));
     }
+
+    public IEntityDataBuilder<Manufacturer> ConfigureEntityData(IEntityDataBuilder<Manufacturer> builder, Manufacturer entity) =>
+        builder.AddInfo(e => e.Name, entity.Name);
 }

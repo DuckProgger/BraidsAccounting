@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
+using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -8,22 +9,28 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;
 
-internal class PaymentsService : IPaymentsService
+internal class PaymentsService : IPaymentsService, IHistoryTracer<Payment>
 {
     private readonly IRepository<Payment> paymentsRepository;
     private readonly IWastedItemsService statisticsService;
+    private readonly IHistoryService historyService;
 
     public PaymentsService(
         IRepository<Payment> paymentsRepository
         , IWastedItemsService statisticsService
+        , IHistoryService historyService
         )
     {
         this.paymentsRepository = paymentsRepository;
         this.statisticsService = statisticsService;
+        this.historyService = historyService;
     }
 
-    public async Task AddAsync(Payment payment) =>
-      await paymentsRepository.CreateAsync(payment);
+    public async Task AddAsync(Payment payment)
+    {
+        await paymentsRepository.CreateAsync(payment);
+        await historyService.WriteCreateOperationAsync(payment.GetEtityData(this));
+    }
 
     public async Task<List<Payment>> GetRangeAsync(string employeeName) =>
         await GetFilteredQuery(employeeName).ToListAsync();
@@ -56,4 +63,10 @@ internal class PaymentsService : IPaymentsService
         // суммой расходов и суммой пополнений
         return expenses - payments;
     }
+
+    public IEntityDataBuilder<Payment> ConfigureEntityData(IEntityDataBuilder<Payment> builder, Payment entity) =>
+        builder
+        .AddInfo(p => p.Employee.Name, entity.Employee.Name)
+        .AddInfo(p => p.Amount, entity.Amount)
+        .AddInfo(p => p.DateTime, entity.DateTime);
 }

@@ -14,7 +14,7 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "ICatalogueService" />.
 /// </summary>
-internal class CatalogueService : ICatalogueService
+internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
 {
     private readonly IRepository<Item> catalogue;
     private readonly IHistoryService historyService;
@@ -57,17 +57,16 @@ internal class CatalogueService : ICatalogueService
         TrimSpaces(item);
         item.Manufacturer = manufacturer;
         var newItem = await catalogue.CreateAsync(item);
-        await historyService.WriteCreateOperationAsync(GetEntityInfo(item));
+        await historyService.WriteCreateOperationAsync(item.GetEtityData(this));
         return newItem;
     }
 
     public async Task EditAsync(Item item)
     {
         TrimSpaces(item);       
-        var existingItem = catalogue.Get(item.Id); // Получить актуальную сущность
+        var existingItem = await catalogue.GetAsync(item.Id) with { }; // Получить актуальную сущность
         await catalogue.EditAsync(item);
-        await historyService.WriteUpdateOperationAsync(GetEntityInfo(existingItem), GetEntityInfo(item));
-
+        await historyService.WriteUpdateOperationAsync(existingItem.GetEtityData(this), item.GetEtityData(this));
     }
 
     public async Task RemoveAsync(Item item)
@@ -82,6 +81,7 @@ internal class CatalogueService : ICatalogueService
         if (existsInWasteditems) throw new ArgumentException(Messages.ItemUsedInService);
         // Удалить материал из каталога
         await catalogue.RemoveAsync(item.Id);
+        await historyService.WriteDeleteOperationAsync(item.GetEtityData(this));
     }
 
     private static void TrimSpaces(Item item)
@@ -90,10 +90,9 @@ internal class CatalogueService : ICatalogueService
         item.Color = item.Color.Trim();
     }
 
-    private static EntityData GetEntityInfo(Item item) =>
-        new EntityDataBuilder()
-            .AddInfo(() => item.Manufacturer.Name, item.Manufacturer.Name)
-            .AddInfo(() => item.Article, item.Article)
-            .AddInfo(() => item.Color, item.Color)
-            .GetPropertyDatas();
+    public IEntityDataBuilder<Item> ConfigureEntityData(IEntityDataBuilder<Item> builder, Item entity) =>
+        builder
+        .AddInfo(i => i.Manufacturer.Name, entity.Manufacturer.Name)
+        .AddInfo(i => i.Article, entity.Article)
+        .AddInfo(i => i.Color, entity.Color);
 }

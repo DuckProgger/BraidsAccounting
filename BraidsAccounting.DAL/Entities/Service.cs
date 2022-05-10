@@ -8,7 +8,7 @@ namespace BraidsAccounting.DAL.Entities;
 /// Выполненная работа.
 /// </summary>
 [Description("Услуга")]
-public class Service : Entity
+public record Service : Entity
 {
     /// <summary>
     /// Выручка.

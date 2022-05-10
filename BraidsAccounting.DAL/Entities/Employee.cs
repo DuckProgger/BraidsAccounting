@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace BraidsAccounting.DAL.Entities;
 
 [Description("Сотрудник")]
-public class Employee : Entity
+public record Employee : Entity
 {
     [Description("Имя")]
     public string Name { get; set; } = null!;
