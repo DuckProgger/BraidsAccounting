@@ -1,6 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
-using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -49,7 +49,7 @@ internal class ManufacturersService : IManufacturersService
     {
         var catalogue = ServiceLocator.GetService<ICatalogueService>();
         if (catalogue.ContainsManufacturer(id)) 
-            throw new ArgumentException(MessageContainer.ManufacturerUsedInCatalogue, nameof(id));
+            throw new ArgumentException(Messages.ManufacturerUsedInCatalogue, nameof(id));
         await manufacturers.RemoveAsync(id);
     }
 }

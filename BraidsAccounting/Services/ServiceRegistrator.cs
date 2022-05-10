@@ -22,5 +22,6 @@ internal static class ServiceRegistrator
         .Register<IWastedItemsService, WastedItemsService>()
         .Register<IEmployeesService, EmployeesService>()
         .Register<IPaymentsService, PaymentsService>()
+        .RegisterSingleton<IHistoryService, HistoryService>()
        ;
 }

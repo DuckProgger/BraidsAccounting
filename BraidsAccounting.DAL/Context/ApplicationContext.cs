@@ -15,6 +15,7 @@ public class ApplicationContext : DbContext
     public DbSet<Manufacturer> Manufacturers { get; set; } = null!;
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<Payment> Payments { get; set; } = null!;
+    public DbSet<History> History { get; set; } = null!;
 
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
@@ -46,6 +47,7 @@ public class ApplicationContext : DbContext
         modelBuilder
             .Entity<Service>(ServiceConfigure)
             .Entity<Payment>(PaymentConfigure)
+            .Entity<History>(HistoryConfigure)
             ;
     }
 
@@ -60,6 +62,13 @@ public class ApplicationContext : DbContext
     {
         builder
           .Property(x => x.DateTime)
+          .HasDefaultValueSql("GETDATE()");
+    }
+
+    private void HistoryConfigure(EntityTypeBuilder<History> builder)
+    {
+        builder
+          .Property(x => x.TimeStamp)
           .HasDefaultValueSql("GETDATE()");
     }
 }   

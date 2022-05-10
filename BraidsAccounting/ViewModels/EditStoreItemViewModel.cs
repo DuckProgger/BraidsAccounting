@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Infrastructure.Constants;
 using Prism.Commands;
 using Prism.Regions;
 using System.Collections.Generic;
@@ -79,12 +80,12 @@ internal class EditStoreItemViewModel : ViewModelBase
         StoreItem.Item.Manufacturer = SelectedManufacturer;
         if (!IsValidCount(StoreItem.Count))
         {
-            Notifier.AddError(MessageContainer.StoreItemInvalidCount);
+            Notifier.AddError(Messages.StoreItemInvalidCount);
             return;
         }
         if (!IsValidItem())
         {
-            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
         await store.EditItemAsync(StoreItem);

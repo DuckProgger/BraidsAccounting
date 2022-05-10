@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
@@ -48,7 +49,7 @@ internal class AddItemViewModel : ViewModelBase
     {
         if (!IsValidItem())
         {
-            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
         ItemInForm.Manufacturer = SelectedManufacturer;

@@ -1,10 +1,12 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
+using System.ComponentModel;
 
 namespace BraidsAccounting.DAL.Entities;
 
 /// <summary>
 /// Израсходованный материал.
 /// </summary>
+[Description("Израсходованный материал")]
 public class WastedItem : Entity
 {
     public int ServiceId { get; set; }
@@ -20,5 +22,6 @@ public class WastedItem : Entity
     /// <summary>
     /// Количество материалов.
     /// </summary>
+    [Description("Количество")]
     public int Count { get; set; }
 }

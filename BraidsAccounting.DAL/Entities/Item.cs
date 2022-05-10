@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BraidsAccounting.DAL.Entities;
@@ -6,17 +7,20 @@ namespace BraidsAccounting.DAL.Entities;
 /// <summary>
 ///  Материал, используемый для выполнения работ.
 /// </summary>
+[Description("Материал из каталога")]
 public class Item : Entity, IEquatable<Item>
 {
     /// <summary>
     /// Артикул.
     /// </summary>
     [Column(TypeName = "nvarchar(50)")]
+    [Description("Модель")]
     public string Article { get; set; } = null!;
     /// <summary>
     /// Цвет.
     /// </summary>
     [Column(TypeName = "nvarchar(50)")]
+    [Description("Цвет")]
     public string Color { get; set; } = null!;
     /// <summary>
     /// Производитель.

@@ -2,6 +2,7 @@
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Views;
 using Prism.Commands;
 using Prism.Events;
@@ -62,7 +63,7 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         await store.RemoveItemAsync(SelectedStoreItem.Id);
         Collection.Remove(SelectedStoreItem);
         MDDialogHost.CloseDialogCommand.Execute(null, null);
-        Notifier.AddInfo(MessageContainer.RemoveStoreItemSuccess);
+        Notifier.AddInfo(Messages.RemoveStoreItemSuccess);
     }
 
     #endregion
@@ -78,11 +79,11 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
 
     private async Task LoadData()
     {
-        Notifier.AddWarning(MessageContainer.LoadingStoreItems);
+        Notifier.AddWarning(Messages.LoadingStoreItems);
         // Нужно обновить контекст, чтобы получать обновлённые данные
         store = ServiceLocator.GetService<IStoreService>();
         Collection = new(await store.GetItemsAsync());
-        Notifier.Remove(MessageContainer.LoadingStoreItems);
+        Notifier.Remove(Messages.LoadingStoreItems);
         TotalItems = Collection.Sum(i => i.Count);
     }
 
@@ -117,13 +118,13 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         if (parameters.ContainsKey(ParameterNames.AddItemResult))
         {
             result = (bool)parameters[ParameterNames.AddItemResult];
-            if (result) Notifier.AddInfo(MessageContainer.AddStoreItemSuccess);
+            if (result) Notifier.AddInfo(Messages.AddStoreItemSuccess);
             return;
         }
         if (parameters.ContainsKey(ParameterNames.EditItemResult))
         {
             result = (bool)parameters[ParameterNames.EditItemResult];
-            if (result) Notifier.AddInfo(MessageContainer.EditStoreItemSuccess);
+            if (result) Notifier.AddInfo(Messages.EditStoreItemSuccess);
             return;
         }
     }

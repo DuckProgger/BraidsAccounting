@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ internal class PaymentsViewModel : ViewModelBase
         await paymentsService.AddAsync(NewPayment);
         NewPayment = new();
         GetDebtCommand.Execute(null);
-        Notifier.AddInfo(MessageContainer.AddPaymentSuccess);
+        Notifier.AddInfo(Messages.AddPaymentSuccess);
         MDDialogHost.CloseDialogCommand.Execute(null, null);
     }
 
@@ -95,12 +96,12 @@ internal class PaymentsViewModel : ViewModelBase
     {
         if (NewPayment.Amount <= 0)
         {
-            Notifier.AddError(MessageContainer.AmountMustBePositive);
+            Notifier.AddError(Messages.AmountMustBePositive);
             return;
         }
         if (NotSelectedEmployee)
         {
-            Notifier.AddError(MessageContainer.EmployeeNotSelected);
+            Notifier.AddError(Messages.EmployeeNotSelected);
             return;
         }
         MDDialogHost.OpenDialogCommand.Execute(null, null);

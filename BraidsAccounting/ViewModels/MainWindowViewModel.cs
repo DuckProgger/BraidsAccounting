@@ -1,4 +1,4 @@
-﻿using BraidsAccounting.Modules;
+﻿using BraidsAccounting.Infrastructure.Constants;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;

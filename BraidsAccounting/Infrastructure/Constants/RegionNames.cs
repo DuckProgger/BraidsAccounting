@@ -1,4 +1,4 @@
-﻿namespace BraidsAccounting.Modules;
+﻿namespace BraidsAccounting.Infrastructure.Constants;
 
 internal static class RegionNames
 {

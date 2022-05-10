@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using Prism.Regions;
@@ -68,7 +69,7 @@ internal class EditItemViewModel : ViewModelBase
         {
             if (!IsValidItem())
             {
-                Notifier.AddError(MessageContainer.FieldsNotFilled);
+                Notifier.AddError(Messages.FieldsNotFilled);
                 return;
             }
             ItemInForm.Manufacturer = SelectedManufacturer;
@@ -78,7 +79,7 @@ internal class EditItemViewModel : ViewModelBase
         }
         catch (ArgumentException)
         {
-            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            Notifier.AddError(Messages.FieldsNotFilled);
         }
     }
 

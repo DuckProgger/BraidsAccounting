@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:mod="clr-namespace:BraidsAccounting.Modules"        
+        xmlns:const="clr-namespace:BraidsAccounting.Infrastructure.Constants"       
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         WindowStartupLocation="CenterScreen"
@@ -22,7 +22,7 @@
             <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
             <MenuItem Header="Статистика" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StatisticsView"/>
         </Menu>
-        <ContentControl prism:RegionManager.RegionName="{x:Static mod:RegionNames.Main}" />
+        <ContentControl prism:RegionManager.RegionName="{x:Static const:RegionNames.Main}" />
     </DockPanel>
 </Window>
 

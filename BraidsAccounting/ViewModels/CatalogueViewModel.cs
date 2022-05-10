@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
@@ -44,11 +45,11 @@ internal class CatalogueViewModel : ViewModelBase<Item>
     private bool CanLoadDataCommandExecute() => true;
     private async void OnLoadDataCommandExecuted()
     {
-        Notifier.AddInfo(MessageContainer.LoadingItems);
+        Notifier.AddInfo(Messages.LoadingItems);
         // Нужно обновить контекст, чтобы получать обновлённые данные
         catalogueService = ServiceLocator.GetService<ICatalogueService>();
         Collection = new(await catalogueService.GetAllAsync(OnlyInStock));
-        Notifier.Remove(MessageContainer.LoadingItems);
+        Notifier.Remove(Messages.LoadingItems);
     }
 
     #endregion
@@ -87,7 +88,7 @@ internal class CatalogueViewModel : ViewModelBase<Item>
         {
             await catalogueService.RemoveAsync(SelectedItem);
             Collection.Remove(SelectedItem);
-            Notifier.AddInfo(MessageContainer.RemoveItemSuccess);
+            Notifier.AddInfo(Messages.RemoveItemSuccess);
         }
         catch (ArgumentException ex)
         {
@@ -104,13 +105,13 @@ internal class CatalogueViewModel : ViewModelBase<Item>
         if (parameters.ContainsKey(ParameterNames.AddItemResult))
         {
             result = (bool)parameters[ParameterNames.AddItemResult];
-            if (result) Notifier.AddInfo(MessageContainer.AddItemSuccess);
+            if (result) Notifier.AddInfo(Messages.AddItemSuccess);
             return;
         }
         if (parameters.ContainsKey(ParameterNames.EditItemResult))
         {
             result = (bool)parameters[ParameterNames.EditItemResult];
-            if (result) Notifier.AddInfo(MessageContainer.EditItemSuccess);
+            if (result) Notifier.AddInfo(Messages.EditItemSuccess);
             return;
         }
     }

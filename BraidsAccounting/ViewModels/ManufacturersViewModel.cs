@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System;
@@ -65,7 +66,7 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
     {
         if (!IsValidManufacturer(ManufacturerInForm))
         {
-            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
         switch (ManufacturerInForm.Id)
@@ -73,11 +74,11 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
             case 0:
                 await manufacturersService.AddAsync(ManufacturerInForm);
                 Collection.Add(ManufacturerInForm);
-                Notifier.AddInfo(MessageContainer.AddManufacturerSuccess);
+                Notifier.AddInfo(Messages.AddManufacturerSuccess);
                 break;
             default:
                 await manufacturersService.EditAsync(ManufacturerInForm);
-                Notifier.AddInfo(MessageContainer.EditManufacturerSuccess);
+                Notifier.AddInfo(Messages.EditManufacturerSuccess);
                 break;
         }
         GetManufacturersListCommand.Execute(null);
@@ -99,7 +100,7 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
         {
             await manufacturersService.RemoveAsync(SelectedManufacturer.Id);
             Collection.Remove(SelectedManufacturer);
-            Notifier.AddInfo(MessageContainer.RemoveManufacturerSuccess);
+            Notifier.AddInfo(Messages.RemoveManufacturerSuccess);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
         catch (ArgumentException ex)

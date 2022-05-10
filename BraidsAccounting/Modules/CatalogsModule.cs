@@ -1,4 +1,5 @@
-﻿using BraidsAccounting.Views;
+﻿using BraidsAccounting.Infrastructure.Constants;
+using BraidsAccounting.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;

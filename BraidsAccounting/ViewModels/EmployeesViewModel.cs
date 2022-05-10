@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System.Collections.ObjectModel;
@@ -82,7 +83,7 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
     {
         if (!IsValidEmployee(EmployeeInForm))
         {
-            Notifier.AddError(MessageContainer.FieldsNotFilled);
+            Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
         switch (EmployeeInForm.Id)
@@ -90,11 +91,11 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
             case 0:
                 await employeesService.AddAsync(EmployeeInForm);
                 Collection.Add(EmployeeInForm);
-                Notifier.AddInfo(MessageContainer.AddEmployeeSuccess);
+                Notifier.AddInfo(Messages.AddEmployeeSuccess);
                 break;
             default:
                 await employeesService.EditAsync(EmployeeInForm);
-                Notifier.AddInfo(MessageContainer.EditEmployeeSuccess);
+                Notifier.AddInfo(Messages.EditEmployeeSuccess);
                 break;
         }
         GetEmployeesCommand.Execute(null);

@@ -3,6 +3,7 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services;
 using BraidsAccounting.Services.Interfaces;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Views;
 using Prism.Commands;
 using System;
@@ -72,13 +73,13 @@ internal class ServiceViewModel : ViewModelBase
     {
         if (WastedItems.Any(wi => wi.Equals(storeItem)))
         {
-            Notifier.AddError(MessageContainer.SelectedItemAlreadyExists);
+            Notifier.AddError(Messages.SelectedItemAlreadyExists);
             return;
         }
         FormItem formItem = storeItem.Item;
         if (formItem.MaxCount == 0)
         {
-            Notifier.AddError(MessageContainer.SelectedItemOutOfStock);
+            Notifier.AddError(Messages.SelectedItemOutOfStock);
             return;
         }
         WastedItems.Add(formItem);
@@ -125,7 +126,7 @@ internal class ServiceViewModel : ViewModelBase
             CheckRunningOutItems(WastedItems);
             Service = new();
             WastedItems = new();
-            Notifier.AddInfo(MessageContainer.AddServiceSuccess);
+            Notifier.AddInfo(Messages.AddServiceSuccess);
         }
         catch (Exception ex)
         {
@@ -166,21 +167,21 @@ internal class ServiceViewModel : ViewModelBase
     {
         if (!IsValidProfit(Service.Profit))
         {
-            Notifier.AddError(MessageContainer.InvalidServiceProfit);
+            Notifier.AddError(Messages.InvalidServiceProfit);
             return;
         }
         if (!IsValidEmployee(Service.Employee))
         {
-            Notifier.AddError(MessageContainer.EmployeeNotSelected);
+            Notifier.AddError(Messages.EmployeeNotSelected);
             return;
         }
-        Notifier.Remove(MessageContainer.WastedItemNotSelected);
+        Notifier.Remove(Messages.WastedItemNotSelected);
         if (WastedItems.Count == 0)
-            Notifier.AddWarning(MessageContainer.WastedItemNotSelected);
+            Notifier.AddWarning(Messages.WastedItemNotSelected);
         foreach (var wastedItem in WastedItems)
             if (!IsValidWastedItemCount(wastedItem.Count))
             {
-                Notifier.AddError(MessageContainer.WastedItemInvalidCount);
+                Notifier.AddError(Messages.WastedItemInvalidCount);
                 return;
             }
         MDDialogHost.OpenDialogCommand.Execute(null, null);

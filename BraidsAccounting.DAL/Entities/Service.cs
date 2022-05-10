@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BraidsAccounting.DAL.Entities;
@@ -6,6 +7,7 @@ namespace BraidsAccounting.DAL.Entities;
 /// <summary>
 /// Выполненная работа.
 /// </summary>
+[Description("Услуга")]
 public class Service : Entity
 {
     /// <summary>
@@ -13,12 +15,14 @@ public class Service : Entity
     /// </summary>
 
     [Column(TypeName = "decimal(18,2)")]
+    [Description("Стоимость работ")]
     public decimal Profit { get; set; }
 
     /// <summary>
     /// Чистая прибыль с учётом стоимости израсходованных материалов.
     /// </summary>
     [Column(TypeName = "decimal(18,2)")]
+    [Description("Чистая прибыль")]
     public decimal NetProfit { get; set; }
     /// <summary>
     /// Сотрудник, выполнивший работу.
@@ -28,6 +32,7 @@ public class Service : Entity
     /// <summary>
     /// Дата выполнения работы.
     /// </summary>
+    [Description("Время и дата")]    
     public DateTime DateTime { get; set; }
 
     public List<WastedItem> WastedItems { get; set; } = null!;

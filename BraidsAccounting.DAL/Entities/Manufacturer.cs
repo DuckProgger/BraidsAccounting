@@ -1,21 +1,25 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BraidsAccounting.DAL.Entities;
 /// <summary>
 /// Данные производителя материала.
 /// </summary>
+[Description("Производитель")]
 public class Manufacturer : Entity, IEquatable<Manufacturer>
 {
     /// <summary>
     /// Название производителя.
     /// </summary>
     [Column(TypeName = "nvarchar(50)")]
+    [Description("Имя")]
     public string Name { get; set; } = null!;
     /// <summary>
     /// Стоимость материалов данного производителя.
     /// </summary>
     [Column(TypeName = "decimal(18,2)")]
+    [Description("Цена")]
     public decimal Price { get; set; }
     public List<Item> Items { get; set; } = null!;
 

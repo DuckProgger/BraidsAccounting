@@ -1,4 +1,4 @@
-﻿namespace BraidsAccounting.Infrastructure;
+﻿namespace BraidsAccounting.Infrastructure.Constants;
 
 internal static class ParameterNames
 {

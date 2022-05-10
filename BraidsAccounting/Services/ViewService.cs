@@ -1,4 +1,4 @@
-﻿using BraidsAccounting.Modules;
+﻿using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;

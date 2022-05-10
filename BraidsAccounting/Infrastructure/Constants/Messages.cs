@@ -1,6 +1,6 @@
-﻿namespace BraidsAccounting.Infrastructure;
+﻿namespace BraidsAccounting.Infrastructure.Constants;
 
-internal static class MessageContainer
+internal static class Messages
 {
     #region Item
     public const string LoadingItems = "Загружается каталог материалов...";

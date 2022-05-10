@@ -16,5 +16,6 @@ public static class RepositoryRegistrator
        .Register<IRepository<Manufacturer>, DbRepository<Manufacturer>>()
        .Register<IRepository<Employee>, DbRepository<Employee>>()
        .Register<IRepository<Payment>, DbRepository<Payment>>()
+       .Register<IRepository<History>, DbRepository<History>>()
         ;
 }

@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System.Windows.Input;
@@ -33,7 +34,7 @@ namespace BraidsAccounting.ViewModels
             SelectedItem = item;
             if (SelectedItem is null)
             {
-                Notifier.AddError(MessageContainer.ItemNotSelected);
+                Notifier.AddError(Messages.ItemNotSelected);
                 return;
             }
             viewService.AddParameter(ParameterNames.SelectedItem, SelectedItem);
