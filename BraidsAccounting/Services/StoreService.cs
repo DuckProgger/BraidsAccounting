@@ -102,17 +102,17 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
             if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
             StoreItem? existingStoreItem = await store.Items.FirstAsync(si => si.Item.Id == wastedItem.Item.Id);
             if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
-            var newStoreItem = existingStoreItem with { };
-            newStoreItem.Count -= wastedItem.Count;
-            switch (newStoreItem.Count)
+            var previousStoreItem =  existingStoreItem with { };
+            existingStoreItem.Count -= wastedItem.Count;
+            switch (existingStoreItem.Count)
             {
                 case > 0:
-                    await store.EditAsync(newStoreItem);
-                    await historyService.WriteUpdateOperationAsync(existingStoreItem.GetEtityData(this), newStoreItem.GetEtityData(this));
+                    await store.EditAsync(existingStoreItem);
+                    await historyService.WriteUpdateOperationAsync(previousStoreItem.GetEtityData(this), existingStoreItem.GetEtityData(this));
                     break;
                 case 0:
-                    await store.RemoveAsync(newStoreItem.Id);
-                    await historyService.WriteDeleteOperationAsync(newStoreItem.GetEtityData(this));
+                    await store.RemoveAsync(existingStoreItem.Id);
+                    await historyService.WriteDeleteOperationAsync(existingStoreItem.GetEtityData(this));
                     break;
                 default:
                     throw new Exception("Указанного количества товара нет на складе");
@@ -124,10 +124,10 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
     {
         if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
         if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
-        var existingStoreItem = store.Get(storeItem.Id);
+        var previousStoreItem = store.Get(storeItem.Id) with { };
         await store.EditAsync(storeItem);
         await catalogue.EditAsync(storeItem.Item);
-        await historyService.WriteUpdateOperationAsync(existingStoreItem.GetEtityData(this), storeItem.GetEtityData(this));
+        await historyService.WriteUpdateOperationAsync(previousStoreItem.GetEtityData(this), storeItem.GetEtityData(this));
 
     }
 

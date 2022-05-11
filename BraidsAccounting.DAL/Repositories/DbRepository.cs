@@ -66,6 +66,7 @@ internal class DbRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         if (item is null) throw new ArgumentNullException(nameof(item));
         T existingItem = Get(item.Id) ?? throw new Exception("Элемент не найден.");
+        //if(existingItem.Equals(item)) throw new DublicateException("Новые значения сущности не отличаются от предыдущих.");
         context.Entry(existingItem).CurrentValues.SetValues(item);
     }
 

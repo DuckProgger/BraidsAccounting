@@ -4,6 +4,7 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace BraidsAccounting.Services
         }
 
         public async Task<List<History>> GetAllAsync() =>
-           await historyRepository.Items.ToListAsync();
+           await historyRepository.Items.Take(50).OrderByDescending(h => h.TimeStamp).ToListAsync();
 
         public async Task WriteCreateOperationAsync(EntityData createdEntityData)
         {
@@ -71,22 +72,44 @@ namespace BraidsAccounting.Services
             sb.Append("Изменена сущность \"");
             // Получение названия типа сущности
             sb.Append(previousEntityData.EntityName);
+            sb.Append("\".");
+            // Оставить только отличающиеся значения, чтобы было легче ориентироваться
+            // и чтобы сэкономить память
+           RemoveDublicates(previousEntityData, newEntityData);
 
             // Получение названий и значений старых свойств сущности
             if (previousEntityData.Count > 0)
             {
-                sb.Append("\". Прошлые значения: ");
+                sb.Append(" Прошлые значения: ");
                 FillProperties(sb, previousEntityData);
+                sb.Append('.');
             }
             // Получение названий и значений новых свойств сущности
             if (newEntityData.Count > 0)
             {
-                sb.Append("\". Новые значения: ");
+                sb.Append(" Новые значения: ");
                 FillProperties(sb, newEntityData);
                 sb.Append('.');
             }
 
             await AddHistoryAsync(sb.ToString());
+        }
+
+        private static void RemoveDublicates(EntityData previousEntityData, EntityData newEntityData)
+        {
+            List<string> listToRemove = new();
+            foreach (var oldPropertyData in previousEntityData)
+            {
+                var newPropertyData = newEntityData.Single(e => e.Name.Equals(oldPropertyData.Name));
+                if (oldPropertyData.Value.Equals(newPropertyData.Value))
+                    listToRemove.Add(oldPropertyData.Name);
+            }
+            if (listToRemove.Count > 0)
+                foreach (var item in listToRemove)
+                {
+                    previousEntityData.Remove(item);
+                    newEntityData.Remove(item);
+                }
         }
 
         private static void FillProperties(StringBuilder sb, EntityData entityData)
@@ -105,28 +128,5 @@ namespace BraidsAccounting.Services
             History history = new() { Message = message };
             await historyRepository.CreateAsync(history);
         }
-
-        //public async Task AddAsync(OperationType operationType, string comment)
-        //{
-        //    History history = new();
-        //    history.Message = $"Операция: \"{GetLocalizedOperationName(operationType)}\", " +
-        //        $"Сущность: \"{GetLocalizedEntityName()}\" {comment}";
-        //    await historyRepository.CreateAsync(history);
-        //}
-
-
-
-        //private static string GetLocalizedEntityName() =>
-        //    new T().GetLocalizedName();
-
-        //private static string GetLocalizedOperationName(OperationType operationType) =>
-        //    operationType switch
-        //    {
-        //        OperationType.Add => "Добавление",
-        //        OperationType.Update => "Изменение",
-        //        OperationType.Remove => "Удаление",
-        //        _ => throw new NotImplementedException("Неизвестный тип операции."),
-        //    };
     }
-    //public enum OperationType { Add, Update, Remove }
 }

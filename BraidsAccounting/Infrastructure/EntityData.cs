@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BraidsAccounting.Infrastructure;
 
-public class EntityData : IEnumerable<PropertyData> 
+public class EntityData : IEnumerable<PropertyData>
 {
     private readonly List<PropertyData> propertiesInfo = new();
 
@@ -24,6 +25,12 @@ public class EntityData : IEnumerable<PropertyData>
             Value = value
         };
         propertiesInfo.Add(propertyInfo);
+    }
+
+    public void Remove(string propertyName)
+    {
+        var existingItem = propertiesInfo.Single(p => p.Name.Equals(propertyName));
+        propertiesInfo.Remove(existingItem);
     }
 
     public IEnumerator<PropertyData> GetEnumerator()

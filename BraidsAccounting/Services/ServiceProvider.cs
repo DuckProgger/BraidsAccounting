@@ -45,8 +45,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
         await historyService.WriteCreateOperationAsync(service.GetEtityData(this));
 
         BindWastedItemsToService(newService);
-        //await wastedItemsService.AddRangeAsync(newService.WastedItems);
-        await wastedItemsService.CreateRangeAsync(newService.WastedItems);
+        wastedItemsService.CreateRange(newService.WastedItems);
 
         // Убрать использованные товары со склада
         await store.RemoveItemsAsync(service.WastedItems);
