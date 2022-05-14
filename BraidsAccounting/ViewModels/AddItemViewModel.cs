@@ -20,6 +20,7 @@ internal class AddItemViewModel : ViewModelBase
         this.catalogueService = catalogueService;
         this.viewService = viewService;
         ItemInForm.Manufacturer = new();
+        Title = "Добавление материала в каталог";
     }
     /// <summary>
     /// Материал со склада, обрабатываемый в форме.

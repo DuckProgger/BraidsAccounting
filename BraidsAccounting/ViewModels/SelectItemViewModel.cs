@@ -14,6 +14,7 @@ internal class SelectItemViewModel : ViewModelBase
     public SelectItemViewModel(IViewService viewService)
     {
         this.viewService = viewService;
+        Title = "Выбор материала из каталога";
     }
 
     /// <summary>

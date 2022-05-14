@@ -16,8 +16,6 @@ internal class EditStoreItemViewModel : ViewModelBase
     private readonly IManufacturersService manufacturersService;
     private readonly IViewService viewService;
 
-    public string Title => "Изменение материала на складе";
-
     /// <summary>
     /// Материал со склада, обрабатываемый в форме.
     /// </summary>
@@ -41,6 +39,7 @@ internal class EditStoreItemViewModel : ViewModelBase
         this.manufacturersService = manufacturersService;
         this.viewService = viewService;
         this.store = store;
+        Title = "Изменение материала на складе";
     }
 
     /// <summary>
@@ -98,7 +97,7 @@ internal class EditStoreItemViewModel : ViewModelBase
         catch (DublicateException ex)
         {
             Notifier.AddError(ex.Message);
-        }        
+        }
     }
 
     #endregion

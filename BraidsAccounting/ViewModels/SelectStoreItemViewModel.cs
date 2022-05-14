@@ -14,6 +14,7 @@ namespace BraidsAccounting.ViewModels
         public SelectStoreItemViewModel(IViewService viewService)
         {
             this.viewService = viewService;
+            Title = "Выбор материала со склада";
         }
 
         /// <summary>

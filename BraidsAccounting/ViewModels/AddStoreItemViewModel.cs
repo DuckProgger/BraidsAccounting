@@ -25,6 +25,7 @@ internal class AddStoreItemViewModel : ViewModelBase
     {
         this.store = store;
         this.viewService = viewService;
+        Title = "Добавление материала на склад";
     }
 
     public override void OnNavigatedTo(NavigationContext navigationContext)

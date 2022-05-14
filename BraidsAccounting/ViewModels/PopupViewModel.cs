@@ -1,11 +1,11 @@
-﻿using BraidsAccounting.Services.Interfaces;
+﻿using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
-using Prism.Mvvm;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels;
 
-internal class PopupViewModel : BindableBase
+internal class PopupViewModel : ViewModelBase
 {
     private readonly IViewService viewService;
 

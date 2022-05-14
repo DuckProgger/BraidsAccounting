@@ -22,8 +22,8 @@ internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
     {
         this.statisticsService = statisticsService;
         this.serviceProvider = serviceProvider;
+        Title = "Израсходованные материалы";
     }
-    public string Title => "Израсходованные материалы";
 
     /// <summary>
     /// Список имён сотрудников, которые когда-либо выполняли работу.

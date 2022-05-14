@@ -13,6 +13,7 @@ namespace BraidsAccounting.ViewModels
         public HistoryViewModel(IHistoryService historyService)
         {
             this.historyService = historyService;
+            Title = "История операций";
         }
 
         #region Command LoadData - Команда получить историю операций с сущностями 

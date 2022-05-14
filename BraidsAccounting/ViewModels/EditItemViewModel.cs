@@ -21,12 +21,13 @@ internal class EditItemViewModel : ViewModelBase
     public EditItemViewModel(
         ICatalogueService catalogueService
         , IViewService viewService
-        , IManufacturersService manufacturersService
+        , IManufacturersService manufacturersService        
         )
     {
         this.catalogueService = catalogueService;
         this.viewService = viewService;
         this.manufacturersService = manufacturersService;
+        Title = "Изменение материала в каталоге";
     }
 
     /// <summary>

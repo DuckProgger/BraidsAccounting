@@ -17,8 +17,9 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
     public EmployeesViewModel(IEmployeesService employeesService)
     {
         this.employeesService = employeesService;
+        Title = "Сотрудники";    
     }
-    public string Title => "Сотрудники";
+
     public Employee SelectedEmployee { get; set; }
     public Employee EmployeeInForm { get; set; } = new();
 

@@ -32,6 +32,7 @@ internal class ServiceViewModel : ViewModelBase
         this.serviceProvider = serviceProvider;
         this.viewService = viewService;
         Notifier.SetMessageParams(MessageType.Warning, new(false));
+        Title = "Услуги";
     }
 
     /// <summary>

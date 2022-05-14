@@ -1,6 +1,8 @@
-﻿namespace BraidsAccounting.ViewModels;
+﻿using BraidsAccounting.Infrastructure;
 
-internal class StatisticsViewModel
+namespace BraidsAccounting.ViewModels;
+
+internal class StatisticsViewModel : ViewModelBase
 {
 
 }

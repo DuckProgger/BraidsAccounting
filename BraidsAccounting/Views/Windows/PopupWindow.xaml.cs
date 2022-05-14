@@ -10,6 +10,7 @@ namespace BraidsAccounting.Views.Windows
         public PopupWindow()
         {
             InitializeComponent();
+           var test = ContentView.DataContext;
         }
     }
 }

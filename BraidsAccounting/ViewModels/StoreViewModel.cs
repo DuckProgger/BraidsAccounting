@@ -37,9 +37,8 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         this.container = container;
         this.regionManager = regionManager;
         this.viewService = viewService;
+        Title = "Склад";
     }
-
-    public string Title => "Склад";
 
     public bool IsAddButtonVisible => viewService.CallContext.Count == 0;
 

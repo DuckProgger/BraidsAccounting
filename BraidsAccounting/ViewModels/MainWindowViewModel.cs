@@ -1,12 +1,12 @@
-﻿using BraidsAccounting.Infrastructure.Constants;
+﻿using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels;
 
-internal class MainWindowViewModel : BindableBase
+internal class MainWindowViewModel : ViewModelBase
 {
     private readonly IRegionManager regionManager;
 

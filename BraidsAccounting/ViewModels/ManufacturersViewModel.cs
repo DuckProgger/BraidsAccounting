@@ -19,8 +19,8 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
     public ManufacturersViewModel(IManufacturersService manufacturersService)
     {
         this.manufacturersService = manufacturersService;
+        Title = "Производители";
     }
-    public string Title => "Производители";
 
     /// <summary>
     /// Выбранный производитель в представлении.

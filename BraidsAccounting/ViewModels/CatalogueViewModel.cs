@@ -25,8 +25,8 @@ internal class CatalogueViewModel : ViewModelBase<Item>
     {
         this.viewService = viewService;
         this.catalogueService = catalogueService;
+        Title = "Каталог материалов";
     }
-    public string Title => "Каталог";
 
     public Item SelectedItem { get; set; }
 

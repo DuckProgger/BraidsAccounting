@@ -8,6 +8,7 @@ namespace BraidsAccounting.Infrastructure;
 internal abstract class ViewModelBase : INotifyPropertyChanged, INavigationAware
 {
     public Notifier Notifier { get; set; } = new();
+    public string Title { get; set; } = string.Empty;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
