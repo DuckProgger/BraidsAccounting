@@ -15,43 +15,43 @@ namespace BraidsAccounting.Services;
 /// </summary>
 internal class ViewService : IViewService
 {
-    private readonly LinkedList<ViewContext> callContext = new();
+    public LinkedList<ViewContext> CallContext { get; } = new();
 
     public void ShowPopupWindow(string viewName, NavigationParameters? parameters = null, Action<NavigationParameters?>? callback = null)
     {
         if (string.IsNullOrEmpty(viewName))
             throw new ArgumentNullException(nameof(viewName), "Название переключаемого представления не может быть пустым.");
-        if (callContext.Count == 0)
+        if (CallContext.Count == 0)
         {
             CreatePopupWindow(viewName, parameters, callback);
             return;
         }
-        ViewContext? currentWindowInfo = callContext.Last();
+        ViewContext? currentWindowInfo = CallContext.Last();
         ViewContext newWindowInfo = new()
         {
             RegionManager = currentWindowInfo.RegionManager,
             ViewName = viewName,
         };
-        callContext.AddLast(newWindowInfo);
+        CallContext.AddLast(newWindowInfo);
         newWindowInfo.RegionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
     }
 
     public void GoBack()
     {
-        ViewContext? currentLayer = callContext.Last();
-        callContext.RemoveLast();
+        ViewContext? currentLayer = CallContext.Last();
+        CallContext.RemoveLast();
         currentLayer.Callback?.Invoke(currentLayer.Parameters);
-        if (callContext.Count == 0)
+        if (CallContext.Count == 0)
         {
             ClosePopupWindow();
             return;
         }
-        string? prevViewName = callContext.Last().ViewName;
+        string? prevViewName = CallContext.Last().ViewName;
         currentLayer.RegionManager.RequestNavigate(RegionNames.Popup, prevViewName, currentLayer.Parameters);
     }
     public void AddParameter(string name, object value)
     {
-        var lastLayer = callContext.Last();
+        var lastLayer = CallContext.Last();
         if (lastLayer.Parameters is null)
             lastLayer.Parameters = new();
         lastLayer.Parameters.Add(name, value);
@@ -69,7 +69,7 @@ internal class ViewService : IViewService
         MainWindow? mainWindow = GetWindow<MainWindow>();
         PopupWindow popupWindow = new();
         popupWindow.Closed += (s, e) => mainWindow.Show();
-        popupWindow.Closed += (s, e) => callContext.Clear();
+        popupWindow.Closed += (s, e) => CallContext.Clear();
         mainWindow.Hide();
         popupWindow.Show();
         IRegionManager? regionManager = ServiceLocator.GetService<IRegionManager>();
@@ -81,14 +81,14 @@ internal class ViewService : IViewService
             ViewName = viewName,
             Callback = callback
         };
-        callContext.AddLast(popupWindowInfo);
+        CallContext.AddLast(popupWindowInfo);
         popupWindowInfo.RegionManager.RequestNavigate(RegionNames.Popup, viewName, parameters);
     }
 
     private static T GetWindow<T>() where T : Window =>
      Application.Current.Windows.OfType<T>().First();
 
-    private class ViewContext
+    public class ViewContext
     {
         public IRegionManager RegionManager { get; set; } = null!;
         public string ViewName { get; set; } = null!;

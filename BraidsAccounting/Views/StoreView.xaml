@@ -100,7 +100,8 @@
                 Content="Добавить материал" 
                 Command="{Binding NavigateToOtherWindowCommand}" 
                 CommandParameter="AddStoreItemView"
-                    Margin="5"/>
+                    Margin="5"
+                    Visibility="{Binding IsAddButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
         </Grid>
     </md:DialogHost>

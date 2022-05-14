@@ -41,6 +41,8 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
 
     public string Title => "Склад";
 
+    public bool IsAddButtonVisible => viewService.CallContext.Count == 0;
+
     /// <summary>
     /// Выбранный материал со склада.
     /// </summary>
