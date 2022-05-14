@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
@@ -86,20 +87,28 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
             Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
-        switch (EmployeeInForm.Id)
+        try
         {
-            case 0:
-                await employeesService.AddAsync(EmployeeInForm);
-                Collection.Add(EmployeeInForm);
-                Notifier.AddInfo(Messages.AddEmployeeSuccess);
-                break;
-            default:
-                await employeesService.EditAsync(EmployeeInForm);
-                Notifier.AddInfo(Messages.EditEmployeeSuccess);
-                break;
+            switch (EmployeeInForm.Id)
+            {
+                case 0:
+                    await employeesService.AddAsync(EmployeeInForm);
+                    Collection.Add(EmployeeInForm);
+                    Notifier.AddInfo(Messages.AddEmployeeSuccess);
+                    break;
+                default:
+
+                    await employeesService.EditAsync(EmployeeInForm);
+                    Notifier.AddInfo(Messages.EditEmployeeSuccess);
+                    break;
+            }
+            GetEmployeesCommand.Execute(null);
+            ResetFormCommand.Execute(null);
         }
-        GetEmployeesCommand.Execute(null);
-        ResetFormCommand.Execute(null);
+        catch (DublicateException ex)
+        {
+            Notifier.AddError(ex.Message);
+        }       
     }
 
     #endregion

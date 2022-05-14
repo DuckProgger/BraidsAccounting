@@ -21,4 +21,5 @@ internal interface ICatalogueService
     Task<Item?> GetAsync(string manufacturer, string article, string color);
     Task<List<Item>> GetAllAsync(bool onlyInStock);
     Task RemoveAsync(Item item);
+    Task<bool> Contains(Item item);
 }

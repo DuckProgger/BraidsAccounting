@@ -1,5 +1,4 @@
 ﻿using BraidsAccounting.DAL.Entities;
-using BraidsAccounting.DAL.Entities.Base;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
@@ -58,6 +57,6 @@ internal class ManufacturersService : IManufacturersService, IHistoryTracer<Manu
         await historyService.WriteDeleteOperationAsync(existingManufacturer.GetEtityData(this));
     }
 
-    public IEntityDataBuilder<Manufacturer> ConfigureEntityData(IEntityDataBuilder<Manufacturer> builder, Manufacturer entity) =>
+    IEntityDataBuilder<Manufacturer> IHistoryTracer<Manufacturer>.ConfigureEntityData(IEntityDataBuilder<Manufacturer> builder, Manufacturer entity) =>
         builder.AddInfo(e => e.Name, entity.Name);
 }

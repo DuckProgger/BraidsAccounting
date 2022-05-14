@@ -64,7 +64,7 @@ internal class PaymentsService : IPaymentsService, IHistoryTracer<Payment>
         return expenses - payments;
     }
 
-    public IEntityDataBuilder<Payment> ConfigureEntityData(IEntityDataBuilder<Payment> builder, Payment entity) =>
+    IEntityDataBuilder<Payment> IHistoryTracer<Payment>.ConfigureEntityData(IEntityDataBuilder<Payment> builder, Payment entity) =>
         builder
         .AddInfo(p => p.Employee.Name, entity.Employee.Name)
         .AddInfo(p => p.Amount, entity.Amount)

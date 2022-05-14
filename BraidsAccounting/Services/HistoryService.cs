@@ -66,61 +66,37 @@ namespace BraidsAccounting.Services
 
         public async Task WriteUpdateOperationAsync(EntityData previousEntityData, EntityData newEntityData)
         {
+            // Если сущность не изменилась - ничего не писать
+            if (previousEntityData.Equals(newEntityData)) return; 
+
             StringBuilder sb = new();
 
             // Тип операции:
             sb.Append("Изменена сущность \"");
             // Получение названия типа сущности
             sb.Append(previousEntityData.EntityName);
-            sb.Append("\".");
-            // Оставить только отличающиеся значения, чтобы было легче ориентироваться
-            // и чтобы сэкономить память
-           RemoveDublicates(previousEntityData, newEntityData);
 
             // Получение названий и значений старых свойств сущности
-            if (previousEntityData.Count > 0)
-            {
-                sb.Append(" Прошлые значения: ");
-                FillProperties(sb, previousEntityData);
-                sb.Append('.');
-            }
+            sb.Append("\".\nПрошлые значения: ");
+            FillProperties(sb, previousEntityData);
+
             // Получение названий и значений новых свойств сущности
-            if (newEntityData.Count > 0)
-            {
-                sb.Append(" Новые значения: ");
-                FillProperties(sb, newEntityData);
-                sb.Append('.');
-            }
+            sb.Append(".\nНовые значения: ");
+            FillProperties(sb, newEntityData);
+            sb.Append('.');
 
             await AddHistoryAsync(sb.ToString());
-        }
-
-        private static void RemoveDublicates(EntityData previousEntityData, EntityData newEntityData)
-        {
-            List<string> listToRemove = new();
-            foreach (var oldPropertyData in previousEntityData)
-            {
-                var newPropertyData = newEntityData.Single(e => e.Name.Equals(oldPropertyData.Name));
-                if (oldPropertyData.Value.Equals(newPropertyData.Value))
-                    listToRemove.Add(oldPropertyData.Name);
-            }
-            if (listToRemove.Count > 0)
-                foreach (var item in listToRemove)
-                {
-                    previousEntityData.Remove(item);
-                    newEntityData.Remove(item);
-                }
-        }
+        }              
 
         private static void FillProperties(StringBuilder sb, EntityData entityData)
         {
             for (int i = 0; i < entityData.Count; i++)
             {
-                sb.Append(entityData[i].Name);
+                sb.Append(entityData[i].Key);
                 sb.Append(" = ");
                 sb.Append(entityData[i].Value);
                 if (i < entityData.Count - 1) sb.Append(", ");
-            }
+            }           
         }
 
         private async Task AddHistoryAsync(string message)

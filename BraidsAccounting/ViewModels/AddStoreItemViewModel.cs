@@ -33,7 +33,7 @@ internal class AddStoreItemViewModel : ViewModelBase
         if (item is not null)
         {
             StoreItem = new() { Item = item };
-            InStock = store.GetItemCount(item.Manufacturer.Name, item.Article, item.Color);
+            InStock = store.Count(item.Manufacturer.Name, item.Article, item.Color);
         }
     }
 
@@ -66,7 +66,7 @@ internal class AddStoreItemViewModel : ViewModelBase
             Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
-        await store.AddItemAsync(StoreItem);
+        await store.AddAsync(StoreItem);
         viewService.AddParameter(ParameterNames.AddItemResult, true);
         viewService.GoBack();
     }

@@ -26,7 +26,7 @@ public record Manufacturer : Entity, IEquatable<Manufacturer>
     public virtual bool Equals(Manufacturer? other)
     {
         //if (other is null || other.Name is null) throw new ArgumentNullException(nameof(other));
-        if (other is null || other.Name is null) return false;
+        if (other is null || other.Name is null || Name is null) return false;
         return Name.ToUpper() == other.Name.ToUpper();
     }
 

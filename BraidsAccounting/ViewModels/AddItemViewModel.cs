@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services;
@@ -52,10 +53,17 @@ internal class AddItemViewModel : ViewModelBase
             Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
-        ItemInForm.Manufacturer = SelectedManufacturer;
-        await catalogueService.AddAsync(ItemInForm);
-        viewService.AddParameter(ParameterNames.AddItemResult, true);
-        viewService.GoBack();
+        try
+        {
+            ItemInForm.Manufacturer = SelectedManufacturer;
+            await catalogueService.AddAsync(ItemInForm);
+            viewService.AddParameter(ParameterNames.AddItemResult, true);
+            viewService.GoBack();
+        }
+        catch (DublicateException ex)
+        {
+            Notifier.AddError(ex.Message);
+        }
     }
 
     #endregion

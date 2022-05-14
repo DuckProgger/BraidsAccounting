@@ -10,7 +10,7 @@ namespace BraidsAccounting.Models;
 /// <summary>
 /// Представляет класс для отображения информации о материале в форме.
 /// </summary>
-internal class FormItem : BindableBase/*, IEquatable<StoreItem>*/
+internal class FormItem : BindableBase, IEquatable<StoreItem>, IEquatable<WastedItem>
 {
     private int? maxCount;
     private int count;
@@ -50,7 +50,7 @@ internal class FormItem : BindableBase/*, IEquatable<StoreItem>*/
             {
                 // Получить сервис работы со складом
                 IStoreService? store = ServiceLocator.GetService<IStoreService>();
-                maxCount = store.GetItemCount(Manufacturer, Article, Color);
+                maxCount = store.Count(Manufacturer, Article, Color);
             }
             return maxCount.Value;
         }
@@ -134,13 +134,23 @@ internal class FormItem : BindableBase/*, IEquatable<StoreItem>*/
         };
     }
 
-    //public bool Equals(StoreItem? other)
-    //{
-    //    if (other is null) throw new ArgumentNullException(nameof(other));
-    //    return
-    //        Manufacturer == other.Item.Manufacturer.Name
-    //        && Price == other.Item.Manufacturer.Price
-    //        && Color == other.Item.Color
-    //        && Article == other.Item.Article;
-    //}
+    public bool Equals(StoreItem? other)
+    {
+        if (other is null) throw new ArgumentNullException(nameof(other));
+        return
+            Manufacturer == other.Item.Manufacturer.Name
+            && Price == other.Item.Manufacturer.Price
+            && Color == other.Item.Color
+            && Article == other.Item.Article;
+    }
+
+    public bool Equals(WastedItem? other)
+    {
+        if (other is null) throw new ArgumentNullException(nameof(other));
+        return
+            Manufacturer == other.Item.Manufacturer.Name
+            && Price == other.Item.Manufacturer.Price
+            && Color == other.Item.Color
+            && Article == other.Item.Article;
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
@@ -69,20 +70,28 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
             Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
-        switch (ManufacturerInForm.Id)
+        try
         {
-            case 0:
-                await manufacturersService.AddAsync(ManufacturerInForm);
-                Collection.Add(ManufacturerInForm);
-                Notifier.AddInfo(Messages.AddManufacturerSuccess);
-                break;
-            default:
-                await manufacturersService.EditAsync(ManufacturerInForm);
-                Notifier.AddInfo(Messages.EditManufacturerSuccess);
-                break;
+            switch (ManufacturerInForm.Id)
+            {
+                case 0:
+                    await manufacturersService.AddAsync(ManufacturerInForm);
+                    Collection.Add(ManufacturerInForm);
+                    Notifier.AddInfo(Messages.AddManufacturerSuccess);
+                    break;
+                default:
+
+                    await manufacturersService.EditAsync(ManufacturerInForm);
+                    Notifier.AddInfo(Messages.EditManufacturerSuccess);
+                    break;
+            }
+            GetManufacturersListCommand.Execute(null);
+            ResetFormCommand.Execute(null);
         }
-        GetManufacturersListCommand.Execute(null);
-        ResetFormCommand.Execute(null);
+        catch (DublicateException ex)
+        {
+            Notifier.AddError(ex.Message);
+        }       
     }
 
     #endregion

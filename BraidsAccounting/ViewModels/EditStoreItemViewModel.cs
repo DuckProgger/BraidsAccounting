@@ -6,6 +6,7 @@ using Prism.Commands;
 using Prism.Regions;
 using System.Collections.Generic;
 using System.Windows.Input;
+using BraidsAccounting.DAL.Exceptions;
 
 namespace BraidsAccounting.ViewModels;
 
@@ -88,9 +89,16 @@ internal class EditStoreItemViewModel : ViewModelBase
             Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
-        await store.EditItemAsync(StoreItem);
-        viewService.AddParameter(ParameterNames.EditItemResult, true);
-        viewService.GoBack();
+        try
+        {
+            await store.EditAsync(StoreItem);
+            viewService.AddParameter(ParameterNames.EditItemResult, true);
+            viewService.GoBack();
+        }
+        catch (DublicateException ex)
+        {
+            Notifier.AddError(ex.Message);
+        }        
     }
 
     #endregion

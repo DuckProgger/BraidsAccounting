@@ -9,7 +9,7 @@ namespace BraidsAccounting.DAL.Entities;
 [Description("Материал на складе")]
 public record StoreItem : Entity
 {
-    public int ItemId { get; set; }
+    //public int ItemId { get; set; }
     /// <summary>
     /// Материал.
     /// </summary>

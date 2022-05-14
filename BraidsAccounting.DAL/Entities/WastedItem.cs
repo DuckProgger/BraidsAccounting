@@ -14,7 +14,7 @@ public record WastedItem : Entity
     /// Работа, для которой материал был использован.
     /// </summary>
     public Service Service { get; set; } = null!;
-    public int ItemId { get; set; }
+    //public int ItemId { get; set; }
     /// <summary>
     /// Материал, использованный для работы.
     /// </summary>

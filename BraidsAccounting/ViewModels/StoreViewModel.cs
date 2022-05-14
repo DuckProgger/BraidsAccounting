@@ -60,7 +60,7 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
     private bool CanRemoveItemCommandExecute() => true;
     private async void OnRemoveItemCommandExecuted()
     {
-        await store.RemoveItemAsync(SelectedStoreItem.Id);
+        await store.RemoveAsync(SelectedStoreItem.Id);
         Collection.Remove(SelectedStoreItem);
         MDDialogHost.CloseDialogCommand.Execute(null, null);
         Notifier.AddInfo(Messages.RemoveStoreItemSuccess);

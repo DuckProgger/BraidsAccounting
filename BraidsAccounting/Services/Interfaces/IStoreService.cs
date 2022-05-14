@@ -13,12 +13,12 @@ internal interface IStoreService
     /// Добавить материал на склад.
     /// </summary>
     /// <param name="storeItem">Добавляемый материал.</param>
-    Task AddItemAsync(StoreItem? storeItem);
+    Task AddAsync(StoreItem? storeItem);
     /// <summary>
     /// Редактировать материал со склада.
     /// </summary>
     /// <param name="storeItem">Редактируемый материал.</param>
-    Task EditItemAsync(StoreItem? storeItem);
+    Task EditAsync(StoreItem? storeItem);
     /// <summary>
     /// Получить список материалов на складе.
     /// </summary>
@@ -29,19 +29,21 @@ internal interface IStoreService
     /// Удалить материал со склада.
     /// </summary>
     /// <param name="id">ID материала.</param>
-    Task RemoveItemAsync(int id);
+    Task RemoveAsync(int id);
     /// <summary>
     /// Удалить список материалов со склада.
     /// </summary>
     /// <param name="items">Материалы, которые нужно удалить со склада.</param>
     Task RemoveItemsAsync(IEnumerable<WastedItem?> wastedItems);
 
-    StoreItem? GetItem(string manufacturer, string article, string color);
+    StoreItem? Get(string manufacturer, string article, string color);
     /// <summary>
     /// Получить количество товара на складе.
     /// </summary>
     /// <param name="id"></param>
     /// <returns>ID материала.</returns>
-    int GetItemCount(string manufacturer, string article, string color);
-    bool ContainsItem(Item item);
+    int Count(string manufacturer, string article, string color);
+    Task<bool> ContainsItemAsync(int itemId);
+    Task<StoreItem?> GetAsync(int id);
+    Task<StoreItem?> GetByItemAsync(int itemId);
 }

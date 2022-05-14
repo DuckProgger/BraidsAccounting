@@ -18,7 +18,7 @@ internal interface IEmployeesService
     /// <param name="employee"></param>
     /// <returns></returns>
     Task EditAsync(Employee employee);
-    Task<Employee?> GetAsync(string name);
+    Task<Employee?> GetAsync(int id);
 
     /// <summary>
     /// Получить список всех сотрудников.

@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
@@ -77,9 +78,13 @@ internal class EditItemViewModel : ViewModelBase
             viewService.AddParameter(ParameterNames.EditItemResult, true);
             viewService.GoBack();
         }
-        catch (ArgumentException)
+        catch (DublicateException ex)
         {
-            Notifier.AddError(Messages.FieldsNotFilled);
+            Notifier.AddError(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Notifier.AddError(ex.Message);
         }
     }
 

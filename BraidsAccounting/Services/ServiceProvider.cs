@@ -36,7 +36,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
     public async Task AddAsync(Service service)
     {
         // Найти ID сотрудника в БД
-        service.Employee = await employeesService.GetAsync(service.Employee.Name)
+        service.Employee = await employeesService.GetAsync(service.Employee.Id)
             ?? throw new ArgumentException("Сотрудник не найден.", nameof(service.Employee));
 
         // Добавить услугу в БД

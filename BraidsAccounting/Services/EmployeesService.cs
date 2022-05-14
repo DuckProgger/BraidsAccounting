@@ -35,9 +35,9 @@ internal class EmployeesService : IEmployeesService, IHistoryTracer<Employee>
     public async Task<List<Employee>> GetAllAsync() =>
         await employees.Items.ToListAsync();
 
-    public async Task<Employee?> GetAsync(string name) =>
-        await employees.Items.FirstOrDefaultAsync(e => e.Name.Equals(name));
+    public async Task<Employee?> GetAsync(int id) =>
+        await employees.GetAsync(id);
 
-    public IEntityDataBuilder<Employee> ConfigureEntityData(IEntityDataBuilder<Employee> builder, Employee entity) =>
+    IEntityDataBuilder<Employee> IHistoryTracer<Employee>.ConfigureEntityData(IEntityDataBuilder<Employee> builder, Employee entity) =>
         builder.AddInfo(e => e.Name, entity.Name);
 }
