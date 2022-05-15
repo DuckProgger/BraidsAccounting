@@ -101,6 +101,7 @@
             <Button Grid.Row="2" Content="Добавить новый материал" 
                     Command="{Binding NavigateToOtherWindowCommand}"
                     CommandParameter="AddItemView"
+                    Visibility="{Binding IsAddButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Margin="5"/>            
             <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
         </Grid>

@@ -30,6 +30,8 @@ internal class CatalogueViewModel : ViewModelBase<Item>
 
     public Item SelectedItem { get; set; }
 
+    public bool IsAddButtonVisible => viewService.CallContext.Count == 0;
+
     /// <summary>
     /// Флаг фильтрации отображаемых элементов каталога
     /// материалов - только в наличии.
