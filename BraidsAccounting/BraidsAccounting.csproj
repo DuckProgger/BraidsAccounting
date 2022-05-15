@@ -11,8 +11,12 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Back.png" />
+	  <None Remove="Resources\Catalogs.png" />
 	  <None Remove="Resources\Delete.png" />
 	  <None Remove="Resources\Edit.png" />
+	  <None Remove="Resources\History.png" />
+	  <None Remove="Resources\Service.png" />
+	  <None Remove="Resources\Statistics.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,12 +46,18 @@
 
 	<ItemGroup>
 	  <Resource Include="Resources\Back.png" />
+	  <Resource Include="Resources\Catalogs.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\Delete.png">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Edit.png">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Resource>
+	  <Resource Include="Resources\History.png" />
+	  <Resource Include="Resources\Service.png" />
+	  <Resource Include="Resources\Statistics.png" />
 	</ItemGroup>
 
 	<ItemGroup>

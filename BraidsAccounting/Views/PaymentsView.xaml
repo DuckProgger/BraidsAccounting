@@ -28,7 +28,7 @@
                 <TextBlock Text="Пополнить баланс на сумму " />
                 <TextBlock Foreground="ForestGreen"
                            TextAlignment="Center"                          
-                           Text="{Binding NewPayment.Amount}" />
+                           Text="{Binding NewPayment.Amount, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text=" руб.?" />
                 <Grid Margin="0,10,0,-10">
                     <Grid.ColumnDefinitions>

@@ -10,18 +10,67 @@
         mc:Ignorable="d"
         Title="Braids Accounting"
         Height="500" Width="1000"
-        Background="#FAFAFA">
+        Background="#FAFAFA">   
     <DockPanel>
         <Menu IsMainMenu="True" >
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Vertical"/>
+                    <VirtualizingStackPanel HorizontalAlignment="Stretch" Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
-            <MenuItem Header="Справочники" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="CatalogsView"/>
-            <MenuItem Header="Услуга" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="ServiceView"/>
-            <MenuItem Header="Статистика" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="StatisticsView"/>
-            <MenuItem Header="История" Command="{Binding NavigateToOtherViewCommand}" CommandParameter="HistoryView"/>
+            <MenuItem Command="{Binding NavigateToOtherViewCommand}" 
+                      CommandParameter="CatalogsView"
+                      HorizontalAlignment="Center"
+                      Margin="10">
+                <MenuItem.Header>
+                    <Grid Width="100" HorizontalAlignment="Center">
+                        <StackPanel >
+                            <Image Source="/Resources/Catalogs.png" Width="30" Height="30"/>
+                            <TextBlock Text="Справочники" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Command="{Binding NavigateToOtherViewCommand}" 
+                      CommandParameter="ServiceView"
+                      HorizontalAlignment="Center"
+                      Margin="10">
+                <MenuItem.Header>
+                    <Grid Width="100" HorizontalAlignment="Center">
+                        <StackPanel >
+                            <Image Source="/Resources/Service.png" Width="30" Height="30"/>
+                            <TextBlock Text="Услуга" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Command="{Binding NavigateToOtherViewCommand}" 
+                      CommandParameter="StatisticsView"
+                      HorizontalAlignment="Center"
+                      Margin="10">
+                <MenuItem.Header>
+                    <Grid Width="100" HorizontalAlignment="Center">
+                        <StackPanel >
+                            <Image Source="/Resources/Statistics.png" Width="30" Height="30"/>
+                            <TextBlock Text="Статистика" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Command="{Binding NavigateToOtherViewCommand}" 
+                      CommandParameter="HistoryView"
+                      Height="auto"
+                      Margin="5"
+                      HorizontalAlignment="Center">
+                <MenuItem.Header>
+                    <Grid Width="100" HorizontalAlignment="Center">
+                        <StackPanel >
+                            <Image Source="/Resources/History.png" Width="35" Height="35"/>
+                            <TextBlock Text="История" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
         </Menu>
         <ContentControl prism:RegionManager.RegionName="{x:Static const:RegionNames.Main}" />
     </DockPanel>
