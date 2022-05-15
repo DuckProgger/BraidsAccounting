@@ -47,7 +47,7 @@ internal class PaymentsService : IPaymentsService, IHistoryTracer<Payment>
     {
         // Получить общую сумму расходов на израсходованные
         // сотрудником материалы за всё время
-        WastedItemsFilterOptions options = new()
+        FilterOptions options = new()
         {
             EnableGrouping = false,
             EnablePeriodFilter = false,

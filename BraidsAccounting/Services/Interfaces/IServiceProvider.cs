@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,4 +20,6 @@ internal interface IServiceProvider
     /// </summary>
     /// <param name="service"></param>
     Task AddAsync(Service service);
+    Task<List<ServiceProfits>> GetProfitsAsync(FilterOptions options);
+    Task<decimal> GetTotalNetProfitAsync(FilterOptions options);
 }

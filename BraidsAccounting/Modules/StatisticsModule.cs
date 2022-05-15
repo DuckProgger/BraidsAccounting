@@ -13,6 +13,7 @@ internal class StatisticsModule : IModule
         IRegionManager? regionManager = containerProvider.Resolve<IRegionManager>();
         regionManager
             .RegisterViewWithRegion(RegionNames.Statistics, typeof(WastedItemsView))
+            .RegisterViewWithRegion(RegionNames.Statistics, typeof(ServiceStatisticsView))
             .RegisterViewWithRegion(RegionNames.Statistics, typeof(PaymentsView))
             ;
     }
@@ -20,6 +21,7 @@ internal class StatisticsModule : IModule
     public void RegisterTypes(IContainerRegistry containerRegistry)
     {
         containerRegistry.RegisterForNavigation<WastedItemsView>();
+        containerRegistry.RegisterForNavigation<ServiceStatisticsView>();
         containerRegistry.RegisterForNavigation<PaymentsView>();
     }
 }

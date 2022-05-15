@@ -2,5 +2,5 @@
 
 internal class Formatter
 {
-    public static string GetMoneyStringFormat() => "{0:#.##} ₽";
+    public static string GetMoneyStringFormat() => "{0:0.##} ₽";
 }

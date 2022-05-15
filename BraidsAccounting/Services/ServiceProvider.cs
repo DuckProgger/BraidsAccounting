@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -76,6 +77,67 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
         foreach (var wastedItem in service.WastedItems)
             expenses += wastedItem.Item.Manufacturer.Price * wastedItem.Count;
         service.NetProfit = service.Profit - expenses;
+    }
+
+    public async Task<List<ServiceProfits>> GetProfitsAsync(FilterOptions options)
+    {
+        var baseQuery = GetFilteredQuery(options);
+        var totalQuery = AddSelect(baseQuery);
+        return await totalQuery.ToListAsync();
+    }
+
+    public async Task<decimal> GetTotalNetProfitAsync(FilterOptions options)
+    {
+        var baseQuery = GetFilteredQuery(options);
+        return await baseQuery.SumAsync(w => w.NetProfit);
+    }
+
+    private IQueryable<Service> GetFilteredQuery(FilterOptions options)
+    {
+        IQueryable<Service>? baseQuery = services.Items;
+        if (options.EnableWorkerFilter) AddWorkerFilter(ref baseQuery, options.WorkerNameFilter);
+        if (options.EnablePeriodFilter) AddPeriodFilter(ref baseQuery, options.DatePeriod);
+        return baseQuery;
+    }
+
+    /// <summary>
+    /// Добавляет к базовому запросу фильтр работника.
+    /// </summary>
+    /// <param name="query">Запрос.</param>
+    /// <param name="workerName">Имя работника, по которому нужно применить фильтр.</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    private static void AddWorkerFilter(ref IQueryable<Service> query, string? workerName)
+    {
+        if (workerName is null) throw new ArgumentNullException(nameof(workerName));
+        query = query.Where(w => w.Employee.Name == workerName);
+    }
+
+    /// <summary>
+    /// Добавляет к базовому запросу фильтр интервала даты.
+    /// </summary>
+    /// <param name="query">Запрос.</param>
+    /// <param name="period">Интервал дат, в пределах которых выводится результат.</param>
+    private static void AddPeriodFilter(ref IQueryable<Service> query, DatePeriod period)
+    {
+        query = query.Where(w =>
+        w.DateTime.Date >= period.Start
+        && w.DateTime.Date <= period.End
+        );
+    }
+
+    /// <summary>
+    /// Добавляет к запросу выборку.
+    /// </summary>
+    /// <param name="query">Запрос.</param>
+    /// <returns></returns>
+    private static IQueryable<ServiceProfits> AddSelect(IQueryable<Service> query)
+    {
+        return query.Select(s => new ServiceProfits()
+        {
+            Profit = s.Profit,
+            NewProfit = s.NetProfit,
+            Date = s.DateTime.Date
+        });
     }
 
     IEntityDataBuilder<Service> IHistoryTracer<Service>.ConfigureEntityData(IEntityDataBuilder<Service> builder, Service entity) =>

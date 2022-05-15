@@ -25,7 +25,7 @@ internal class WastedItemsService : IWastedItemsService
     public async Task AddRangeAsync(IEnumerable<WastedItem> items) =>
         await wastedItems.CreateRangeAsync(items);
 
-    public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(WastedItemsFilterOptions options)
+    public async Task<List<WastedItemForm>> GetWastedItemFormsAsync(FilterOptions options)
     {
         IQueryable<WastedItemForm> totalQuery;
         var baseQuery = GetFilteredQuery(options);
@@ -34,7 +34,7 @@ internal class WastedItemsService : IWastedItemsService
         return await totalQuery.ToListAsync();
     }
 
-    public async Task<decimal> GetTotalExpensesAsync(WastedItemsFilterOptions options)
+    public async Task<decimal> GetTotalExpensesAsync(FilterOptions options)
     {
         var baseQuery = GetFilteredQuery(options);
         return await baseQuery.SumAsync(w => w.Count * w.Item.Manufacturer.Price);
@@ -49,7 +49,7 @@ internal class WastedItemsService : IWastedItemsService
     public async Task<bool> ContainsItemAsync(int itemId) =>
         await wastedItems.Items.AnyAsync(si => si.Item.Id == itemId);
 
-    private IQueryable<WastedItem> GetFilteredQuery(WastedItemsFilterOptions options)
+    private IQueryable<WastedItem> GetFilteredQuery(FilterOptions options)
     {
         IQueryable<WastedItem>? baseQuery = wastedItems.Items;
         if (options.EnableWorkerFilter) AddWorkerFilter(ref baseQuery, options.WorkerNameFilter);

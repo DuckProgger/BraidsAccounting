@@ -3,9 +3,9 @@
 namespace BraidsAccounting.Services;
 
 /// <summary>
-/// Класс, задающий параметры фильтрации для <see cref = "WastedItemsService.GetWastedItemFormsAsync(WastedItemsFilterOptions)" />.
+/// Класс, задающий параметры фильтрации для <see cref = "WastedItemsService.GetWastedItemFormsAsync(FilterOptions)" />.
 /// </summary>
-internal class WastedItemsFilterOptions
+internal class FilterOptions
 {
     public bool EnableWorkerFilter { get; set; } = false;
     public bool EnablePeriodFilter { get; set; } = false;

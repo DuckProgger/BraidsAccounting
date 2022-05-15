@@ -64,6 +64,9 @@
 	  <Compile Update="Views\SelectStoreItemView.xaml.cs">
 	    <SubType>Code</SubType>
 	  </Compile>
+	  <Compile Update="Views\ServiceStatisticsView.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -81,6 +84,10 @@
 	    <SubType>Designer</SubType>
 	  </Page>
 	  <Page Update="Views\SelectStoreItemView.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <SubType>Designer</SubType>
+	  </Page>
+	  <Page Update="Views\ServiceStatisticsView.xaml">
 	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 	    <SubType>Designer</SubType>
 	  </Page>

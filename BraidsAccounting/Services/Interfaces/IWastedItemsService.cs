@@ -15,13 +15,13 @@ internal interface IWastedItemsService
     /// </summary>
     /// <param name="options">Параметры фильтрации.</param>
     /// <returns></returns>
-    Task<List<WastedItemForm>> GetWastedItemFormsAsync(WastedItemsFilterOptions options);
+    Task<List<WastedItemForm>> GetWastedItemFormsAsync(FilterOptions options);
     /// <summary>
     /// Получить общую сумму расходов для коллекции израсходованных материалов.
     /// </summary>
     /// <param name="itemForms"></param>
     /// <returns></returns>
-    Task<decimal> GetTotalExpensesAsync(WastedItemsFilterOptions options);
+    Task<decimal> GetTotalExpensesAsync(FilterOptions options);
     WastedItem? GetItem(string manufacturer, string article, string color);
     Task AddRangeAsync(IEnumerable<WastedItem> items);
     Task<bool> ContainsItemAsync(int itemId);

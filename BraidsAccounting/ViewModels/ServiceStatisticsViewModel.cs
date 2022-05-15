@@ -1,7 +1,6 @@
 ﻿using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services;
-using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
@@ -10,19 +9,14 @@ using IServiceProvider = BraidsAccounting.Services.Interfaces.IServiceProvider;
 
 namespace BraidsAccounting.ViewModels;
 
-internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
+internal class ServiceStatisticsViewModel : ViewModelBase<ServiceProfits>
 {
-    private readonly IWastedItemsService statisticsService;
     private readonly IServiceProvider serviceProvider;
 
-    public WastedItemsViewModel(
-        IWastedItemsService statisticsService
-        , IServiceProvider serviceProvider
-        )
+    public ServiceStatisticsViewModel(IServiceProvider serviceProvider)
     {
-        this.statisticsService = statisticsService;
         this.serviceProvider = serviceProvider;
-        Title = "Израсходованные материалы";
+        Title = "Выручка";       
     }
 
     /// <summary>
@@ -40,11 +34,11 @@ internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
     /// <summary>
     /// Опции фильтрации.
     /// </summary>
-    public FilterOptions FilterOptions { get; set; }
+    public FilterOptions FilterOptions { get; set; } 
     /// <summary>
     /// Сумма расходов за материалы из списка израсходованных материалов.
     /// </summary>
-    public decimal TotalExpenses { get; set; }
+    public decimal TotalNewProfit { get; set; }
 
     /// <summary>
     /// Задаёт значения фильтров по умолчанию.
@@ -73,8 +67,8 @@ internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
             Start = Start,
             End = End
         };
-        Collection = new(await statisticsService.GetWastedItemFormsAsync(FilterOptions));
-        TotalExpenses = await statisticsService.GetTotalExpensesAsync(FilterOptions);
+        Collection = new(await serviceProvider.GetProfitsAsync(FilterOptions));
+        TotalNewProfit = await serviceProvider.GetTotalNetProfitAsync(FilterOptions);
     }
 
     #endregion
@@ -105,7 +99,7 @@ internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
     {
         RestoreFilterDefaults();
         Collection = null;
-        TotalExpenses = 0;
+        TotalNewProfit = 0;
     }
 
     #endregion

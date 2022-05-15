@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="BraidsAccounting.Views.WastedItemsView"
+﻿<UserControl x:Class="BraidsAccounting.Views.ServiceStatisticsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,6 +15,7 @@
              Background="#FAFAFA">
     <UserControl.Resources>
         <c:MoneyConverter x:Key="MoneyConverter"/>
+        <c:DateConverter x:Key="DateConverter"/>
         <controls:FilterWithPopupControl x:Key="FilterWithPopupControl"/>
     </UserControl.Resources>
     <i:Interaction.Triggers>
@@ -72,7 +73,7 @@
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="SelectionChanged">
                                         <i:InvokeCommandAction Command="{Binding 
-                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:WastedItemsView}}, 
+                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ServiceStatisticsView}}, 
                                     Path=DataContext.EnableWorkerFilterCommand}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
@@ -93,18 +94,18 @@
                     <Grid Grid.Row="1">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
-                            <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="0.2*"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <!--Управление фильтром даты-->
                         <TextBlock Grid.Column="0" Text="Фильтр даты" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="10,0,0,0" />
-                        <CheckBox Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnablePeriodFilter}" Margin="10,0,0,0"/>
-                        <!--Управление группировкой-->
-                        <TextBlock Grid.Row="1" Text="Сгруппировать" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="10,0,0,0"/>
-                        <CheckBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" IsChecked="{Binding FilterOptions.EnableGrouping}" Margin="10,0,0,0"/>
+                        <CheckBox Grid.Column="2" 
+                                  HorizontalAlignment="Left" 
+                                  VerticalAlignment="Center" 
+                                  IsChecked="{Binding FilterOptions.EnablePeriodFilter, Mode=TwoWay}" 
+                                  Margin="10,0,0,0"/>
                     </Grid>
                 </Grid>
                 <!--Кнопки-->
@@ -118,19 +119,16 @@
             Grid.Row="1"
             ItemsSource="{Binding Collection}"
             AutoGenerateColumns="False"
-            CanUserAddRows="False"
-            dgx:DataGridFilter.IsAutoFilterEnabled="True">
+            CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Производитель" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Модель" Binding="{Binding Article}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Цвет" Binding="{Binding Color}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Количество" Binding="{Binding Count}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Расход" Binding="{Binding Expense, Converter={StaticResource MoneyConverter}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Дата" Binding="{Binding Date, Converter={StaticResource DateConverter}}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Стоимость работы" Binding="{Binding Profit}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Чистая прибыль" Binding="{Binding NewProfit}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>        
         <StackPanel Grid.Row="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <TextBlock Text="Общие расходы: " FontSize="16"/>
-            <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}" MinWidth="100" FontSize="16"/>
+            <TextBlock Text="Общая выручка: " FontSize="16"/>
+            <TextBlock Text="{Binding TotalNewProfit, Converter={StaticResource MoneyConverter}}" MinWidth="100" FontSize="16"/>
         </StackPanel>
     </Grid>
 </UserControl>
