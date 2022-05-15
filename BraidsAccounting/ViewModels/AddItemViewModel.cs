@@ -33,7 +33,7 @@ internal class AddItemViewModel : ViewModelBase
     /// <summary>
     /// Выбранный производитель из списка.
     /// </summary>
-    public Manufacturer SelectedManufacturer { get; set; } = null!;
+    public Manufacturer SelectedManufacturer { get; set; } = new();
 
     private bool IsValidItem() =>
          !string.IsNullOrEmpty(SelectedManufacturer?.Name)

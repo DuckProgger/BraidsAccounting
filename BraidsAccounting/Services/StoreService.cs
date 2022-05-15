@@ -34,16 +34,23 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
         if (storeItem == null) throw new ArgumentNullException(nameof(storeItem));
         if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
 
+        // Найти материал в каталоге
+        var existingItem = catalogue.Get(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
+        if (existingItem is null)
+            existingItem = await catalogue.AddAsync(storeItem.Item);
+        storeItem.Item = existingItem;
+
         // Найти материал на складе
-        StoreItem? existingStoreItem =
-            Get(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
-        // Продукт в каталоге есть, но нет на складе - добавить на склад
+        var existingStoreItem = Get(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
+
+        // Продукта нет в каталоге - добавить в каталог и на склад
         if (existingStoreItem is null)
         {
             await AddInternalAsync(storeItem);
             return;
         }
-        // Продукт есть в каталоге и на складе - изменить количество на складе
+
+        // Продукт есть каталоге - изменить количество
         StoreItem? existingStoreItemClone = existingStoreItem with { }; // Чтобы контекст БД видел различия
         existingStoreItemClone.Count += storeItem.Count;
         await EditAsync(existingStoreItemClone);
@@ -85,19 +92,10 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
             var oldStoreItem = existingStoreItem with { };
             var newStoreItem = existingStoreItem with { };
             newStoreItem.Count -= wastedItem.Count;
-            switch (newStoreItem.Count)
-            {
-                case > 0:
-                    await store.EditAsync(newStoreItem);
-                    await historyService.WriteUpdateOperationAsync(oldStoreItem.GetEtityData(this), newStoreItem.GetEtityData(this));
-                    break;
-                case 0:
-                    await store.RemoveAsync(newStoreItem.Id);
-                    await historyService.WriteDeleteOperationAsync(newStoreItem.GetEtityData(this));
-                    break;
-                default:
-                    throw new Exception("Указанного количества товара нет на складе");
-            }
+            if(newStoreItem.Count < 0)
+                throw new Exception("Указанного количества товара нет на складе");
+            await store.EditAsync(newStoreItem);
+            await historyService.WriteUpdateOperationAsync(oldStoreItem.GetEtityData(this), newStoreItem.GetEtityData(this));
         }
     }
 

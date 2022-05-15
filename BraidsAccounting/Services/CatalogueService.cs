@@ -26,6 +26,11 @@ internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
         this.historyService = historyService;
     }
 
+    public Item? Get(string manufacturer, string article, string color) =>
+      catalogue.Items.FirstOrDefault(i =>
+      i.Manufacturer.Name == manufacturer
+      && i.Article == article
+      && i.Color == color);
     public bool ContainsManufacturer(int id) =>
         catalogue.Items.Any(i => i.Manufacturer.Id == id);
 

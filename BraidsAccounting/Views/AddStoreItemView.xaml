@@ -4,11 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:prism="http://prismlibrary.com/" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"             
              xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"             
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d"   
              Height="200" Width="700"
              Background="#FAFAFA">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetManufacturersCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <c:ManufacturerConverter x:Key="ManufacturerConverter"/>
@@ -17,6 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
@@ -29,36 +36,41 @@
                 <ColumnDefinition Width="0.7*"/>
                 <ColumnDefinition Width="0.7*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" >
+            <StackPanel Grid.Column="0">
                 <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
-                <TextBox  
-                    Padding="3"                           
-                    Text="{Binding StoreItem.Item.Manufacturer, 
-                    UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ManufacturerConverter}}"
-                    IsReadOnly="True"
-                    Margin="5"/>
+                <ComboBox 
+                      ItemsSource="{Binding Manufacturers}"
+                      SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                      IsEnabled="{Binding ElementName=NewItemCheckBox, Path=IsChecked}"      
+                      Margin="4">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource ManufacturerConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </StackPanel>
             <StackPanel Grid.Column="1" >
                 <TextBlock Text="Модель" HorizontalAlignment="Center"/>
                 <TextBox  
                     Padding="3"                           
-                    Text="{Binding StoreItem.Item.Article, UpdateSourceTrigger=PropertyChanged}"
-                    IsReadOnly="True"
+                    Text="{Binding Article, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    IsEnabled="{Binding ElementName=NewItemCheckBox, Path=IsChecked}"     
                     Margin="5"/>
-            </StackPanel>
+            </StackPanel>           
             <StackPanel Grid.Column="2" >
                 <TextBlock Text="Цвет" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"                         
-                    Text="{Binding StoreItem.Item.Color, UpdateSourceTrigger=PropertyChanged}"
-                    IsReadOnly="True"
+                    Text="{Binding Color, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    IsEnabled="{Binding ElementName=NewItemCheckBox, Path=IsChecked}"     
                     Margin="5"/>
             </StackPanel>
             <StackPanel Grid.Column="3" >
                 <TextBlock Text="Количество" HorizontalAlignment="Center"/>
                 <TextBox 
                     Padding="3"          
-                    Text="{Binding StoreItem.Count, UpdateSourceTrigger=PropertyChanged}"       
+                    Text="{Binding Count, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"       
                     Style="{StaticResource MyMaterialDesignOutlinedTextBox}"  />
             </StackPanel>
             <StackPanel Grid.Column="4" >
@@ -68,7 +80,11 @@
                     Text="{Binding InStock, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" HorizontalAlignment="Center" Margin="5" />
             </StackPanel>
         </Grid>
-        <Button Grid.Row="2" Content="Добавить" Command="{Binding AddStoreItemCommand}" Margin="5"/>
-        <ListBox Grid.Row="3" Template="{StaticResource NotifierTemplate}"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+            <TextBlock Text="Новый материал"/>
+            <CheckBox Name="NewItemCheckBox" IsChecked="{Binding NewItem, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+        </StackPanel>
+        <Button Grid.Row="3" Content="Добавить" Command="{Binding AddStoreItemCommand}" Margin="5"/>
+        <ListBox Grid.Row="4" Template="{StaticResource NotifierTemplate}"/>
     </Grid>
 </UserControl>

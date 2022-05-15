@@ -32,7 +32,9 @@ public record Item : Entity, IEquatable<Item>
     public virtual bool Equals(Item? other)
     {
         //if (other is null || other.Article is null || other.Color is null) throw new ArgumentNullException(nameof(other));
-        if (other is null || other.Article is null || other.Color is null || Manufacturer is null) return false;
+        if (other is null || other.Article is null 
+            || other.Color is null || Manufacturer is null
+            || Article is null || Color is null) return false;
         return Article.ToUpper() == other.Article.ToUpper()
           && Color.ToUpper() == other.Color.ToUpper()
           && Manufacturer.Equals(other.Manufacturer);

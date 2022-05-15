@@ -6,26 +6,63 @@ using BraidsAccounting.Views;
 using Prism.Commands;
 using Prism.Regions;
 using System.Windows.Input;
+using System.Collections.Generic;
+using BraidsAccounting.Services;
+using BraidsAccounting.DAL.Exceptions;
 
 namespace BraidsAccounting.ViewModels;
 
 internal class AddStoreItemViewModel : ViewModelBase
 {
     private readonly IStoreService store;
+    private readonly IManufacturersService manufacturersService;
     private readonly IViewService viewService;
+    private bool newItem;
 
     /// <summary>
     /// Материал со склада, обрабатываемый в форме.
     /// </summary>
     public StoreItem StoreItem { get; set; } = new();
 
+    /// <summary>
+    /// Список производителей.
+    /// </summary>
+    public List<Manufacturer>? Manufacturers { get; set; }
+
+    /// <summary>
+    /// Выбранный производитель из списка.
+    /// </summary>
+    public Manufacturer? SelectedManufacturer { get; set; }
+
     public int InStock { get; set; }
 
-    public AddStoreItemViewModel(IStoreService store, IViewService viewService)
+    public string Article { get; set; }
+    public string Color { get; set; }
+    public int Count { get; set; }
+
+    public bool NewItem
+    {
+        get => newItem;
+        set
+        {
+            newItem = value;
+            Article = string.Empty;
+            Color = string.Empty;
+            Count = 0;
+            InStock = 0;
+            SelectedManufacturer = null;
+        }
+    }
+
+    public AddStoreItemViewModel(IStoreService store
+        , IManufacturersService manufacturersService
+        , IViewService viewService)
     {
         this.store = store;
+        this.manufacturersService = manufacturersService;
         this.viewService = viewService;
         Title = "Добавление материала на склад";
+        StoreItem = new() { Item = new() };
     }
 
     public override void OnNavigatedTo(NavigationContext navigationContext)
@@ -33,7 +70,9 @@ internal class AddStoreItemViewModel : ViewModelBase
         Item? item = navigationContext.Parameters[ParameterNames.SelectedItem] as Item;
         if (item is not null)
         {
-            StoreItem = new() { Item = item };
+            Article = item.Article;
+            Color = item.Color;
+            SelectedManufacturer = Manufacturers.Find(m => m.Equals(item.Manufacturer));
             InStock = store.Count(item.Manufacturer.Name, item.Article, item.Color);
         }
     }
@@ -57,6 +96,11 @@ internal class AddStoreItemViewModel : ViewModelBase
     private bool CanAddStoreItemCommandExecute() => true;
     private async void OnAddStoreItemCommandExecuted()
     {
+        StoreItem = new() { Item = new() };
+        StoreItem.Item.Color = Color;
+        StoreItem.Item.Article = Article;
+        StoreItem.Item.Manufacturer = SelectedManufacturer;
+        StoreItem.Count = Count;
         if (!IsValidCount(StoreItem.Count))
         {
             Notifier.AddError(Messages.StoreItemInvalidCount);
@@ -67,9 +111,17 @@ internal class AddStoreItemViewModel : ViewModelBase
             Notifier.AddError(Messages.FieldsNotFilled);
             return;
         }
-        await store.AddAsync(StoreItem);
-        viewService.AddParameter(ParameterNames.AddItemResult, true);
-        viewService.GoBack();
+        try
+        {
+            await store.AddAsync(StoreItem);
+            viewService.AddParameter(ParameterNames.AddItemResult, true);
+            viewService.GoBack();
+        }
+        catch (DublicateException ex)
+        {
+            Notifier.AddError(ex.Message);
+        }
+       
     }
 
     #endregion
@@ -83,6 +135,21 @@ internal class AddStoreItemViewModel : ViewModelBase
     private bool CanSelectStoreItemCommandExecute() => true;
     private void OnSelectStoreItemCommandExecuted() =>
         viewService.ShowPopupWindow(nameof(SelectItemView));
+
+    #endregion
+
+    #region Command GetManufacturers - Команда получить список производителей
+
+    private ICommand? _GetManufacturersCommand;
+    /// <summary>Команда - получить список производителей</summary>
+    public ICommand GetManufacturersCommand => _GetManufacturersCommand
+        ??= new DelegateCommand(OnGetManufacturersCommandExecuted, CanGetManufacturersCommandExecute);
+    private bool CanGetManufacturersCommandExecute() => true;
+    private async void OnGetManufacturersCommandExecuted()
+    {
+        IManufacturersService? manufacturersService = ServiceLocator.GetService<IManufacturersService>();
+        Manufacturers = await manufacturersService.GetAllAsync().ConfigureAwait(false);
+    }
 
     #endregion
 
