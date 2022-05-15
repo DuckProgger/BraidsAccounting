@@ -51,6 +51,23 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
     /// Общее количество материалов на складе.
     /// </summary>
     public int TotalItems { get; private set; }
+    private void ResultNotifying(NavigationParameters parameters)
+    {
+        bool result;
+        if (parameters.ContainsKey(ParameterNames.AddItemResult))
+        {
+            result = (bool)parameters[ParameterNames.AddItemResult];
+            if (result) Notifier.AddInfo(Messages.AddStoreItemSuccess);
+            return;
+        }
+        if (parameters.ContainsKey(ParameterNames.EditItemResult))
+        {
+            result = (bool)parameters[ParameterNames.EditItemResult];
+            if (result) Notifier.AddInfo(Messages.EditStoreItemSuccess);
+            return;
+        }
+    }
+
 
     #region Command RemoveItem - Команда удалить предмет со склада
 
@@ -111,22 +128,20 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         });
     }
 
-    #endregion          
+    #endregion
 
-    private void ResultNotifying(NavigationParameters parameters)
+    #region Command SelectStoreItem - Команда выбрать материал со склада
+
+    private ICommand? _SelectStoreItemCommand;
+    /// <summary>Команда - выбрать материал со склада</summary>
+    public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
+        ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
+    private bool CanSelectStoreItemCommandExecute() => true;
+    private  void OnSelectStoreItemCommandExecuted()
     {
-        bool result;
-        if (parameters.ContainsKey(ParameterNames.AddItemResult))
-        {
-            result = (bool)parameters[ParameterNames.AddItemResult];
-            if (result) Notifier.AddInfo(Messages.AddStoreItemSuccess);
-            return;
-        }
-        if (parameters.ContainsKey(ParameterNames.EditItemResult))
-        {
-            result = (bool)parameters[ParameterNames.EditItemResult];
-            if (result) Notifier.AddInfo(Messages.EditStoreItemSuccess);
-            return;
-        }
+        viewService.AddParameter(ParameterNames.SelectedItem, SelectedStoreItem);
+        viewService.GoBack();
     }
+
+    #endregion
 }

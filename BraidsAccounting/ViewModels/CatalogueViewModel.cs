@@ -34,7 +34,24 @@ internal class CatalogueViewModel : ViewModelBase<Item>
     /// Флаг фильтрации отображаемых элементов каталога
     /// материалов - только в наличии.
     /// </summary>
-    public bool OnlyInStock { get; set; } 
+    public bool OnlyInStock { get; set; }
+
+    private void ResultNotifying(NavigationParameters parameters)
+    {
+        bool result;
+        if (parameters.ContainsKey(ParameterNames.AddItemResult))
+        {
+            result = (bool)parameters[ParameterNames.AddItemResult];
+            if (result) Notifier.AddInfo(Messages.AddItemSuccess);
+            return;
+        }
+        if (parameters.ContainsKey(ParameterNames.EditItemResult))
+        {
+            result = (bool)parameters[ParameterNames.EditItemResult];
+            if (result) Notifier.AddInfo(Messages.EditItemSuccess);
+            return;
+        }
+    }    
 
     #region Command LoadData - Команда загрузки данных со склада
 
@@ -99,21 +116,19 @@ internal class CatalogueViewModel : ViewModelBase<Item>
 
     #endregion
 
-    private void ResultNotifying(NavigationParameters parameters)
+    #region Command SelectItem - Команда выбрать материал из каталога
+
+    private ICommand? _SelectItemCommand;
+    /// <summary>Команда - выбрать материал из каталога</summary>
+    public ICommand SelectItemCommand => _SelectItemCommand
+        ??= new DelegateCommand(OnSelectItemCommandExecuted, CanSelectItemCommandExecute);
+    private bool CanSelectItemCommandExecute() => true;
+    private void OnSelectItemCommandExecuted()
     {
-        bool result;
-        if (parameters.ContainsKey(ParameterNames.AddItemResult))
-        {
-            result = (bool)parameters[ParameterNames.AddItemResult];
-            if (result) Notifier.AddInfo(Messages.AddItemSuccess);
-            return;
-        }
-        if (parameters.ContainsKey(ParameterNames.EditItemResult))
-        {
-            result = (bool)parameters[ParameterNames.EditItemResult];
-            if (result) Notifier.AddInfo(Messages.EditItemSuccess);
-            return;
-        }
+        viewService.AddParameter(ParameterNames.SelectedItem, SelectedItem);
+        viewService.GoBack();
     }
+
+    #endregion
 
 }

@@ -66,6 +66,10 @@
                 CanUserAddRows="False"
                 dgx:DataGridFilter.IsAutoFilterEnabled="True"
                 dgx:DataGridFilter.FilterEvaluationDelay="0:0:0.100">
+                <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick"
+                                  Command="{Binding SelectStoreItemCommand}"/>
+                </DataGrid.InputBindings>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Производитель" Binding="{Binding Item.Manufacturer.Name}" IsReadOnly="True" 
                                         dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilter}"/>
