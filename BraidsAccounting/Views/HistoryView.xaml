@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
-             xmlns:local="clr-namespace:BraidsAccounting.Views"
+             xmlns:local="clr-namespace:BraidsAccounting.ViewModels"             
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="#FAFAFA"
@@ -16,11 +16,25 @@
     </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
+            <i:InvokeCommandAction Command="{Binding GetHistoryCommand}"
+                         CommandParameter="{x:Static local:RecordsNumber.Last50}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <DataGrid                 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Количество записей:"/>
+            <RadioButton GroupName="CountFilter" Content="Последние 50" IsChecked="true" 
+                         Command="{Binding GetHistoryCommand}"
+                         CommandParameter="{x:Static local:RecordsNumber.Last50}"/>
+            <RadioButton GroupName="CountFilter" Content="Все"
+                         Command="{Binding GetHistoryCommand}"
+                         CommandParameter="{x:Static local:RecordsNumber.All}"/>
+        </StackPanel>
+        <DataGrid Grid.Row="1"              
                 ItemsSource="{Binding Collection, UpdateSourceTrigger=PropertyChanged}" 
                 AutoGenerateColumns="False"
                 CanUserAddRows="False">

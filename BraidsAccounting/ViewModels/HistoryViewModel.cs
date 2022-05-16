@@ -16,16 +16,34 @@ namespace BraidsAccounting.ViewModels
             Title = "История операций";
         }
 
-        #region Command LoadData - Команда получить историю операций с сущностями 
+        #region Command GetHistory - Команда получить историю
 
-        private ICommand? _LoadDataCommand;
-        /// <summary>Команда - </summary>
-        public ICommand LoadDataCommand => _LoadDataCommand
-            ??= new DelegateCommand(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
-        private bool CanLoadDataCommandExecute() => true;
-        private async void OnLoadDataCommandExecuted() =>
-            Collection = new(await historyService.GetAllAsync().ConfigureAwait(false));
+        private ICommand? _GetHistoryCommand;
+        /// <summary>Команда - получить историю</summary>
+        public ICommand GetHistoryCommand => _GetHistoryCommand
+            ??= new DelegateCommand<RecordsNumber?>(OnGetHistoryCommandExecuted, CanGetHistoryCommandExecute);
+        private bool CanGetHistoryCommandExecute(RecordsNumber? mode) => true;
+        private async void OnGetHistoryCommandExecuted(RecordsNumber? mode)
+        {
+            if (!mode.HasValue) return;
+            switch (mode.Value)
+            {
+                case RecordsNumber.Last50:
+                    Collection = new(await historyService.GetRangeAsync(50).ConfigureAwait(false));
+                    break;
+                case RecordsNumber.All:
+                    Collection = new(await historyService.GetAllAsync().ConfigureAwait(false));
+                    break;
+            }
+        }
 
-        #endregion
+        #endregion       
+
+    }
+
+    public enum RecordsNumber
+    {
+        All,
+        Last50
     }
 }

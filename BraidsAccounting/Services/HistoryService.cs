@@ -19,8 +19,11 @@ namespace BraidsAccounting.Services
             this.historyRepository = historyRepository;
         }
 
+        public async Task<List<History>> GetRangeAsync(int count) =>
+           await historyRepository.Items.Take(count).OrderByDescending(h => h.TimeStamp).ToListAsync();
+
         public async Task<List<History>> GetAllAsync() =>
-           await historyRepository.Items.Take(50).OrderByDescending(h => h.TimeStamp).ToListAsync();
+          await historyRepository.Items.OrderByDescending(h => h.TimeStamp).ToListAsync();
 
         public async Task WriteCreateOperationAsync(EntityData createdEntityData)
         {
