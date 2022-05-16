@@ -45,6 +45,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
         var newService = await services.CreateAsync(service);
         await historyService.WriteCreateOperationAsync(service.GetEtityData(this));
 
+        GetActualPricesForWastedItems(newService.WastedItems);
         BindWastedItemsToService(newService);
         wastedItemsService.CreateRange(newService.WastedItems);
 
@@ -62,6 +63,13 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
         return await services.Items.Select(s => s.Employee.Name).Distinct().ToListAsync();
     }
 
+    private static void GetActualPricesForWastedItems(IEnumerable<WastedItem> wastedItems)
+    {
+        var manufacturersService = ServiceLocator.GetService<IManufacturersService>();
+        foreach (var wastedItem in wastedItems)
+            wastedItem.Price = manufacturersService.GetPrice(wastedItem.Item.Manufacturer.Name);
+    }
+
     private static void BindWastedItemsToService(Service s)
     {
         foreach (var wastedItem in s.WastedItems)
@@ -75,7 +83,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
     {
         decimal expenses = 0;
         foreach (var wastedItem in service.WastedItems)
-            expenses += wastedItem.Item.Manufacturer.Price * wastedItem.Count;
+            expenses += wastedItem.Price * wastedItem.Count;
         service.NetProfit = service.Profit - expenses;
     }
 

@@ -89,7 +89,8 @@ internal class WastedItemsViewModel : ViewModelBase<WastedItemForm>
     private async void OnInitialDataCommandExecuted()
     {
         Names = await serviceProvider.GetNamesAsync();
-        RestoreFilterDefaults();
+        if (Collection is null || Collection.Count == 0)
+            RestoreFilterDefaults();
     }
 
     #endregion

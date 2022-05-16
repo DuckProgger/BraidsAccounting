@@ -32,6 +32,9 @@ internal class ManufacturersService : IManufacturersService, IHistoryTracer<Manu
     public async Task<Manufacturer?> GetAsync(string name) =>
         await manufacturers.Items.FirstOrDefaultAsync(m => m.Name.ToUpper() == name.ToUpper());
 
+    public decimal GetPrice(string name) => 
+        manufacturers.Items.Where(m => m.Name == name).Select(m => m.Price).SingleOrDefault();    
+
     public async Task AddAsync(Manufacturer? manufacturer)
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));

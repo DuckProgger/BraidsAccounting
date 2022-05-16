@@ -77,6 +77,7 @@ internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
 
     public async Task EditAsync(Item item)
     {
+        item.ManufacturerId = item.Manufacturer.Id;
         TrimSpaces(item);       
         var existingItem = await catalogue.GetAsync(item.Id) with { }; // Получить актуальную сущность
         await catalogue.EditAsync(item);

@@ -24,7 +24,7 @@ namespace BraidsAccounting.ViewModels
             ??= new DelegateCommand(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
         private bool CanLoadDataCommandExecute() => true;
         private async void OnLoadDataCommandExecuted() =>
-            Collection = new(await historyService.GetAllAsync());
+            Collection = new(await historyService.GetAllAsync().ConfigureAwait(false));
 
         #endregion
     }

@@ -40,4 +40,5 @@ internal interface IManufacturersService
     /// </summary>
     /// <param name="id">ID производителя.</param>
     Task RemoveAsync(int id);
+    decimal GetPrice(string name);
 }

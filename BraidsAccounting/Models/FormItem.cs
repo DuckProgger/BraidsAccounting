@@ -97,21 +97,21 @@ internal class FormItem : BindableBase, IEquatable<StoreItem>, IEquatable<Wasted
         };
     }
 
-    public static implicit operator Item(FormItem formItem)
-    {
-        Manufacturer manufacturer = new()
-        {
-            Name = formItem.Manufacturer,
-            Price = formItem.Price
-        };
-        return new()
-        {
-            Id = formItem.ItemId,
-            Article = formItem.Article,
-            Color = formItem.Color,
-            Manufacturer = manufacturer
-        };
-    }
+    //public static implicit operator Item(FormItem formItem)
+    //{
+    //    Manufacturer manufacturer = new()
+    //    {
+    //        Name = formItem.Manufacturer,
+    //        Price = formItem.Price
+    //    };
+    //    return new()
+    //    {
+    //        Id = formItem.ItemId,
+    //        Article = formItem.Article,
+    //        Color = formItem.Color,
+    //        Manufacturer = manufacturer
+    //    };
+    //}
 
     public static implicit operator WastedItem(FormItem formItem)
     {
@@ -130,7 +130,8 @@ internal class FormItem : BindableBase, IEquatable<StoreItem>, IEquatable<Wasted
         return new WastedItem()
         {
             Count = formItem.Count,
-            Item = item
+            Item = item,
+            Price = formItem.Price
         };
     }
 

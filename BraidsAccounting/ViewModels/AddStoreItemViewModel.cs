@@ -72,7 +72,7 @@ internal class AddStoreItemViewModel : ViewModelBase
         {
             Article = item.Article;
             Color = item.Color;
-            SelectedManufacturer = Manufacturers.Find(m => m.Equals(item.Manufacturer));
+            SelectedManufacturer = Manufacturers.Find(m => m.Name.Equals(item.Manufacturer.Name));
             InStock = store.Count(item.Manufacturer.Name, item.Article, item.Color);
         }
     }

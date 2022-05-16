@@ -37,7 +37,7 @@ internal class WastedItemsService : IWastedItemsService
     public async Task<decimal> GetTotalExpensesAsync(FilterOptions options)
     {
         var baseQuery = GetFilteredQuery(options);
-        return await baseQuery.SumAsync(w => w.Count * w.Item.Manufacturer.Price);
+        return await baseQuery.SumAsync(w => w.Count * w.Price);
     }
 
     public WastedItem? GetItem(string manufacturer, string article, string color) =>
@@ -95,7 +95,7 @@ internal class WastedItemsService : IWastedItemsService
             Manufacturer = w.Item.Manufacturer.Name,
             Color = w.Item.Color,
             Count = w.Count,
-            Expense = Math.Round(w.Count * w.Item.Manufacturer.Price, 2)
+            Expense = Math.Round(w.Count * w.Price, 2)
         });
     }
 
@@ -120,7 +120,7 @@ internal class WastedItemsService : IWastedItemsService
                 Article = g.Key.Article,
                 Color = g.Key.Color,
                 Count = g.Sum(w => w.Count),
-                Expense = Math.Round(g.Sum(w => w.Count * w.Item.Manufacturer.Price), 2)
+                Expense = Math.Round(g.Sum(w => w.Count * w.Price), 2)
             });
     }
 }

@@ -127,6 +127,7 @@ internal class ServiceViewModel : ViewModelBase
             CheckRunningOutItems(WastedItems);
             Service = new();
             WastedItems = new();
+            SelectedEmployee = new();
             Notifier.AddInfo(Messages.AddServiceSuccess);
         }
         catch (Exception ex)

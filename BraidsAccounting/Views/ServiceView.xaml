@@ -60,8 +60,7 @@
                         <TextBlock Text="Имя сотрудника" HorizontalAlignment="Center"/>
                         <ComboBox 
                             ItemsSource="{Binding Employees}"
-                            SelectedValue="{Binding SelectedEmployee, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                            SelectedIndex="0">
+                            SelectedValue="{Binding SelectedEmployee, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Converter={StaticResource EmployeeConverter}}"/>

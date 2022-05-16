@@ -16,7 +16,7 @@ internal class ServiceStatisticsViewModel : ViewModelBase<ServiceProfits>
     public ServiceStatisticsViewModel(IServiceProvider serviceProvider)
     {
         this.serviceProvider = serviceProvider;
-        Title = "Выручка";       
+        Title = "Выручка";
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ internal class ServiceStatisticsViewModel : ViewModelBase<ServiceProfits>
     /// <summary>
     /// Опции фильтрации.
     /// </summary>
-    public FilterOptions FilterOptions { get; set; } 
+    public FilterOptions FilterOptions { get; set; }
     /// <summary>
     /// Сумма расходов за материалы из списка израсходованных материалов.
     /// </summary>
@@ -83,7 +83,8 @@ internal class ServiceStatisticsViewModel : ViewModelBase<ServiceProfits>
     private async void OnInitialDataCommandExecuted()
     {
         Names = await serviceProvider.GetNamesAsync();
-        RestoreFilterDefaults();
+        if (Collection is null || Collection.Count == 0)
+            RestoreFilterDefaults();
     }
 
     #endregion

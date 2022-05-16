@@ -1,5 +1,6 @@
 ﻿using BraidsAccounting.DAL.Entities.Base;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BraidsAccounting.DAL.Entities;
 
@@ -14,11 +15,16 @@ public record WastedItem : Entity
     /// Работа, для которой материал был использован.
     /// </summary>
     public Service Service { get; set; } = null!;
-    //public int ItemId { get; set; }
     /// <summary>
     /// Материал, использованный для работы.
     /// </summary>
     public Item Item { get; set; } = null!;
+    /// <summary>
+    /// Цена, по которой продали материал,
+    /// взятая из актуальной цены производителя.
+    /// </summary>
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal Price { get; set; }
     /// <summary>
     /// Количество материалов.
     /// </summary>
