@@ -4,12 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:c="clr-namespace:BraidsAccounting.Views.Converters"
              xmlns:local="clr-namespace:BraidsAccounting.Views"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Background="#FAFAFA"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <c:DateTimeConverter x:Key="DateTimeConverter"/>
+    </UserControl.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}"/>
@@ -21,6 +25,8 @@
                 AutoGenerateColumns="False"
                 CanUserAddRows="False">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Операция" Binding="{Binding Operation}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Сущность" Binding="{Binding EntityName}" IsReadOnly="True"/>
                 <DataGridTextColumn Width="0.9*" Header="Текст" Binding="{Binding Message}" IsReadOnly="True" >
                     <DataGridTextColumn.ElementStyle>
                         <Style>
@@ -28,7 +34,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Дата/время" Binding="{Binding TimeStamp}" IsReadOnly="True"/>                
+                <DataGridTextColumn Header="Дата/время" Binding="{Binding TimeStamp, Converter={StaticResource DateTimeConverter}}" IsReadOnly="True"/>                
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

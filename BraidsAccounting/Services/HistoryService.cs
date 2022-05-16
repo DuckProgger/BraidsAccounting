@@ -24,60 +24,51 @@ namespace BraidsAccounting.Services
 
         public async Task WriteCreateOperationAsync(EntityData createdEntityData)
         {
-            StringBuilder sb = new();
-
-            // Тип операции:
-            sb.Append("Добавлена сущность \"");
-
-            // Получение названия типа сущности
-            sb.Append(createdEntityData.EntityName);
+            StringBuilder sb = new();     
 
             // Получение названий и значений свойств
             if (createdEntityData.Count > 0)
-            {
-                sb.Append("\". Значения: ");
                 FillProperties(sb, createdEntityData);
-            }
             sb.Append('.');
 
-            await AddHistoryAsync(sb.ToString());
+            History history = new()
+            {
+                EntityName = createdEntityData.EntityName,
+                Operation = "Добавление",
+                Message = sb.ToString()
+            };
+
+            await AddHistoryAsync(history);
         }
 
         public async Task WriteDeleteOperationAsync(EntityData deletedEntityData)
         {
-            StringBuilder sb = new();
-
-            // Тип операции:
-            sb.Append("Удалена сущность \"");
-
-            // Получение названия типа сущности
-            sb.Append(deletedEntityData.EntityName);
+            StringBuilder sb = new();   
 
             // Получение названий и значений свойств
             if (deletedEntityData.Count > 0)
-            {
-                sb.Append("\". Значения: ");
                 FillProperties(sb, deletedEntityData);
-            }
             sb.Append('.');
 
-            await AddHistoryAsync(sb.ToString());
+            History history = new()
+            {
+                EntityName = deletedEntityData.EntityName,
+                Operation = "Удаление",
+                Message = sb.ToString()
+            };
+
+            await AddHistoryAsync(history);
         }
 
         public async Task WriteUpdateOperationAsync(EntityData previousEntityData, EntityData newEntityData)
         {
             // Если сущность не изменилась - ничего не писать
-            if (previousEntityData.Equals(newEntityData)) return; 
+            if (previousEntityData.Equals(newEntityData)) return;            
 
-            StringBuilder sb = new();
-
-            // Тип операции:
-            sb.Append("Изменена сущность \"");
-            // Получение названия типа сущности
-            sb.Append(previousEntityData.EntityName);
+            StringBuilder sb = new();          
 
             // Получение названий и значений старых свойств сущности
-            sb.Append("\".\nПрошлые значения: ");
+            sb.Append("Прошлые значения: ");
             FillProperties(sb, previousEntityData);
 
             // Получение названий и значений новых свойств сущности
@@ -85,7 +76,14 @@ namespace BraidsAccounting.Services
             FillProperties(sb, newEntityData);
             sb.Append('.');
 
-            await AddHistoryAsync(sb.ToString());
+            History history = new()
+            {
+                EntityName = newEntityData.EntityName,
+                Operation = "Изменение",
+                Message = sb.ToString()
+            };
+
+            await AddHistoryAsync(history);
         }              
 
         private static void FillProperties(StringBuilder sb, EntityData entityData)
@@ -99,9 +97,8 @@ namespace BraidsAccounting.Services
             }           
         }
 
-        private async Task AddHistoryAsync(string message)
+        private async Task AddHistoryAsync(History history)
         {
-            History history = new() { Message = message };
             await historyRepository.CreateAsync(history);
         }
     }
