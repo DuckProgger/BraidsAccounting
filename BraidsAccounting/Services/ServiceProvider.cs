@@ -14,7 +14,7 @@ namespace BraidsAccounting.Services;
 internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Service>
 {
     private readonly IRepository<Service> services;
-    private readonly IStoreService store;
+    private IStoreService store;
     private readonly IRepository<WastedItem> wastedItemsService;
     private readonly IEmployeesService employeesService;
     private readonly IHistoryService historyService;
@@ -50,6 +50,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
         wastedItemsService.CreateRange(newService.WastedItems);
 
         // Убрать использованные товары со склада
+        store = ServiceLocator.GetService<IStoreService>(); // обновить контекст (значения могли измениться)
         await store.RemoveItemsAsync(service.WastedItems);
     }
 

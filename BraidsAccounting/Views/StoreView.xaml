@@ -61,7 +61,7 @@
             <DataGrid 
                 Name="List"
                 Grid.Row="0" ItemsSource="{Binding Collection, UpdateSourceTrigger=PropertyChanged}" 
-                SelectedItem="{Binding SelectedStoreItem}"
+                SelectedItem="{Binding SelectedStoreItem, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                 AutoGenerateColumns="False"
                 CanUserAddRows="False"
                 dgx:DataGridFilter.IsAutoFilterEnabled="True"

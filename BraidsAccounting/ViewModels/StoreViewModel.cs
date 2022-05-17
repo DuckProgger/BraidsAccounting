@@ -45,8 +45,11 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
     /// <summary>
     /// Выбранный материал со склада.
     /// </summary>
-    public StoreItem SelectedStoreItem { get; set; } = null!;
-
+    public StoreItem? SelectedStoreItem { get; set; }
+    //{ 
+    //    get => selectedStoreItem; 
+    //    set => selectedStoreItem = value;
+    //}
     /// <summary>
     /// Общее количество материалов на складе.
     /// </summary>
@@ -67,7 +70,6 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
             return;
         }
     }
-
 
     #region Command RemoveItem - Команда удалить предмет со склада
 
@@ -101,6 +103,7 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         // Нужно обновить контекст, чтобы получать обновлённые данные
         store = ServiceLocator.GetService<IStoreService>();
         Collection = new(await store.GetItemsAsync());
+        //SelectedStoreItem = Collection.FirstOrDefault();
         Notifier.Remove(Messages.LoadingStoreItems);
         TotalItems = Collection.Sum(i => i.Count);
     }
@@ -126,6 +129,7 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
             if (p is not null) ResultNotifying(p);
             LoadDataCommand.Execute(null);
         });
+        SelectedStoreItem = null; // чтобы не потерять привязку при возвращении
     }
 
     #endregion
@@ -133,14 +137,18 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
     #region Command SelectStoreItem - Команда выбрать материал со склада
 
     private ICommand? _SelectStoreItemCommand;
+
     /// <summary>Команда - выбрать материал со склада</summary>
     public ICommand SelectStoreItemCommand => _SelectStoreItemCommand
         ??= new DelegateCommand(OnSelectStoreItemCommandExecuted, CanSelectStoreItemCommandExecute);
     private bool CanSelectStoreItemCommandExecute() => true;
-    private  void OnSelectStoreItemCommandExecuted()
+    private void OnSelectStoreItemCommandExecuted()
     {
-        viewService.AddParameter(ParameterNames.SelectedItem, SelectedStoreItem);
-        viewService.GoBack();
+        if (viewService.CallContext.Count > 0)
+        {
+            viewService.AddParameter(ParameterNames.SelectedItem, SelectedStoreItem);
+            viewService.GoBack();
+        }
     }
 
     #endregion

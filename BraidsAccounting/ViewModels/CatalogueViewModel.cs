@@ -28,7 +28,7 @@ internal class CatalogueViewModel : ViewModelBase<Item>
         Title = "Каталог материалов";
     }
 
-    public Item SelectedItem { get; set; }
+    public Item? SelectedItem { get; set; }
 
     public bool IsAddButtonVisible => viewService.CallContext.Count == 0;
 
@@ -90,6 +90,7 @@ internal class CatalogueViewModel : ViewModelBase<Item>
             if (p is not null) ResultNotifying(p);
             LoadDataCommand.Execute(null);
         });
+        SelectedItem = null; // чтобы не потерять привязку при возвращении
     }
 
     #endregion
