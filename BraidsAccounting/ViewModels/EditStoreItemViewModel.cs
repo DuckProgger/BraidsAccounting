@@ -15,6 +15,7 @@ internal class EditStoreItemViewModel : ViewModelBase
     private readonly IStoreService store;
     private readonly IManufacturersService manufacturersService;
     private readonly IViewService viewService;
+    private Manufacturer selectedManufacturer;
 
     /// <summary>
     /// Материал со склада, обрабатываемый в форме.
@@ -28,12 +29,17 @@ internal class EditStoreItemViewModel : ViewModelBase
     /// Выбранный производитель из списка.
     /// </summary>
 
-    public Manufacturer SelectedManufacturer { get; set; } = null!;
+    public Manufacturer SelectedManufacturer 
+    { 
+        get => selectedManufacturer; 
+        set => selectedManufacturer = value;     
+    }
+
     public EditStoreItemViewModel(
-     IStoreService store
+        IStoreService store
         , IManufacturersService manufacturersService
         , IViewService viewService
-     )
+        )
     {
         this.store = store;
         this.manufacturersService = manufacturersService;
@@ -42,21 +48,15 @@ internal class EditStoreItemViewModel : ViewModelBase
         Title = "Изменение материала на складе";
     }
 
-    /// <summary>
-    /// Устанавливает свойства при приёме сообщения.
-    /// </summary>
-    /// <param name="item"></param>
-    private void SetProperties(StoreItem item)
-    {
-        StoreItem = item;
-        StoreItem.Item.Manufacturer = SelectedManufacturer;
-    }
     public async override void OnNavigatedTo(NavigationContext navigationContext)
     {
         Manufacturers = await manufacturersService.GetAllAsync().ConfigureAwait(false);
         StoreItem? item = navigationContext.Parameters[ParameterNames.SelectedItem] as StoreItem;
         if (item is not null)
-            SetProperties(item);
+        {
+            StoreItem = item;
+            SelectedManufacturer = Manufacturers.Find(m => m.Name.Equals(item.Item.Manufacturer.Name));
+        }
     }
 
     private bool IsValidItem() =>
@@ -70,6 +70,7 @@ internal class EditStoreItemViewModel : ViewModelBase
     #region Command SaveChanges - Команда сохранить изменения товара со склада
 
     private ICommand? _SaveChangesCommand;
+
     /// <summary>Команда - сохранить изменения товара со склада</summary>
     public ICommand SaveChangesCommand => _SaveChangesCommand
         ??= new DelegateCommand(OnSaveChangesCommandExecuted, CanSaveChangesCommandExecute);

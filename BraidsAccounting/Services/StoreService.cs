@@ -105,9 +105,8 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
         if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
         var previousStoreItem = store.Get(storeItem.Id) with { };
         await store.EditAsync(storeItem);
-        //await catalogue.EditAsync(storeItem.Item);
+        await catalogue.EditAsync(storeItem.Item);
         await historyService.WriteUpdateOperationAsync(previousStoreItem.GetEtityData(this), storeItem.GetEtityData(this));
-
     }
 
     public async Task RemoveAsync(int id)

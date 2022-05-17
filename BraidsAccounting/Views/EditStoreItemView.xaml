@@ -30,8 +30,7 @@
                 <TextBlock Text="Производитель" HorizontalAlignment="Center"/>
                 <ComboBox 
                       ItemsSource="{Binding Manufacturers}"
-                      SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"
-                      SelectedIndex="0"
+                      SelectedValue="{Binding SelectedManufacturer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"                     
                     Margin="5">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>

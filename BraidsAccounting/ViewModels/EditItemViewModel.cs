@@ -7,6 +7,7 @@ using Prism.Commands;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels;
@@ -17,11 +18,13 @@ internal class EditItemViewModel : ViewModelBase
     private readonly ICatalogueService catalogueService;
     private readonly IViewService viewService;
     private readonly IManufacturersService manufacturersService;
+    private Manufacturer selectedManufacturer;
+
 
     public EditItemViewModel(
         ICatalogueService catalogueService
         , IViewService viewService
-        , IManufacturersService manufacturersService        
+        , IManufacturersService manufacturersService
         )
     {
         this.catalogueService = catalogueService;
@@ -38,10 +41,15 @@ internal class EditItemViewModel : ViewModelBase
     /// Список производителей.
     /// </summary>
     public List<Manufacturer>? Manufacturers { get; set; }
+    
     /// <summary>
     /// Выбранный производитель из списка.
     /// </summary>
-    public Manufacturer SelectedManufacturer { get; set; } = null!;
+    public Manufacturer SelectedManufacturer
+    {
+        get => selectedManufacturer;
+        set => selectedManufacturer = value;
+    }
 
     public override async void OnNavigatedTo(NavigationContext navigationContext)
     {
@@ -49,7 +57,7 @@ internal class EditItemViewModel : ViewModelBase
         Item? item = navigationContext.Parameters[ParameterNames.SelectedItem] as Item;
         if (item is not null)
         {
-            SelectedManufacturer = item.Manufacturer;
+            SelectedManufacturer = Manufacturers.Find(m => m.Name.Equals(item.Manufacturer.Name));
             ItemInForm = item;
         }
     }
