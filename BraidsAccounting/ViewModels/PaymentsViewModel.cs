@@ -40,7 +40,12 @@ internal class PaymentsViewModel : ViewModelBase
     public ICommand InitializeDataCommand => _InitializeDataCommand
         ??= new DelegateCommand(OnInitializeDataCommandExecuted, CanInitializeDataCommandExecute);
     private bool CanInitializeDataCommandExecute() => true;
-    private async void OnInitializeDataCommandExecuted() => Employees = await employeesService.GetAllAsync();
+    private async void OnInitializeDataCommandExecuted()
+    {
+        Employees = await employeesService.GetAllAsync();
+        if (SelectedEmployee is not null)
+            GetDebtCommand.Execute(null);
+    }
 
     #endregion
 
