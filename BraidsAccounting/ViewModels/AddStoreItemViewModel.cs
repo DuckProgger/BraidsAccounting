@@ -77,14 +77,6 @@ internal class AddStoreItemViewModel : ViewModelBase
         }
     }
 
-    private static bool IsValidStoreItem(StoreItem storeItem) =>
-       IsValidCount(storeItem.Count) &&
-       !string.IsNullOrEmpty(storeItem.Item?.Manufacturer?.Name) &&
-       !string.IsNullOrEmpty(storeItem.Item?.Article) &&
-       !string.IsNullOrEmpty(storeItem.Item?.Color);
-
-    private static bool IsValidCount(int count) => count > 0;
-
     #region Command AddStoreItem - Команда добавить товар на склад
 
     private DelegateCommand? _AddStoreItemCommand;
@@ -101,14 +93,10 @@ internal class AddStoreItemViewModel : ViewModelBase
         StoreItem.Item.Article = Article;
         StoreItem.Item.Manufacturer = SelectedManufacturer;
         StoreItem.Count = Count;
-        if (!IsValidCount(StoreItem.Count))
+        if (!store.Validate(StoreItem, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.StoreItemInvalidCount);
-            return;
-        }
-        if (!IsValidStoreItem(StoreItem))
-        {
-            Notifier.AddError(Messages.FieldsNotFilled);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
         }
         try

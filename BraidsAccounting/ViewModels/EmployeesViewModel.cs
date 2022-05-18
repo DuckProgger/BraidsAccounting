@@ -4,6 +4,7 @@ using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -26,9 +27,7 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
     /// <summary>
     /// Список сотрудников в представлении.
     /// </summary>
-    public ObservableCollection<string> EmployeeList { get; set; } = null!;
-    private static bool IsValidEmployee(Employee employee) =>
-        !string.IsNullOrEmpty(employee.Name);
+    public ObservableCollection<string> EmployeeList { get; set; } = null!;    
 
     #region Command GetEmployees - Команда получить всех сотрудников.
 
@@ -83,9 +82,10 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
     private bool CanSaveCommandExecute() => true;
     private async void OnSaveCommandExecuted()
     {
-        if (!IsValidEmployee(EmployeeInForm))
+        if (!employeesService.Validate(EmployeeInForm, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.FieldsNotFilled);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
         }
         try

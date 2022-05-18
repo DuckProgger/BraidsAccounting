@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces;
 
-internal interface IEmployeesService
+internal interface IEmployeesService : IEntityService<Employee>
 {
     /// <summary>
     /// Добавить нового сотрудника.

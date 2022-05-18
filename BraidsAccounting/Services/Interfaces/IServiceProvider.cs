@@ -8,7 +8,7 @@ namespace BraidsAccounting.Services.Interfaces;
 /// <summary>
 /// Интерфейс, представляющий сервис взаимодействия с перечнем выполненных работ. 
 /// </summary>
-internal interface IServiceProvider
+internal interface IServiceProvider : IEntityService<Service>
 {
     /// <summary>
     /// Получить имена всех сотрудников, когда-либо выполнявших работы.

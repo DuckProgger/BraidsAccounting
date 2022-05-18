@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Entities.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace BraidsAccounting.Services.Interfaces;
 /// <summary>
 /// Интерфейс, представляющий сервис взаимодействия со складом. 
 /// </summary>
-internal interface IStoreService
+internal interface IStoreService : IEntityService<StoreItem>
 {
     /// <summary>
     /// Добавить материал на склад.

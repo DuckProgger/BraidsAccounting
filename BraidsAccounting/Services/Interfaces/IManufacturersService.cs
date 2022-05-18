@@ -7,7 +7,7 @@ namespace BraidsAccounting.Services.Interfaces;
 /// <summary>
 /// Интерфейс, представляющий сервис взаимодействия с производителями материалов. 
 /// </summary>
-internal interface IManufacturersService
+internal interface IManufacturersService : IEntityService<Manufacturer>
 {
     /// <summary>
     /// Добавить производителя материала в каталог.

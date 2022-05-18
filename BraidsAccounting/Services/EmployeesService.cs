@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;
 
-internal class EmployeesService : IEmployeesService, IHistoryTracer<Employee>
+internal class EmployeesService : IEmployeesService
 {
     private readonly IRepository<Employee> employees;
     private readonly IHistoryService historyService;
@@ -37,7 +38,20 @@ internal class EmployeesService : IEmployeesService, IHistoryTracer<Employee>
 
     public async Task<Employee?> GetAsync(int id) =>
         await employees.GetAsync(id);
-
     IEntityDataBuilder<Employee> IHistoryTracer<Employee>.ConfigureEntityData(IEntityDataBuilder<Employee> builder, Employee entity) =>
         builder.AddInfo(e => e.Name, entity.Name);
+
+    public bool Validate(Employee entity, out IEnumerable<string> errorMessages)
+    {
+        List<string> errorMessagesList = new();
+        errorMessages = errorMessagesList;
+        bool haveError = false;
+        if (string.IsNullOrWhiteSpace(entity.Name))
+        {
+            errorMessagesList.Add(Messages.EmployeeNameNotFilled);
+            haveError = true;
+        }       
+        return !haveError;
+    }
+
 }

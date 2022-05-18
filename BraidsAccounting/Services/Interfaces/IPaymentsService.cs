@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces;
 
-internal interface IPaymentsService
+internal interface IPaymentsService : IEntityService<Payment>
 {
     /// <summary>
     /// Добавить платёж за расходованные материалы.

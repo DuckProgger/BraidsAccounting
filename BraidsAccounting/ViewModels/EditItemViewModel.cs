@@ -7,7 +7,6 @@ using Prism.Commands;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 
 namespace BraidsAccounting.ViewModels;
@@ -61,10 +60,6 @@ internal class EditItemViewModel : ViewModelBase
             ItemInForm = item;
         }
     }
-    private bool IsValidItem() =>
-        !string.IsNullOrEmpty(SelectedManufacturer?.Name)
-       && !string.IsNullOrEmpty(ItemInForm.Color)
-       && !string.IsNullOrEmpty(ItemInForm.Article);
 
     #region Command SaveChanges - Команда сохранить изменения товара со склада
 
@@ -75,14 +70,15 @@ internal class EditItemViewModel : ViewModelBase
     private bool CanSaveChangesCommandExecute() => true;
     private async void OnSaveChangesCommandExecuted()
     {
-        try
+        ItemInForm.Manufacturer = SelectedManufacturer;
+        if (!catalogueService.Validate(ItemInForm, out IEnumerable<string> errorMessages))
         {
-            if (!IsValidItem())
-            {
-                Notifier.AddError(Messages.FieldsNotFilled);
-                return;
-            }
-            ItemInForm.Manufacturer = SelectedManufacturer;
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
+            return;
+        }
+        try
+        {            
             await catalogueService.EditAsync(ItemInForm);
             viewService.AddParameter(ParameterNames.EditItemResult, true);
             viewService.GoBack();

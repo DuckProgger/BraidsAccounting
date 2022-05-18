@@ -27,6 +27,7 @@ internal class PaymentsViewModel : ViewModelBase
     public List<Employee> Employees { get; set; }
     public Employee SelectedEmployee { get; set; }
     public Payment NewPayment { get; set; } = new();
+    public decimal Amount { get; set; }
     public decimal Debt { get; set; }
     public string DebtStatus { get; set; }
     public bool HaveDebt => Debt > 0;
@@ -58,9 +59,9 @@ internal class PaymentsViewModel : ViewModelBase
     private bool CanAddPaymentCommandExecute() => true;
     private async void OnAddPaymentCommandExecuted()
     {
-        NewPayment.Employee = SelectedEmployee;
         await paymentsService.AddAsync(NewPayment);
         NewPayment = new();
+        Amount = 0;
         GetDebtCommand.Execute(null);
         Notifier.AddInfo(Messages.AddPaymentSuccess);
         MDDialogHost.CloseDialogCommand.Execute(null, null);
@@ -99,14 +100,12 @@ internal class PaymentsViewModel : ViewModelBase
     private bool CanOpenDialogCommandExecute() => true;
     private void OnOpenDialogCommandExecuted()
     {
-        if (NewPayment.Amount <= 0)
+        NewPayment.Employee = SelectedEmployee;
+        NewPayment.Amount = Amount;
+        if (!paymentsService.Validate(NewPayment, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.AmountMustBePositive);
-            return;
-        }
-        if (NotSelectedEmployee)
-        {
-            Notifier.AddError(Messages.EmployeeNotSelected);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
         }
         MDDialogHost.OpenDialogCommand.Execute(null, null);

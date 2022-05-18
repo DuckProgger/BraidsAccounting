@@ -14,7 +14,7 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "IManufacturersService" />.
 /// </summary>
-internal class ManufacturersService : IManufacturersService, IHistoryTracer<Manufacturer>
+internal class ManufacturersService : IManufacturersService
 {
     private readonly IRepository<Manufacturer> manufacturers;
     private readonly IHistoryService historyService;
@@ -59,7 +59,24 @@ internal class ManufacturersService : IManufacturersService, IHistoryTracer<Manu
         await manufacturers.RemoveAsync(id);
         await historyService.WriteDeleteOperationAsync(existingManufacturer.GetEtityData(this));
     }
-
     IEntityDataBuilder<Manufacturer> IHistoryTracer<Manufacturer>.ConfigureEntityData(IEntityDataBuilder<Manufacturer> builder, Manufacturer entity) =>
         builder.AddInfo(e => e.Name, entity.Name);
+
+    public bool Validate(Manufacturer entity, out IEnumerable<string> errorMessages)
+    {
+        List<string> errorMessagesList = new();
+        errorMessages = errorMessagesList;
+        bool haveError = false;
+        if (string.IsNullOrWhiteSpace(entity.Name))
+        {
+            errorMessagesList.Add(Messages.ManufacturerNameNotFilled);
+            haveError = true;
+        }
+        if (entity.Price < 0)
+        {
+            errorMessagesList.Add(Messages.InvalidManufacturerPrice);
+            haveError = true;
+        }
+        return !haveError;
+    }
 }

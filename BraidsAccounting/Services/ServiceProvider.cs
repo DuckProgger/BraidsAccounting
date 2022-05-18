@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Models;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;
 
-internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Service>
+internal class ServiceProvider : Interfaces.IServiceProvider
 {
     private readonly IRepository<Service> services;
     private IStoreService store;
@@ -38,7 +39,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
     {
         // Найти ID сотрудника в БД
         service.Employee = await employeesService.GetAsync(service.Employee.Id)
-            ?? throw new ArgumentException("Сотрудник не найден.", nameof(service.Employee));
+            ?? throw new ArgumentException(Messages.EmployeeNotFound, nameof(service.Employee));
 
         // Добавить услугу в БД
         CalculateNetProfit(service);
@@ -154,4 +155,30 @@ internal class ServiceProvider : Interfaces.IServiceProvider, IHistoryTracer<Ser
         .AddInfo(s => s.Profit, entity.Profit)
         .AddInfo(s => s.NetProfit, entity.NetProfit)
         .AddInfo(s => s.DateTime, entity.DateTime);
+
+    public bool Validate(Service entity, out IEnumerable<string> errorMessages)
+    {
+        List<string> errorMessagesList = new();
+        errorMessages = errorMessagesList;
+        bool haveError = false;
+        if (entity.Employee is null || string.IsNullOrWhiteSpace(entity.Employee.Name))
+        {
+            errorMessagesList.Add(Messages.EmployeeNotSelected);
+            haveError = true;
+        }
+        if (entity.Profit < 0)
+        {
+            errorMessagesList.Add(Messages.InvalidServiceProfit);
+            haveError = true;
+        }
+        if (entity.WastedItems is not null && entity.WastedItems.Count > 0)
+            foreach (var wastedItem in entity.WastedItems)
+                if (wastedItem.Count == 0)
+                {
+                    errorMessagesList.Add(Messages.WastedItemInvalidCount);
+                    haveError = true;
+                    break;
+                }
+        return !haveError;
+    }
 }

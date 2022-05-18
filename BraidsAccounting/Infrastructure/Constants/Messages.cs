@@ -9,6 +9,9 @@ internal static class Messages
     public const string RemoveItemSuccess = "Материал успешно удалён из каталога.";
     public const string ItemUsedInStore = "Материал не может быть удалён, так как используется на складе.";
     public const string ItemUsedInService = "Материал не может быть удалён, так как используется в услуге.";
+    public const string ArticleNotFilled = "Не заполнена модель.";
+    public const string ColorNotFilled = "Не заполнен цвет.";
+    public const string ManufacturerNotFilled = "Не заполнен производитель.";
     #endregion
 
     #region StoreItem
@@ -16,13 +19,17 @@ internal static class Messages
     public const string RemoveStoreItemSuccess = "Материал успешно удалён со склада.";
     public const string AddStoreItemSuccess = "Материал успешно добавлен на склад.";
     public const string EditStoreItemSuccess = "Количество материала на складе успешно изменено.";
-    public const string StoreItemInvalidCount = "Количество материала должно быть больше нуля.";
+    public const string InvalidStoreItemCount = "Количество материала должно быть больше нуля.";
+    public const string StoreItemNotFound = "Материал не найден.";
+    public const string StoreItemOutOfStock = "Указанного количества материала нет на складе";    
     #endregion
 
     #region Employee
     public const string AddEmployeeSuccess = "Новый сотрудник успешно добавлен.";
     public const string EditEmployeeSuccess = "Сотрудник успешно изменён.";
     public const string EmployeeNotSelected = "Не выбран сотрудник.";
+    public const string EmployeeNameNotFilled = "Не заполнено имя.";
+    public const string EmployeeNotFound = "Сотрудник не найден.";
     #endregion
 
     #region Manufacturer
@@ -31,6 +38,9 @@ internal static class Messages
     public const string ManufacturerNotFound = "Выбранного производителя нет в каталоге.";
     public const string ManufacturerUsedInCatalogue = "Производитель не может быть удалён, так как используется материалом в каталоге.";
     public const string RemoveManufacturerSuccess = "Производитель успешно удалён.";
+    public const string InvalidManufacturerPrice = "Стоимость не может быть отрицательной.";
+    public const string DublicateManufacturer = "Материал уже есть в каталоге.";   
+    public const string ManufacturerNameNotFilled = "Не заполнено название.";
     #endregion
 
     #region Payment
@@ -50,8 +60,6 @@ internal static class Messages
     #region SelectItem
     public const string ItemNotSelected = "Не выбран ни один товар.";
     #endregion
-
-    public const string FieldsNotFilled = "Не все поля заполнены.";
 
 }
 

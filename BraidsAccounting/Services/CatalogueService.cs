@@ -15,7 +15,7 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "ICatalogueService" />.
 /// </summary>
-internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
+internal class CatalogueService : ICatalogueService
 {
     private readonly IRepository<Item> catalogue;
     private readonly IHistoryService historyService;
@@ -59,11 +59,11 @@ internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
     {
         IManufacturersService? manufacturersService = ServiceLocator.GetService<IManufacturersService>();
         Manufacturer? manufacturer = await manufacturersService.GetAsync(item.Manufacturer.Name);
-        if (manufacturer == null) throw new ArgumentNullException(nameof(manufacturer), "Производитель не найден.");
+        if (manufacturer == null) throw new ArgumentNullException(nameof(manufacturer), Messages.ManufacturerNotFound);
         TrimSpaces(item);
         item.Manufacturer = manufacturer;
         // Контроль дубликата
-        if (await Contains(item)) throw new DublicateException("Материал уже есть в каталоге.");
+        if (await Contains(item)) throw new DublicateException(Messages.DublicateManufacturer);
         var newItem = await catalogue.CreateAsync(item);
         await historyService.WriteCreateOperationAsync(item.GetEtityData(this));
         return newItem;
@@ -78,7 +78,7 @@ internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
     public async Task EditAsync(Item item)
     {
         item.ManufacturerId = item.Manufacturer.Id;
-        TrimSpaces(item);       
+        TrimSpaces(item);
         var existingItem = await catalogue.GetAsync(item.Id) with { }; // Получить актуальную сущность
         await catalogue.EditAsync(item);
         await historyService.WriteUpdateOperationAsync(existingItem.GetEtityData(this), item.GetEtityData(this));
@@ -89,10 +89,10 @@ internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
         // Проверяем наличие материала на складе и 
         // использование материала в качестве израсходованного
         IStoreService? storeService = ServiceLocator.GetService<IStoreService>();
-        if (await storeService.ContainsItemAsync(item.Id)) 
+        if (await storeService.ContainsItemAsync(item.Id))
             throw new ArgumentException(Messages.ItemUsedInStore);
         IWastedItemsService? wastedItemsService = ServiceLocator.GetService<IWastedItemsService>();
-        if (await wastedItemsService.ContainsItemAsync(item.Id)) 
+        if (await wastedItemsService.ContainsItemAsync(item.Id))
             throw new ArgumentException(Messages.ItemUsedInService);
         // Удалить материал из каталога
         await catalogue.RemoveAsync(item.Id);
@@ -110,4 +110,27 @@ internal class CatalogueService : ICatalogueService, IHistoryTracer<Item>
         .AddInfo(i => i.Manufacturer.Name, entity.Manufacturer.Name)
         .AddInfo(i => i.Article, entity.Article)
         .AddInfo(i => i.Color, entity.Color);
+
+    public bool Validate(Item entity, out IEnumerable<string> errorMessages)
+    {
+        List<string> errorMessagesList = new();
+        errorMessages = errorMessagesList;
+        bool haveError = false;
+        if (string.IsNullOrWhiteSpace(entity.Article))
+        {
+            errorMessagesList.Add(Messages.ArticleNotFilled);
+            haveError = true;
+        }
+        if (string.IsNullOrWhiteSpace(entity.Color))
+        {
+            errorMessagesList.Add(Messages.ColorNotFilled);
+            haveError = true;
+        }
+        if (entity.Manufacturer is null)
+        {
+            errorMessagesList.Add(Messages.ManufacturerNotFilled);
+            haveError = true;
+        }
+        return !haveError;
+    }
 }

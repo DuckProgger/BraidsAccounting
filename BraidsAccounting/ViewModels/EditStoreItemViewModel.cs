@@ -29,10 +29,10 @@ internal class EditStoreItemViewModel : ViewModelBase
     /// Выбранный производитель из списка.
     /// </summary>
 
-    public Manufacturer SelectedManufacturer 
-    { 
-        get => selectedManufacturer; 
-        set => selectedManufacturer = value;     
+    public Manufacturer SelectedManufacturer
+    {
+        get => selectedManufacturer;
+        set => selectedManufacturer = value;
     }
 
     public EditStoreItemViewModel(
@@ -57,15 +57,7 @@ internal class EditStoreItemViewModel : ViewModelBase
             StoreItem = item;
             SelectedManufacturer = Manufacturers.Find(m => m.Name.Equals(item.Item.Manufacturer.Name));
         }
-    }
-
-    private bool IsValidItem() =>
-      IsValidCount(StoreItem.Count) &&
-      !string.IsNullOrEmpty(SelectedManufacturer?.Name) &&
-      !string.IsNullOrEmpty(StoreItem?.Item?.Color) &&
-      !string.IsNullOrEmpty(StoreItem?.Item?.Article);
-
-    private static bool IsValidCount(int count) => count > 0;
+    }  
 
     #region Command SaveChanges - Команда сохранить изменения товара со склада
 
@@ -79,14 +71,10 @@ internal class EditStoreItemViewModel : ViewModelBase
     private async void OnSaveChangesCommandExecuted()
     {
         StoreItem.Item.Manufacturer = SelectedManufacturer;
-        if (!IsValidCount(StoreItem.Count))
+        if (!store.Validate(StoreItem, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.StoreItemInvalidCount);
-            return;
-        }
-        if (!IsValidItem())
-        {
-            Notifier.AddError(Messages.FieldsNotFilled);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
         }
         try

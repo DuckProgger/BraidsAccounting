@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +14,7 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "IStoreService" />.
 /// </summary>
-internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
+internal class StoreService : IStoreService
 {
     private readonly IRepository<StoreItem> store;
     private readonly ICatalogueService catalogue;
@@ -88,12 +89,12 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
         {
             if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
             StoreItem? existingStoreItem = await GetByItemAsync(wastedItem.Item.Id);
-            if (existingStoreItem is null) throw new Exception("Товар не найден в БД");
+            if (existingStoreItem is null) throw new Exception(Messages.StoreItemNotFound);
             var oldStoreItem = existingStoreItem with { };
             var newStoreItem = existingStoreItem with { };
             newStoreItem.Count -= wastedItem.Count;
             if(newStoreItem.Count < 0)
-                throw new Exception("Указанного количества товара нет на складе");
+                throw new Exception(Messages.StoreItemOutOfStock);
             await store.EditAsync(newStoreItem);
             await historyService.WriteUpdateOperationAsync(oldStoreItem.GetEtityData(this), newStoreItem.GetEtityData(this));
         }
@@ -132,4 +133,25 @@ internal class StoreService : IStoreService, IHistoryTracer<StoreItem>
         .AddInfo(s => s.Item.Article, entity.Item.Article)
         .AddInfo(s => s.Item.Color, entity.Item.Color)
         .AddInfo(s => s.Count, entity.Count);
+
+    public bool Validate(StoreItem entity, out IEnumerable<string> errorMessages)
+    {
+        List<string> errorMessagesList = new();
+        errorMessages = errorMessagesList;
+        bool haveError = false;
+        if (entity.Count <= 0)
+        {
+            errorMessagesList.Add(Messages.InvalidStoreItemCount);
+            haveError = true;
+        }
+        if (!catalogue.Validate(entity.Item, out IEnumerable<string> itemErrorMessages))
+        {
+            foreach (var itemErrorMessage in itemErrorMessages)
+                errorMessagesList.Add(itemErrorMessage);
+            haveError = true;
+        }
+        return !haveError;
+    }
+
+
 }

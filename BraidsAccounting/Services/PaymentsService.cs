@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.DAL.Entities;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
+using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;
 
-internal class PaymentsService : IPaymentsService, IHistoryTracer<Payment>
+internal class PaymentsService : IPaymentsService
 {
     private readonly IRepository<Payment> paymentsRepository;
     private readonly IWastedItemsService statisticsService;
@@ -69,4 +70,22 @@ internal class PaymentsService : IPaymentsService, IHistoryTracer<Payment>
         .AddInfo(p => p.Employee.Name, entity.Employee.Name)
         .AddInfo(p => p.Amount, entity.Amount)
         .AddInfo(p => p.DateTime, entity.DateTime);
+
+    public bool Validate(Payment entity, out IEnumerable<string> errorMessages)
+    {
+        List<string> errorMessagesList = new();
+        errorMessages = errorMessagesList;
+        bool haveError = false;
+        if (entity.Amount <= 0)
+        {
+            errorMessagesList.Add(Messages.AmountMustBePositive);
+            haveError = true;
+        }
+        if (entity.Employee is null)
+        {
+            errorMessagesList.Add(Messages.EmployeeNotSelected);
+            haveError = true;
+        }
+        return !haveError;
+    }
 }

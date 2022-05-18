@@ -5,6 +5,7 @@ using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Prism.Commands;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MDDialogHost = MaterialDesignThemes.Wpf.DialogHost;
@@ -36,11 +37,6 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
     /// </summary>
     public ObservableCollection<string> ManufacturerList { get; set; } = null!;
 
-    private static bool IsValidManufacturer(Manufacturer manufacturer) =>
-       !string.IsNullOrEmpty(manufacturer.Name) &&
-        manufacturer.Price >= 0;
-
-
     #region Command GetManufacturersList - Команда получить всех производителей
 
     private ICommand? _GetManufacturersListCommand;
@@ -65,9 +61,10 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
     private bool CanSaveCommandExecute() => true;
     private async void OnSaveCommandExecuted()
     {
-        if (!IsValidManufacturer(ManufacturerInForm))
+        if (!manufacturersService.Validate(ManufacturerInForm, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.FieldsNotFilled);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
         }
         try

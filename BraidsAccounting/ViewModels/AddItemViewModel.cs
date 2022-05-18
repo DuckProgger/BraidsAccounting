@@ -35,11 +35,6 @@ internal class AddItemViewModel : ViewModelBase
     /// </summary>
     public Manufacturer SelectedManufacturer { get; set; } = new();
 
-    private bool IsValidItem() =>
-         !string.IsNullOrEmpty(SelectedManufacturer?.Name)
-        && !string.IsNullOrEmpty(ItemInForm.Color)
-        && !string.IsNullOrEmpty(ItemInForm.Article);
-
     #region Command AddItem - Команда добавить новый материал в каталог
 
     private ICommand? _AddItemCommand;
@@ -49,14 +44,15 @@ internal class AddItemViewModel : ViewModelBase
     private bool CanAddItemCommandExecute() => true;
     private async void OnAddItemCommandExecuted()
     {
-        if (!IsValidItem())
+        ItemInForm.Manufacturer = SelectedManufacturer;
+        if (!catalogueService.Validate(ItemInForm, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.FieldsNotFilled);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
         }
         try
         {
-            ItemInForm.Manufacturer = SelectedManufacturer;
             await catalogueService.AddAsync(ItemInForm);
             viewService.AddParameter(ParameterNames.AddItemResult, true);
             viewService.GoBack();

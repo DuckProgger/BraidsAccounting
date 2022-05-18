@@ -85,7 +85,7 @@ internal class ServiceViewModel : ViewModelBase
         }
         WastedItems.Add(formItem);
     }
-    private void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
+    private static void CheckRunningOutItems(IEnumerable<FormItem> wastedItems)
     {
         FormItem[]? runningOutItems = wastedItems.Where(i => i.MaxCount - i.Count <= stockWarningThreshold).ToArray();
         if (runningOutItems.Length > 0)
@@ -102,12 +102,6 @@ internal class ServiceViewModel : ViewModelBase
         }
     }
 
-    private static bool IsValidEmployee(Employee employee) => employee is not null;
-
-    private static bool IsValidProfit(decimal profit) => profit >= 0;
-
-    private static bool IsValidWastedItemCount(decimal count) => count > 0;
-
     #region Command CreateService - Добавление сервиса
 
     private DelegateCommand? _CreateServiceCommand;
@@ -117,10 +111,7 @@ internal class ServiceViewModel : ViewModelBase
     private bool CanCreateServiceCommandExecute() => true;
     private async void OnCreateServiceCommandExecuted()
     {
-        MDDialogHost.CloseDialogCommand.Execute(null, null);
-        Service.WastedItems = new();
-        foreach (FormItem? item in WastedItems)
-            Service.WastedItems.Add(item);
+        MDDialogHost.CloseDialogCommand.Execute(null, null);        
         try
         {
             await serviceProvider.AddAsync(Service);
@@ -153,6 +144,7 @@ internal class ServiceViewModel : ViewModelBase
             if (item is not null)
             {
                 AddWastedItemToService(item);
+                Notifier.Remove(Messages.WastedItemNotSelected);
             }
         });
 
@@ -167,25 +159,18 @@ internal class ServiceViewModel : ViewModelBase
     private bool CanOpenDialogCommandExecute() => true;
     private void OnOpenDialogCommandExecuted()
     {
-        if (!IsValidProfit(Service.Profit))
+        Service.WastedItems = new();
+        foreach (FormItem? item in WastedItems)
+            Service.WastedItems.Add(item);
+        if (!serviceProvider.Validate(Service, out IEnumerable<string> errorMessages))
         {
-            Notifier.AddError(Messages.InvalidServiceProfit);
+            foreach (var errorMessage in errorMessages)
+                Notifier.AddError(errorMessage);
             return;
-        }
-        if (!IsValidEmployee(Service.Employee))
-        {
-            Notifier.AddError(Messages.EmployeeNotSelected);
-            return;
-        }
+        }        
         Notifier.Remove(Messages.WastedItemNotSelected);
         if (WastedItems.Count == 0)
-            Notifier.AddWarning(Messages.WastedItemNotSelected);
-        foreach (var wastedItem in WastedItems)
-            if (!IsValidWastedItemCount(wastedItem.Count))
-            {
-                Notifier.AddError(Messages.WastedItemInvalidCount);
-                return;
-            }
+            Notifier.AddWarning(Messages.WastedItemNotSelected);       
         MDDialogHost.OpenDialogCommand.Execute(null, null);
     }
 
