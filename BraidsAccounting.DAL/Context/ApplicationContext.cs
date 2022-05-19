@@ -16,6 +16,7 @@ public class ApplicationContext : DbContext
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<Payment> Payments { get; set; } = null!;
     public DbSet<History> History { get; set; } = null!;
+    public DbSet<DatabaseVersion> DatabaseVersions { get; set; } = null!;
 
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
@@ -48,6 +49,7 @@ public class ApplicationContext : DbContext
             .Entity<Service>(ServiceConfigure)
             .Entity<Payment>(PaymentConfigure)
             .Entity<History>(HistoryConfigure)
+            .Entity<DatabaseVersion>(DatabaseVersionConfigure)
             ;
     }
 
@@ -69,6 +71,13 @@ public class ApplicationContext : DbContext
     {
         builder
           .Property(x => x.TimeStamp)
+          .HasDefaultValueSql("GETDATE()");
+    }
+
+    private void DatabaseVersionConfigure(EntityTypeBuilder<DatabaseVersion> builder)
+    {
+        builder
+          .Property(x => x.DateTime)
           .HasDefaultValueSql("GETDATE()");
     }
 }   

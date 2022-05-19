@@ -1,6 +1,7 @@
 ﻿using BraidsAccounting.Data;
 using BraidsAccounting.Modules;
 using BraidsAccounting.Services;
+using BraidsAccounting.Services.Interfaces;
 using BraidsAccounting.ViewModels;
 using BraidsAccounting.Views;
 using BraidsAccounting.Views.Windows;
@@ -22,8 +23,10 @@ namespace BraidsAccounting
                 .AddDatabase()
                 .AddServices()
                 ;
+            UpdateDatabase();
         }
         protected override Window CreateShell() => Container.Resolve<MainWindow>();
+        
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
@@ -39,6 +42,12 @@ namespace BraidsAccounting
         {
             base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<PopupWindow, PopupViewModel>();
+        }
+
+        private static void UpdateDatabase()
+        {
+            var migrationService = ServiceLocator.GetService<IMigrationExecutorService>();
+            migrationService.UpdateDatabase();
         }
     }
 }

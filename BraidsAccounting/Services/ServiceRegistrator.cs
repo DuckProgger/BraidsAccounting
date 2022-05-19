@@ -23,5 +23,6 @@ internal static class ServiceRegistrator
         .Register<IEmployeesService, EmployeesService>()
         .Register<IPaymentsService, PaymentsService>()
         .RegisterSingleton<IHistoryService, HistoryService>()
+        .Register<IMigrationExecutorService, MigrationExecutorService>()
        ;
 }
