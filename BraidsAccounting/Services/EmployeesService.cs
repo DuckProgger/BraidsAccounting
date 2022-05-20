@@ -1,10 +1,12 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services;
@@ -22,9 +24,14 @@ internal class EmployeesService : IEmployeesService
 
     public async Task AddAsync(Employee employee)
     {
+        // Контроль дубликата
+        if (await Contains(employee)) throw new DublicateException(Messages.DublicateEmployee);
         await employees.CreateAsync(employee);
         await historyService.WriteCreateOperationAsync(employee.GetEtityData(this));
     }
+
+    public async Task<bool> Contains(Employee item) =>
+        await employees.Items.AnyAsync(i => i.Name == item.Name);
 
     public async Task EditAsync(Employee employee)
     {
@@ -50,7 +57,7 @@ internal class EmployeesService : IEmployeesService
         {
             errorMessagesList.Add(Messages.EmployeeNameNotFilled);
             haveError = true;
-        }       
+        }
         return !haveError;
     }
 

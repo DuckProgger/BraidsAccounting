@@ -12,6 +12,7 @@ internal static class Messages
     public const string ArticleNotFilled = "Не заполнена модель.";
     public const string ColorNotFilled = "Не заполнен цвет.";
     public const string ManufacturerNotFilled = "Не заполнен производитель.";
+    public const string DublicateItem = "Материал уже есть в каталоге.";
     #endregion
 
     #region StoreItem
@@ -30,6 +31,7 @@ internal static class Messages
     public const string EmployeeNotSelected = "Не выбран сотрудник.";
     public const string EmployeeNameNotFilled = "Не заполнено имя.";
     public const string EmployeeNotFound = "Сотрудник не найден.";
+    public const string DublicateEmployee = "Сотрудник уже есть в каталоге.";
     #endregion
 
     #region Manufacturer
@@ -39,8 +41,8 @@ internal static class Messages
     public const string ManufacturerUsedInCatalogue = "Производитель не может быть удалён, так как используется материалом в каталоге.";
     public const string RemoveManufacturerSuccess = "Производитель успешно удалён.";
     public const string InvalidManufacturerPrice = "Стоимость не может быть отрицательной.";
-    public const string DublicateManufacturer = "Материал уже есть в каталоге.";   
     public const string ManufacturerNameNotFilled = "Не заполнено название.";
+    public const string DublicateManufacturer = "Производитель уже есть в каталоге.";
     #endregion
 
     #region Payment

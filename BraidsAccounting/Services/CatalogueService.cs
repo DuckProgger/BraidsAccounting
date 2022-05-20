@@ -63,7 +63,7 @@ internal class CatalogueService : ICatalogueService
         TrimSpaces(item);
         item.Manufacturer = manufacturer;
         // Контроль дубликата
-        if (await Contains(item)) throw new DublicateException(Messages.DublicateManufacturer);
+        if (await Contains(item)) throw new DublicateException(Messages.DublicateItem);
         var newItem = await catalogue.CreateAsync(item);
         await historyService.WriteCreateOperationAsync(item.GetEtityData(this));
         return newItem;

@@ -1,4 +1,5 @@
 ﻿using BraidsAccounting.DAL.Entities;
+using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
 using BraidsAccounting.Infrastructure.Constants;
@@ -38,8 +39,16 @@ internal class ManufacturersService : IManufacturersService
     public async Task AddAsync(Manufacturer? manufacturer)
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
+        // Контроль дубликата
+        if (await Contains(manufacturer)) throw new DublicateException(Messages.DublicateManufacturer);
         await manufacturers.CreateAsync(manufacturer);
         await historyService.WriteCreateOperationAsync(manufacturer.GetEtityData(this));
+    }
+
+    public async Task<bool> Contains(Manufacturer item)
+    {
+        var array = await manufacturers.Items.ToArrayAsync();
+        return array.Any(i => i.Equals(item));
     }
 
     public async Task EditAsync(Manufacturer? manufacturer)
@@ -60,7 +69,9 @@ internal class ManufacturersService : IManufacturersService
         await historyService.WriteDeleteOperationAsync(existingManufacturer.GetEtityData(this));
     }
     IEntityDataBuilder<Manufacturer> IHistoryTracer<Manufacturer>.ConfigureEntityData(IEntityDataBuilder<Manufacturer> builder, Manufacturer entity) =>
-        builder.AddInfo(e => e.Name, entity.Name);
+        builder
+        .AddInfo(e => e.Name, entity.Name)
+        .AddInfo(e => e.Price, entity.Price);
 
     public bool Validate(Manufacturer entity, out IEnumerable<string> errorMessages)
     {

@@ -23,12 +23,12 @@ public record Manufacturer : Entity, IEquatable<Manufacturer>
     public decimal Price { get; set; }
     public List<Item> Items { get; set; } = null!;
 
-    //public virtual bool Equals(Manufacturer? other)
-    //{
-    //    //if (other is null || other.Name is null) throw new ArgumentNullException(nameof(other));
-    //    if (other is null || other.Name is null || Name is null) return false;
-    //    return Name.ToUpper() == other.Name.ToUpper();
-    //}
+    public virtual bool Equals(Manufacturer? other)
+    {
+        //if (other is null || other.Name is null) throw new ArgumentNullException(nameof(other));
+        if (other is null || other.Name is null || Name is null) return false;
+        return Name.ToUpper() == other.Name.ToUpper();
+    }
 
     //public override bool Equals(object? obj) => Equals(obj as Manufacturer);
 }
