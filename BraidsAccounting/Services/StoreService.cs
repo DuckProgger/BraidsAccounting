@@ -36,7 +36,7 @@ internal class StoreService : IStoreService
         if (storeItem.Count <= 0) throw new ArgumentOutOfRangeException(nameof(storeItem));
 
         // Найти материал в каталоге
-        var existingItem = catalogue.Get(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
+        var existingItem = await catalogue.GetAsync(storeItem.Item.Manufacturer.Name, storeItem.Item.Article, storeItem.Item.Color);
         if (existingItem is null)
             existingItem = await catalogue.AddAsync(storeItem.Item);
         storeItem.Item = existingItem;

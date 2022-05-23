@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services.Interfaces;
 
-internal interface IHistoryService
+public interface IHistoryService
 {
     Task<List<History>> GetAllAsync();
     Task<List<History>> GetRangeAsync(int count);

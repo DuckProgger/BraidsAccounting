@@ -15,7 +15,7 @@ namespace BraidsAccounting.Services;
 /// <summary>
 /// Реализация сервиса <see cref = "ICatalogueService" />.
 /// </summary>
-internal class CatalogueService : ICatalogueService
+public class CatalogueService : ICatalogueService
 {
     private readonly IRepository<Item> catalogue;
     private readonly IHistoryService historyService;
@@ -26,21 +26,16 @@ internal class CatalogueService : ICatalogueService
         this.historyService = historyService;
     }
 
-    public Item? Get(string manufacturer, string article, string color) =>
-      catalogue.Items.FirstOrDefault(i =>
-      i.Manufacturer.Name == manufacturer
-      && i.Article == article
-      && i.Color == color);
     public bool ContainsManufacturer(int id) =>
         catalogue.Items.Any(i => i.Manufacturer.Id == id);
 
     public async Task<List<Item>> GetAllAsync(bool onlyInStock)
     {
         if (onlyInStock) return await GetOnlyInStockCatalogue();
-        return await GetCatalogue();
+        return await GetCatalogueAsync();
     }
 
-    private async Task<List<Item>> GetCatalogue() =>
+    private async Task<List<Item>> GetCatalogueAsync() =>
       await catalogue.Items.ToListAsync();
 
     private async Task<List<Item>> GetOnlyInStockCatalogue() =>
@@ -50,10 +45,10 @@ internal class CatalogueService : ICatalogueService
             .ToListAsync();
 
     public async Task<Item?> GetAsync(string manufacturer, string article, string color) =>
-           await catalogue.Items.FirstOrDefaultAsync(i =>
-            i.Manufacturer.Name == manufacturer
-            && i.Article == article
-            && i.Color == color);
+        await catalogue.Items.FirstOrDefaultAsync(i =>
+         i.Manufacturer.Name == manufacturer
+         && i.Article == article
+         && i.Color == color).ConfigureAwait(false);
 
     public async Task<Item> AddAsync(Item item)
     {

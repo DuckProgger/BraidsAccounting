@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BraidsAccounting.Services
 {
-    internal class HistoryService : IHistoryService
+    public class HistoryService : IHistoryService
     {
         private readonly IRepository<History> historyRepository;
 
