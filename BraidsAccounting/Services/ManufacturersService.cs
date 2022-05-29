@@ -40,7 +40,7 @@ internal class ManufacturersService : IManufacturersService
     {
         if (manufacturer is null) throw new ArgumentNullException(nameof(manufacturer));
         // Контроль дубликата
-        if (await Contains(manufacturer)) throw new DublicateException(Messages.DublicateManufacturer);
+        if (await Contains(manufacturer)) throw new DublicateException(Resources.DublicateManufacturer);
         await manufacturers.CreateAsync(manufacturer);
         await historyService.WriteCreateOperationAsync(manufacturer.GetEtityData(this));
     }
@@ -63,7 +63,7 @@ internal class ManufacturersService : IManufacturersService
     {
         var catalogue = ServiceLocator.GetService<ICatalogueService>();
         if (catalogue.ContainsManufacturer(id))
-            throw new ArgumentException(Messages.ManufacturerUsedInCatalogue, nameof(id));
+            throw new ArgumentException(Resources.ManufacturerUsedInCatalogue, nameof(id));
         var existingManufacturer = await manufacturers.GetAsync(id);
         await manufacturers.RemoveAsync(id);
         await historyService.WriteDeleteOperationAsync(existingManufacturer.GetEtityData(this));
@@ -80,12 +80,12 @@ internal class ManufacturersService : IManufacturersService
         bool haveError = false;
         if (string.IsNullOrWhiteSpace(entity.Name))
         {
-            errorMessagesList.Add(Messages.ManufacturerNameNotFilled);
+            errorMessagesList.Add(Resources.ManufacturerNameNotFilled);
             haveError = true;
         }
         if (entity.Price < 0)
         {
-            errorMessagesList.Add(Messages.InvalidManufacturerPrice);
+            errorMessagesList.Add(Resources.InvalidManufacturerPrice);
             haveError = true;
         }
         return !haveError;

@@ -74,12 +74,12 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
                 case 0:
                     await manufacturersService.AddAsync(ManufacturerInForm);
                     Collection.Add(ManufacturerInForm);
-                    Notifier.AddInfo(Messages.AddManufacturerSuccess);
+                    Notifier.AddInfo(Resources.AddManufacturerSuccess);
                     break;
                 default:
 
                     await manufacturersService.EditAsync(ManufacturerInForm);
-                    Notifier.AddInfo(Messages.EditManufacturerSuccess);
+                    Notifier.AddInfo(Resources.EditManufacturerSuccess);
                     break;
             }
             GetManufacturersListCommand.Execute(null);
@@ -106,7 +106,7 @@ internal class ManufacturersViewModel : ViewModelBase<Manufacturer>
         {
             await manufacturersService.RemoveAsync(SelectedManufacturer.Id);
             Collection.Remove(SelectedManufacturer);
-            Notifier.AddInfo(Messages.RemoveManufacturerSuccess);
+            Notifier.AddInfo(Resources.RemoveManufacturerSuccess);
             MDDialogHost.CloseDialogCommand.Execute(null, null);
         }
         catch (ArgumentException ex)

@@ -25,7 +25,7 @@ internal class EmployeesService : IEmployeesService
     public async Task AddAsync(Employee employee)
     {
         // Контроль дубликата
-        if (await Contains(employee)) throw new DublicateException(Messages.DublicateEmployee);
+        if (await Contains(employee)) throw new DublicateException(Resources.DublicateEmployee);
         await employees.CreateAsync(employee);
         await historyService.WriteCreateOperationAsync(employee.GetEtityData(this));
     }
@@ -55,7 +55,7 @@ internal class EmployeesService : IEmployeesService
         bool haveError = false;
         if (string.IsNullOrWhiteSpace(entity.Name))
         {
-            errorMessagesList.Add(Messages.EmployeeNameNotFilled);
+            errorMessagesList.Add(Resources.EmployeeNameNotFilled);
             haveError = true;
         }
         return !haveError;

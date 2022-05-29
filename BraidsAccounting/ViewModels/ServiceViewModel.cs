@@ -74,13 +74,13 @@ internal class ServiceViewModel : ViewModelBase
     {
         if (WastedItems.Any(wi => wi.Equals(storeItem)))
         {
-            Notifier.AddError(Messages.SelectedItemAlreadyExists);
+            Notifier.AddError(Resources.SelectedItemAlreadyExists);
             return;
         }
         FormItem formItem = storeItem.Item;
         if (formItem.MaxCount == 0)
         {
-            Notifier.AddError(Messages.SelectedItemOutOfStock);
+            Notifier.AddError(Resources.SelectedItemOutOfStock);
             return;
         }
         WastedItems.Add(formItem);
@@ -119,7 +119,7 @@ internal class ServiceViewModel : ViewModelBase
             Service = new();
             WastedItems = new();
             SelectedEmployee = new();
-            Notifier.AddInfo(Messages.AddServiceSuccess);
+            Notifier.AddInfo(Resources.AddServiceSuccess);
         }
         catch (Exception ex)
         {
@@ -144,7 +144,7 @@ internal class ServiceViewModel : ViewModelBase
             if (item is not null)
             {
                 AddWastedItemToService(item);
-                Notifier.Remove(Messages.WastedItemNotSelected);
+                Notifier.Remove(Resources.WastedItemNotSelected);
             }
         });
 
@@ -168,9 +168,9 @@ internal class ServiceViewModel : ViewModelBase
                 Notifier.AddError(errorMessage);
             return;
         }        
-        Notifier.Remove(Messages.WastedItemNotSelected);
+        Notifier.Remove(Resources.WastedItemNotSelected);
         if (WastedItems.Count == 0)
-            Notifier.AddWarning(Messages.WastedItemNotSelected);       
+            Notifier.AddWarning(Resources.WastedItemNotSelected);       
         MDDialogHost.OpenDialogCommand.Execute(null, null);
     }
 

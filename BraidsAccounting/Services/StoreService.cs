@@ -89,12 +89,12 @@ internal class StoreService : IStoreService
         {
             if (wastedItem == null) throw new ArgumentNullException(nameof(wastedItem));
             StoreItem? existingStoreItem = await GetByItemAsync(wastedItem.Item.Id);
-            if (existingStoreItem is null) throw new Exception(Messages.StoreItemNotFound);
+            if (existingStoreItem is null) throw new Exception(Resources.StoreItemNotFound);
             var oldStoreItem = existingStoreItem with { };
             var newStoreItem = existingStoreItem with { };
             newStoreItem.Count -= wastedItem.Count;
             if(newStoreItem.Count < 0)
-                throw new Exception(Messages.StoreItemOutOfStock);
+                throw new Exception(Resources.StoreItemOutOfStock);
             await store.EditAsync(newStoreItem);
             await historyService.WriteUpdateOperationAsync(oldStoreItem.GetEtityData(this), newStoreItem.GetEtityData(this));
         }
@@ -141,7 +141,7 @@ internal class StoreService : IStoreService
         bool haveError = false;
         if (entity.Count <= 0)
         {
-            errorMessagesList.Add(Messages.InvalidStoreItemCount);
+            errorMessagesList.Add(Resources.InvalidStoreItemCount);
             haveError = true;
         }
         if (!catalogue.Validate(entity.Item, out IEnumerable<string> itemErrorMessages))

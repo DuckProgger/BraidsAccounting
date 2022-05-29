@@ -63,7 +63,7 @@ internal class PaymentsViewModel : ViewModelBase
         NewPayment = new();
         Amount = 0;
         GetDebtCommand.Execute(null);
-        Notifier.AddInfo(Messages.AddPaymentSuccess);
+        Notifier.AddInfo(Resources.AddPaymentSuccess);
         MDDialogHost.CloseDialogCommand.Execute(null, null);
     }
 

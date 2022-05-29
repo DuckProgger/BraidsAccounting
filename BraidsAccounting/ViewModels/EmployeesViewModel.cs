@@ -95,12 +95,12 @@ internal class EmployeesViewModel : ViewModelBase<Employee>
                 case 0:
                     await employeesService.AddAsync(EmployeeInForm);
                     Collection.Add(EmployeeInForm);
-                    Notifier.AddInfo(Messages.AddEmployeeSuccess);
+                    Notifier.AddInfo(Resources.AddEmployeeSuccess);
                     break;
                 default:
 
                     await employeesService.EditAsync(EmployeeInForm);
-                    Notifier.AddInfo(Messages.EditEmployeeSuccess);
+                    Notifier.AddInfo(Resources.EditEmployeeSuccess);
                     break;
             }
             GetEmployeesCommand.Execute(null);

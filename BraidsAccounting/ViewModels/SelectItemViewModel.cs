@@ -35,7 +35,7 @@ internal class SelectItemViewModel : ViewModelBase
         SelectedItem = item;
         if (SelectedItem is null)
         {
-            Notifier.AddError(Messages.ItemNotSelected);
+            Notifier.AddError(Resources.ItemNotSelected);
             return;
         }
         viewService.AddParameter(ParameterNames.SelectedItem, SelectedItem);

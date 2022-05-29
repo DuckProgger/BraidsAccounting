@@ -20,6 +20,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Page Remove="Resources\Messages.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="Resources\Icon.ico" />
 	</ItemGroup>
 
@@ -57,6 +61,9 @@
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\History.png" />
+	  <Resource Include="Resources\Messages.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Resource>
 	  <Resource Include="Resources\Service.png" />
 	  <Resource Include="Resources\Statistics.png" />
 	</ItemGroup>

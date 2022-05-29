@@ -60,13 +60,13 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         if (parameters.ContainsKey(ParameterNames.AddItemResult))
         {
             result = (bool)parameters[ParameterNames.AddItemResult];
-            if (result) Notifier.AddInfo(Messages.AddStoreItemSuccess);
+            if (result) Notifier.AddInfo(Resources.AddStoreItemSuccess);
             return;
         }
         if (parameters.ContainsKey(ParameterNames.EditItemResult))
         {
             result = (bool)parameters[ParameterNames.EditItemResult];
-            if (result) Notifier.AddInfo(Messages.EditStoreItemSuccess);
+            if (result) Notifier.AddInfo(Resources.EditStoreItemSuccess);
             return;
         }
     }
@@ -83,7 +83,7 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
         await store.RemoveAsync(SelectedStoreItem.Id);
         Collection.Remove(SelectedStoreItem);
         MDDialogHost.CloseDialogCommand.Execute(null, null);
-        Notifier.AddInfo(Messages.RemoveStoreItemSuccess);
+        Notifier.AddInfo(Resources.RemoveStoreItemSuccess);
     }
 
     #endregion
@@ -99,12 +99,12 @@ internal class StoreViewModel : ViewModelBase<StoreItem>
 
     private async Task LoadData()
     {
-        Notifier.AddWarning(Messages.LoadingStoreItems);
+        Notifier.AddWarning(Resources.LoadingStoreItems);
         // Нужно обновить контекст, чтобы получать обновлённые данные
         store = ServiceLocator.GetService<IStoreService>();
         Collection = new(await store.GetItemsAsync());
         //SelectedStoreItem = Collection.FirstOrDefault();
-        Notifier.Remove(Messages.LoadingStoreItems);
+        Notifier.Remove(Resources.LoadingStoreItems);
         TotalItems = Collection.Sum(i => i.Count);
     }
 

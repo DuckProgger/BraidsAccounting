@@ -44,13 +44,13 @@ internal class CatalogueViewModel : ViewModelBase<Item>
         if (parameters.ContainsKey(ParameterNames.AddItemResult))
         {
             result = (bool)parameters[ParameterNames.AddItemResult];
-            if (result) Notifier.AddInfo(Messages.AddItemSuccess);
+            if (result) Notifier.AddInfo(Resources.AddItemSuccess);
             return;
         }
         if (parameters.ContainsKey(ParameterNames.EditItemResult))
         {
             result = (bool)parameters[ParameterNames.EditItemResult];
-            if (result) Notifier.AddInfo(Messages.EditItemSuccess);
+            if (result) Notifier.AddInfo(Resources.EditItemSuccess);
             return;
         }
     }    
@@ -64,11 +64,11 @@ internal class CatalogueViewModel : ViewModelBase<Item>
     private bool CanLoadDataCommandExecute() => true;
     private async void OnLoadDataCommandExecuted()
     {
-        Notifier.AddInfo(Messages.LoadingItems);
+        Notifier.AddInfo(Resources.LoadingItems);
         // Нужно обновить контекст, чтобы получать обновлённые данные
         catalogueService = ServiceLocator.GetService<ICatalogueService>();
         Collection = new(await catalogueService.GetAllAsync(OnlyInStock));
-        Notifier.Remove(Messages.LoadingItems);
+        Notifier.Remove(Resources.LoadingItems);
     }
 
     #endregion
@@ -108,7 +108,7 @@ internal class CatalogueViewModel : ViewModelBase<Item>
         {
             await catalogueService.RemoveAsync(SelectedItem);
             Collection.Remove(SelectedItem);
-            Notifier.AddInfo(Messages.RemoveItemSuccess);
+            Notifier.AddInfo(Resources.RemoveItemSuccess);
         }
         catch (ArgumentException ex)
         {

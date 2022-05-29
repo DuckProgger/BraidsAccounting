@@ -1,0 +1,57 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <!--Item-->
+    <system:String x:Key="LoadingItems">Загружается каталог материалов...</system:String>
+    <system:String x:Key="RemoveItemSuccess">Материал успешно удалён из каталога.</system:String>
+    <system:String x:Key="AddItemSuccess">Материал успешно добавлен в каталог.</system:String>
+    <system:String x:Key="EditItemSuccess">Материал успешно изменён.</system:String>
+    <system:String x:Key="ItemUsedInStore">Материал не может быть удалён, так как используется на складе.</system:String>
+    <system:String x:Key="ItemUsedInService">Материал не может быть удалён, так как используется в услуге</system:String>
+    <system:String x:Key="ArticleNotFilled">Не заполнена модель.</system:String>
+    <system:String x:Key="ColorNotFilled">Не заполнен цвет.</system:String>
+    <system:String x:Key="ManufacturerNotFilled">Не заполнен производитель.</system:String>
+    <system:String x:Key="DublicateItem">Материал уже есть в каталоге.</system:String>
+
+    <!--StoreItem-->
+    <system:String x:Key="LoadingStoreItems">Загружается список материалов на складе...</system:String>
+    <system:String x:Key="RemoveStoreItemSuccess">Материал успешно удалён со склада.</system:String>
+    <system:String x:Key="AddStoreItemSuccess">Материал успешно добавлен на склад.</system:String>
+    <system:String x:Key="EditStoreItemSuccess">Количество материала на складе успешно изменено.</system:String>
+    <system:String x:Key="InvalidStoreItemCount">Количество материала должно быть больше нуля.</system:String>
+    <system:String x:Key="StoreItemNotFound">Материал не найден.</system:String>
+    <system:String x:Key="StoreItemOutOfStock">Указанного количества материала нет на складе.</system:String>
+
+    <!--Employee-->
+    <system:String x:Key="AddEmployeeSuccess">Новый сотрудник успешно добавлен.</system:String>
+    <system:String x:Key="EditEmployeeSuccess">Сотрудник успешно изменён.</system:String>
+    <system:String x:Key="EmployeeNotSelected">Не выбран сотрудник.</system:String>
+    <system:String x:Key="EmployeeNameNotFilled">Не заполнено имя.</system:String>
+    <system:String x:Key="EmployeeNotFound">Сотрудник не найден.</system:String>
+    <system:String x:Key="DublicateEmployee">Сотрудник уже есть в каталоге.</system:String>
+
+    <!--Manufacturer-->
+    <system:String x:Key="AddManufacturerSuccess">Новый производитель успешно добавлен.</system:String>
+    <system:String x:Key="EditManufacturerSuccess">Производитель успешно изменён.</system:String>
+    <system:String x:Key="ManufacturerNotFound">Выбранного производителя нет в каталоге.</system:String>
+    <system:String x:Key="ManufacturerUsedInCatalogue">Производитель не может быть удалён, так как используется материалом в каталоге.</system:String>
+    <system:String x:Key="RemoveManufacturerSuccess">Производитель успешно удалён.</system:String>
+    <system:String x:Key="InvalidManufacturerPrice">Стоимость не может быть отрицательной.</system:String>
+    <system:String x:Key="ManufacturerNameNotFilled">Не заполнено название.</system:String>
+    <system:String x:Key="DublicateManufacturer">Производитель уже есть в каталоге.</system:String>
+
+    <!--Payment-->
+    <system:String x:Key="AddPaymentSuccess">Сумма успешно зачислена.</system:String>
+    <system:String x:Key="AmountMustBePositive">Сумма должна быть положительной</system:String>
+
+    <!--Service-->
+    <system:String x:Key="SelectedItemAlreadyExists">Выбранный материал уже есть в списке.</system:String>
+    <system:String x:Key="SelectedItemOutOfStock">Выбранный материал отсутсвует на складе.</system:String>
+    <system:String x:Key="AddServiceSuccess">Услуга успешно добавлена.</system:String>
+    <system:String x:Key="WastedItemNotSelected">НЕ ВЫБРАН НИ ОДИН МАТЕРИАЛ!</system:String>
+    <system:String x:Key="WastedItemInvalidCount">Количество израходованного материала должно быть больше нуля.</system:String>
+    <system:String x:Key="InvalidServiceProfit">Сумма прибыли должна быть положительной.</system:String>
+
+    <!--SelectItem-->
+    <system:String x:Key="ItemNotSelected">Не выбран ни один товар.</system:String>
+</ResourceDictionary>

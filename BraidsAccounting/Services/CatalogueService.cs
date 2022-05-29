@@ -2,7 +2,6 @@
 using BraidsAccounting.DAL.Exceptions;
 using BraidsAccounting.DAL.Repositories;
 using BraidsAccounting.Infrastructure;
-using BraidsAccounting.Infrastructure.Constants;
 using BraidsAccounting.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -54,11 +53,11 @@ public class CatalogueService : ICatalogueService
     {
         IManufacturersService? manufacturersService = ServiceLocator.GetService<IManufacturersService>();
         Manufacturer? manufacturer = await manufacturersService.GetAsync(item.Manufacturer.Name);
-        if (manufacturer == null) throw new ArgumentNullException(nameof(manufacturer), Messages.ManufacturerNotFound);
+        if (manufacturer == null) throw new ArgumentNullException(nameof(manufacturer), Resources.ManufacturerNotFound);
         TrimSpaces(item);
         item.Manufacturer = manufacturer;
         // Контроль дубликата
-        if (await Contains(item)) throw new DublicateException(Messages.DublicateItem);
+        if (await Contains(item)) throw new DublicateException(Resources.DublicateItem);
         var newItem = await catalogue.CreateAsync(item);
         await historyService.WriteCreateOperationAsync(item.GetEtityData(this));
         return newItem;
@@ -85,10 +84,10 @@ public class CatalogueService : ICatalogueService
         // использование материала в качестве израсходованного
         IStoreService? storeService = ServiceLocator.GetService<IStoreService>();
         if (await storeService.ContainsItemAsync(item.Id))
-            throw new ArgumentException(Messages.ItemUsedInStore);
+            throw new ArgumentException(Resources.ItemUsedInStore);
         IWastedItemsService? wastedItemsService = ServiceLocator.GetService<IWastedItemsService>();
         if (await wastedItemsService.ContainsItemAsync(item.Id))
-            throw new ArgumentException(Messages.ItemUsedInService);
+            throw new ArgumentException(Resources.ItemUsedInService);
         // Удалить материал из каталога
         await catalogue.RemoveAsync(item.Id);
         await historyService.WriteDeleteOperationAsync(item.GetEtityData(this));
@@ -113,17 +112,17 @@ public class CatalogueService : ICatalogueService
         bool haveError = false;
         if (string.IsNullOrWhiteSpace(entity.Article))
         {
-            errorMessagesList.Add(Messages.ArticleNotFilled);
+            errorMessagesList.Add(Resources.ArticleNotFilled);
             haveError = true;
         }
         if (string.IsNullOrWhiteSpace(entity.Color))
         {
-            errorMessagesList.Add(Messages.ColorNotFilled);
+            errorMessagesList.Add(Resources.ColorNotFilled);
             haveError = true;
         }
         if (entity.Manufacturer is null)
         {
-            errorMessagesList.Add(Messages.ManufacturerNotFilled);
+            errorMessagesList.Add(Resources.ManufacturerNotFilled);
             haveError = true;
         }
         return !haveError;

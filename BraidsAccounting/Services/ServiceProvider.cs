@@ -39,7 +39,7 @@ internal class ServiceProvider : Interfaces.IServiceProvider
     {
         // Найти ID сотрудника в БД
         service.Employee = await employeesService.GetAsync(service.Employee.Id)
-            ?? throw new ArgumentException(Messages.EmployeeNotFound, nameof(service.Employee));
+            ?? throw new ArgumentException(Resources.EmployeeNotFound, nameof(service.Employee));
 
         // Добавить услугу в БД
         CalculateNetProfit(service);
@@ -163,19 +163,19 @@ internal class ServiceProvider : Interfaces.IServiceProvider
         bool haveError = false;
         if (entity.Employee is null || string.IsNullOrWhiteSpace(entity.Employee.Name))
         {
-            errorMessagesList.Add(Messages.EmployeeNotSelected);
+            errorMessagesList.Add(Resources.EmployeeNotSelected);
             haveError = true;
         }
         if (entity.Profit < 0)
         {
-            errorMessagesList.Add(Messages.InvalidServiceProfit);
+            errorMessagesList.Add(Resources.InvalidServiceProfit);
             haveError = true;
         }
         if (entity.WastedItems is not null && entity.WastedItems.Count > 0)
             foreach (var wastedItem in entity.WastedItems)
                 if (wastedItem.Count == 0)
                 {
-                    errorMessagesList.Add(Messages.WastedItemInvalidCount);
+                    errorMessagesList.Add(Resources.WastedItemInvalidCount);
                     haveError = true;
                     break;
                 }

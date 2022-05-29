@@ -78,12 +78,12 @@ internal class PaymentsService : IPaymentsService
         bool haveError = false;
         if (entity.Amount <= 0)
         {
-            errorMessagesList.Add(Messages.AmountMustBePositive);
+            errorMessagesList.Add(Resources.AmountMustBePositive);
             haveError = true;
         }
         if (entity.Employee is null)
         {
-            errorMessagesList.Add(Messages.EmployeeNotSelected);
+            errorMessagesList.Add(Resources.EmployeeNotSelected);
             haveError = true;
         }
         return !haveError;
