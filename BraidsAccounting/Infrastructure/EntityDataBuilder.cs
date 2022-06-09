@@ -7,12 +7,12 @@ using System.Reflection;
 namespace BraidsAccounting.Infrastructure;
 internal class EntityDataBuilder<TEntity> : IEntityDataBuilder<TEntity> where TEntity : IEntity
 {
-    private readonly EntityData propertyDatas;
+    private readonly EntityData entityData;
 
     public EntityDataBuilder()
     {
         string entityLocalizedName = DescriptionService.Get<TEntity>();
-        propertyDatas = new(entityLocalizedName);
+        entityData = new(entityLocalizedName);
     }
 
     public IEntityDataBuilder<TEntity> AddInfo<TProperty>(Expression<Func<TEntity, TProperty>> expression, TProperty value)
@@ -33,18 +33,18 @@ internal class EntityDataBuilder<TEntity> : IEntityDataBuilder<TEntity> where TE
           : $"{DescriptionService.Get(propertyOwnerType)}_{DescriptionService.Get(propertyOwnerType, propertyName)}";
 
         // Заполнить данные о свойстве
-        propertyDatas.Add(propertyLocalizedName, value);
+        entityData.Add(propertyLocalizedName, value);
 
         return this;
     }
 
-    public EntityData GetPropertyDatas() => propertyDatas;
+    public EntityData GetEntityData() => entityData;
 
     public static EntityData GetEntityData(Func<IEntityDataBuilder<TEntity>, IEntityDataBuilder<TEntity>> configuration)
     {
         var builder = new EntityDataBuilder<TEntity>();
         configuration.Invoke(builder);
-        return builder.GetPropertyDatas();
+        return builder.GetEntityData();
     }
 }
 

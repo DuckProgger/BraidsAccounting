@@ -9,7 +9,7 @@ namespace BraidsAccounting.Infrastructure
         {
             EntityDataBuilder<TEntity> builder = new();
             tracer.ConfigureEntityData(builder, entity);
-            return builder.GetPropertyDatas();
+            return builder.GetEntityData();
         }
     }
 }

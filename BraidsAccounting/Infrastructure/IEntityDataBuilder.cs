@@ -7,6 +7,6 @@ namespace BraidsAccounting.Infrastructure;
 internal interface IEntityDataBuilder<TEntity> where TEntity : IEntity
 {
     IEntityDataBuilder<TEntity> AddInfo<TProperty>(Expression<Func<TEntity, TProperty>> expression, TProperty value);
-    EntityData GetPropertyDatas();
+    EntityData GetEntityData();
 }
 

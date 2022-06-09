@@ -22,11 +22,16 @@ namespace BraidsAccounting
             containerRegistry
                 .AddDatabase()
                 .AddServices()
-                ;
+                ;            
+        }
+
+        protected override Window CreateShell() => Container.Resolve<MainWindow>();
+
+        protected override void Initialize()
+        {
+            base.Initialize();
             UpdateDatabase();
         }
-        protected override Window CreateShell() => Container.Resolve<MainWindow>();
-        
 
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
